@@ -132,3 +132,4 @@ To deliver OTP emails in production:
    supabase secrets set SMTP_USER="your-email@gmail.com" SMTP_PASS="your-16-char-app-password"
    ```
 If these secrets are not configured, the Edge Functions gracefully log the OTP to function logs so local and staging testing remains unblocked.
+# FoodBuddy
