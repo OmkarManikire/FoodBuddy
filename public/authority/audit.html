@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-authority">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grievance Audit Trail — Food Buddy</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/main.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/js/vendor/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="theme-authority bg-[#F8FAFC] text-[#0F172A] font-sans antialiased">
+
+  <div class="app-layout">
+    <aside class="app-sidebar"></aside>
+
+    <div class="app-main">
+      <header class="app-topbar"></header>
+
+      <main class="app-content p-4 sm:p-6 lg:p-8 space-y-6 max-w-7xl mx-auto">
+        
+        <!-- Header Banner -->
+        <section class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-[#E2E8F0] shadow-sm">
+          <div class="space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider bg-amber-100 text-amber-900 border border-amber-200">
+                Institutional Ledger • Audit Trail
+              </span>
+              <span class="text-xs text-[#64748B]">• Immutable System Records</span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#0F172A] font-['Outfit']">
+              Comprehensive Grievance Audit Trail
+            </h1>
+            <p class="text-xs text-[#64748B] max-w-2xl">
+              Complete historical ledger of student dining tickets, manager action notes, resolution turnaround timestamps, and authority directives across all residential messes.
+            </p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+            <button onclick="window.print()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#0F172A] text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs">
+              <span class="material-symbols-outlined text-[16px]">print</span>
+              <span>Print Ledger</span>
+            </button>
+            <button onclick="exportAuditCSV()" class="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs">
+              <span class="material-symbols-outlined text-[16px]">download</span>
+              <span>Export CSV</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Repeat Issues & Systemic Bottlenecks Panel -->
+        <section class="space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-2.5 h-2.5 rounded-full bg-amber-600"></div>
+              <h2 class="text-lg font-bold text-[#0F172A] font-['Outfit']">Repeat Issues &amp; Systemic Bottlenecks</h2>
+              <span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900 text-[10px] font-extrabold" id="repeatAnomalyBadge">
+                Frequency Analysis
+              </span>
+            </div>
+            <span class="text-[11px] font-bold uppercase tracking-wider text-[#64748B]">Weekly Pattern Aggregation</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="repeatIssuesCards">
+            <!-- Dynamically generated repeat cards -->
+            <div class="p-4 bg-white rounded-xl border border-[#E2E8F0] shadow-xs animate-pulse">
+              <div class="h-3 bg-slate-200 rounded w-24 mb-2"></div>
+              <div class="h-4 bg-slate-200 rounded w-36 mb-2"></div>
+              <div class="h-8 bg-slate-100 rounded w-16"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Search & Filters Console -->
+        <section class="p-5 bg-white rounded-2xl border border-[#E2E8F0] shadow-sm space-y-4">
+          <div class="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center justify-between">
+            <!-- Search Input -->
+            <div class="relative flex-1">
+              <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94A3B8] text-[18px]">search</span>
+              <input 
+                type="text" 
+                id="searchQuery"
+                oninput="applyFilters()"
+                class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] text-xs focus:outline-none focus:bg-white focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20"
+                placeholder="Search by ticket ID, resident name, keyword, or manager action note..."
+              />
+            </div>
+
+            <!-- Select Filters -->
+            <div class="flex flex-wrap items-center gap-2">
+              <!-- Category Filter -->
+              <select id="filterCategory" onchange="applyFilters()" class="px-3 py-2 rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] text-xs font-semibold text-[#0F172A] cursor-pointer focus:outline-none focus:border-amber-600">
+                <option value="all">Category: All</option>
+                <option value="Food Quality">Food Quality</option>
+                <option value="Hygiene">Hygiene &amp; Cleanliness</option>
+                <option value="Staff Conduct">Staff Conduct</option>
+                <option value="Infrastructure">Infrastructure</option>
+              </select>
+
+              <!-- Status Filter -->
+              <select id="filterStatus" onchange="applyFilters()" class="px-3 py-2 rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] text-xs font-semibold text-[#0F172A] cursor-pointer focus:outline-none focus:border-amber-600">
+                <option value="all">Status: All Statuses</option>
+                <option value="resolved">Resolved</option>
+                <option value="in_progress">In Progress</option>
+                <option value="under_review">Under Review</option>
+                <option value="submitted">Submitted</option>
+                <option value="escalated">Escalated (&gt;48h)</option>
+              </select>
+
+              <!-- Timeframe Filter -->
+              <select id="filterTimeframe" onchange="applyFilters()" class="px-3 py-2 rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] text-xs font-semibold text-[#0F172A] cursor-pointer focus:outline-none focus:border-amber-600">
+                <option value="all">Timeframe: All Time</option>
+                <option value="7d">Last 7 Days</option>
+                <option value="30d">Last 30 Days</option>
+              </select>
+
+              <button onclick="resetFilters()" class="p-2 rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] text-[#64748B] hover:text-[#0F172A] hover:bg-slate-100 transition-colors" title="Reset Filters">
+                <span class="material-symbols-outlined text-[18px]">filter_alt_off</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between text-xs text-[#64748B] pt-1 border-t border-[#E2E8F0]">
+            <div>
+              <span>Active filters: </span>
+              <strong class="text-[#0F172A]" id="lblActiveFilter">All Time • All Messes</strong>
+            </div>
+            <span id="lblFilterCount">Displaying 0 of 0 entries</span>
+          </div>
+        </section>
+
+        <!-- Audit Table Section -->
+        <section class="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="bg-[#F8FAFC] text-[#64748B] font-bold uppercase tracking-wider text-[11px] border-b border-[#E2E8F0]">
+                  <th class="py-3 px-4">Ticket ID</th>
+                  <th class="py-3 px-4">Category</th>
+                  <th class="py-3 px-4">Resident &amp; Hostel</th>
+                  <th class="py-3 px-4">Filed Timestamp</th>
+                  <th class="py-3 px-4">Resolved Date</th>
+                  <th class="py-3 px-4">Turnaround</th>
+                  <th class="py-3 px-4">Status</th>
+                  <th class="py-3 px-4 min-w-[240px]">Manager Action Note</th>
+                  <th class="py-3 px-4 text-right">Dossier</th>
+                </tr>
+              </thead>
+              <tbody id="auditTableBody" class="divide-y divide-[#E2E8F0]">
+                <tr>
+                  <td colspan="9" class="py-12 text-center text-[#64748B]">
+                    <span class="material-symbols-outlined text-[32px] animate-spin text-amber-600">sync</span>
+                    <div class="mt-2 text-xs">Loading complete audit ledger...</div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination Bar -->
+          <div class="p-4 bg-[#F8FAFC] border-t border-[#E2E8F0] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#64748B]">
+            <span id="paginationInfo">Showing 1 to 10 of 0 entries</span>
+            <div class="flex items-center gap-1.5" id="paginationControls">
+              <!-- Dynamically populated page buttons -->
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Ticket Dossier Detail Modal -->
+  <div id="dossierModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm hidden">
+    <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl border border-[#E2E8F0] space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-[#E2E8F0]">
+        <div class="flex items-center gap-2">
+          <span class="w-8 h-8 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center font-bold">
+            <span class="material-symbols-outlined text-[18px]">verified_user</span>
+          </span>
+          <div>
+            <h3 class="font-bold text-sm text-[#0F172A] font-['Outfit']" id="dossierModalTracking">FB-2026-00000</h3>
+            <span class="text-[10px] text-[#64748B]">Comprehensive Complaint Audit Record</span>
+          </div>
+        </div>
+        <button onclick="closeDossierModal()" class="text-[#94A3B8] hover:text-[#0F172A]">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="space-y-4 text-xs text-[#0F172A]">
+        <!-- Meta Details Box -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-[#F8FAFC] p-3 rounded-xl border border-[#E2E8F0]">
+          <div>
+            <span class="text-[#64748B] block">Category:</span>
+            <span id="dossierCategory" class="font-bold"></span>
+          </div>
+          <div>
+            <span class="text-[#64748B] block">Status:</span>
+            <span id="dossierStatus" class="font-bold capitalize"></span>
+          </div>
+          <div>
+            <span class="text-[#64748B] block">Filed Date:</span>
+            <span id="dossierFiled" class="font-medium"></span>
+          </div>
+          <div>
+            <span class="text-[#64748B] block">Resolved Date:</span>
+            <span id="dossierResolved" class="font-medium"></span>
+          </div>
+        </div>
+
+        <!-- Student Info -->
+        <div class="p-3 rounded-xl bg-slate-50 border border-[#E2E8F0] space-y-1">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Resident Information</span>
+          <div class="font-bold text-sm" id="dossierStudentName"></div>
+          <div class="text-[11px] text-[#64748B]" id="dossierStudentHostel"></div>
+        </div>
+
+        <!-- Complaint Body -->
+        <div class="space-y-1">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Student Issue Description</span>
+          <div id="dossierDescription" class="p-3 bg-white rounded-xl border border-[#E2E8F0] leading-relaxed"></div>
+        </div>
+
+        <!-- Manager Resolution Note -->
+        <div class="space-y-1">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Manager Resolution Action Log</span>
+          <div id="dossierManagerNote" class="p-3 bg-white rounded-xl border border-[#E2E8F0] text-[#0F172A] italic"></div>
+        </div>
+
+        <!-- Timeline of History Audit Logs -->
+        <div class="space-y-2">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">System Audit Timeline</span>
+          <div id="dossierTimeline" class="space-y-1.5 p-3 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0]">
+            <!-- Timeline items loaded here -->
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-[#E2E8F0] flex justify-end gap-2">
+        <button onclick="closeDossierModal()" class="px-4 py-2 rounded-xl border border-[#CBD5E1] text-xs font-bold text-[#475569] hover:bg-slate-100">
+          Close Dossier
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/supabase-client.js"></script>
+  <script type="module" src="/js/auth.js"></script>
+  <script type="module" src="/js/app-shell.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', async () => {
+      const user = await window.requireAuth?.('authority');
+      if (!user) return;
+      await window.initAppShell?.({
+        activeNav: 'audit',
+        user: {
+          name: user.profile?.name || user.profile?.full_name || 'Prof. R. Sengupta',
+          role: 'authority',
+          hostel_block: 'Hostel Warden & Dean Office'
+        }
+      });
+      loadAuditTrail();
+    });
+
+    let allComplaints = [];
+    let filteredComplaints = [];
+    let currentPage = 1;
+    const pageSize = 10;
+
+    async function loadAuditTrail() {
+      try {
+        const { data, error } = await supabaseClient
+          .from('complaints')
+          .select(`
+            *,
+            profiles:student_id(name, room_number, hostel_name, roll_number)
+          `)
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        allComplaints = data || [];
+        computeRepeatIssues(allComplaints);
+        applyFilters();
+      } catch (err) {
+        console.error('Failed to load audit trail:', err);
+        showAppNotification('Error loading audit data: ' + err.message, 'error');
+      }
+    }
+
+    function computeRepeatIssues(complaints) {
+      // Group complaints by category
+      const counts = {};
+      complaints.forEach(c => {
+        const cat = c.category || 'Other';
+        counts[cat] = (counts[cat] || 0) + 1;
+      });
+
+      const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+      const container = document.getElementById('repeatIssuesCards');
+
+      const recommendations = {
+        'Food Quality': 'Mandatory raw material temperature & taste audit',
+        'Hygiene': 'Deep sanitization order for dining floor & dishwashers',
+        'Infrastructure': 'Reverse Osmosis candle & cooler valve servicing',
+        'Staff Conduct': 'Staff etiquette refresher & supervisor briefing'
+      };
+
+      const colors = ['#D97706', '#2563EB', '#059669', '#64748B'];
+
+      container.innerHTML = sorted.slice(0, 4).map(([category, count], idx) => {
+        const rec = recommendations[category] || 'Regular inspection and review';
+        const color = colors[idx % colors.length];
+
+        return `
+          <div class="flex flex-col justify-between p-4 rounded-xl bg-white border border-[#E2E8F0] shadow-xs relative overflow-hidden group">
+            <div class="absolute top-0 left-0 right-0 h-1" style="background: ${color};"></div>
+            <div>
+              <div class="flex items-center justify-between text-[11px] mb-1">
+                <span class="font-bold uppercase tracking-wider" style="color: ${color};">#0${idx + 1} Ranked Issue</span>
+                <span class="text-[#64748B] font-semibold">${count} Logged</span>
+              </div>
+              <h3 class="font-bold text-sm text-[#0F172A] font-['Outfit']">${escapeHtml(category)}</h3>
+              <p class="text-[11px] text-[#64748B] mt-0.5">Recurring reports across dining halls</p>
+            </div>
+            <div class="mt-3 pt-2 border-t border-[#E2E8F0] flex items-center gap-1.5 text-[11px] text-[#0F172A]">
+              <span class="material-symbols-outlined text-[15px] text-amber-600">lightbulb</span>
+              <span class="truncate">${rec}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function applyFilters() {
+      const q = (document.getElementById('searchQuery').value || '').toLowerCase().trim();
+      const cat = document.getElementById('filterCategory').value;
+      const status = document.getElementById('filterStatus').value;
+      const timeframe = document.getElementById('filterTimeframe').value;
+
+      const now = new Date();
+
+      filteredComplaints = allComplaints.filter(c => {
+        // Search query
+        if (q) {
+          const student = c.profiles || {};
+          const text = [
+            c.tracking_id || '',
+            c.category || '',
+            c.description || '',
+            c.resolution_note || '',
+            student.name || '',
+            student.room_number || '',
+            student.hostel_name || ''
+          ].join(' ').toLowerCase();
+
+          if (!text.includes(q)) return false;
+        }
+
+        // Category
+        if (cat !== 'all' && c.category !== cat) return false;
+
+        // Status
+        if (status !== 'all') {
+          if (status === 'escalated') {
+            if (!c.escalated) return false;
+          } else if (c.status !== status) {
+            return false;
+          }
+        }
+
+        // Timeframe
+        if (timeframe === '7d') {
+          const diffDays = (now - new Date(c.created_at)) / (1000 * 60 * 60 * 24);
+          if (diffDays > 7) return false;
+        } else if (timeframe === '30d') {
+          const diffDays = (now - new Date(c.created_at)) / (1000 * 60 * 60 * 24);
+          if (diffDays > 30) return false;
+        }
+
+        return true;
+      });
+
+      currentPage = 1;
+      updateFilterSummary();
+      renderAuditTable();
+    }
+
+    function updateFilterSummary() {
+      const cat = document.getElementById('filterCategory').value;
+      const status = document.getElementById('filterStatus').value;
+      const timeframe = document.getElementById('filterTimeframe').value;
+
+      document.getElementById('lblActiveFilter').textContent = `${timeframe === 'all' ? 'All Time' : timeframe.toUpperCase()} • ${cat === 'all' ? 'All Categories' : cat} • ${status === 'all' ? 'All Statuses' : status.replace('_', ' ')}`;
+      document.getElementById('lblFilterCount').textContent = `Displaying ${filteredComplaints.length} of ${allComplaints.length} total entries`;
+    }
+
+    function resetFilters() {
+      document.getElementById('searchQuery').value = '';
+      document.getElementById('filterCategory').value = 'all';
+      document.getElementById('filterStatus').value = 'all';
+      document.getElementById('filterTimeframe').value = 'all';
+      applyFilters();
+    }
+
+    function renderAuditTable() {
+      const tbody = document.getElementById('auditTableBody');
+      const start = (currentPage - 1) * pageSize;
+      const end = start + pageSize;
+      const pageItems = filteredComplaints.slice(start, end);
+
+      if (!pageItems || pageItems.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="9" class="py-12 text-center text-[#64748B]">
+              <span class="material-symbols-outlined text-[32px] text-[#94A3B8]">search_off</span>
+              <div class="mt-2 text-xs">No complaints match your audit filter criteria.</div>
+            </td>
+          </tr>
+        `;
+        renderPagination(0);
+        return;
+      }
+
+      tbody.innerHTML = pageItems.map(c => {
+        const student = c.profiles || {};
+        const filed = new Date(c.created_at);
+        const resolved = c.resolved_at ? new Date(c.resolved_at) : null;
+        
+        let turnaround = 'Pending';
+        if (resolved) {
+          const hours = Math.round((resolved - filed) / (1000 * 60 * 60) * 10) / 10;
+          turnaround = `${hours}h`;
+        } else {
+          const hoursElapsed = Math.floor((new Date() - filed) / (1000 * 60 * 60));
+          turnaround = `${hoursElapsed}h (Active)`;
+        }
+
+        const isEscalated = c.escalated;
+
+        return `
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="py-3 px-4 font-mono font-bold ${isEscalated ? 'text-red-700' : 'text-amber-900'}">
+              ${escapeHtml(c.tracking_id)}
+            </td>
+            <td class="py-3 px-4">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-800">
+                ${escapeHtml(c.category)}
+              </span>
+            </td>
+            <td class="py-3 px-4">
+              <div class="font-semibold text-[#0F172A]">${escapeHtml(student.name || 'Resident')}</div>
+              <div class="text-[10px] text-[#64748B]">${escapeHtml(student.hostel_name || 'Vikramshila')} • ${escapeHtml(student.room_number || '')}</div>
+            </td>
+            <td class="py-3 px-4 text-[#64748B]">
+              <div>${filed.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}</div>
+              <div class="text-[10px] text-[#94A3B8]">${filed.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+            </td>
+            <td class="py-3 px-4 text-[#64748B]">
+              ${resolved ? `
+                <div>${resolved.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}</div>
+                <div class="text-[10px] text-[#94A3B8]">${resolved.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+              ` : '<span class="text-amber-700 font-medium">Unresolved</span>'}
+            </td>
+            <td class="py-3 px-4 font-medium ${resolved ? 'text-emerald-700' : (isEscalated ? 'text-red-600 font-bold' : 'text-[#64748B]')}">
+              ${turnaround}
+            </td>
+            <td class="py-3 px-4">
+              ${isEscalated ? '<span class="px-2 py-0.5 rounded text-[10px] font-black bg-red-100 text-red-700">ESCALATED</span>' : `
+                <span class="badge ${c.status === 'resolved' ? 'badge-resolved' : (c.status === 'in_progress' ? 'badge-progress' : 'badge-pending')} capitalize">
+                  ${escapeHtml(c.status.replace('_', ' '))}
+                </span>
+              `}
+            </td>
+            <td class="py-3 px-4 max-w-xs">
+              <p class="text-xs text-[#0F172A] line-clamp-2">
+                ${c.resolution_note ? escapeHtml(c.resolution_note) : '<span class="text-[#94A3B8] italic">No manager resolution note yet</span>'}
+              </p>
+            </td>
+            <td class="py-3 px-4 text-right">
+              <button 
+                onclick='openDossierModal(${JSON.stringify(c).replace(/'/g, "&#39;")})'
+                class="px-2.5 py-1 rounded-lg border border-[#CBD5E1] text-[#475569] hover:bg-slate-100 hover:text-[#0F172A] text-xs font-semibold transition-colors inline-flex items-center gap-1"
+                title="View Full Complaint Dossier"
+              >
+                <span class="material-symbols-outlined text-[15px]">description</span>
+                <span>View</span>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      renderPagination(filteredComplaints.length);
+    }
+
+    function renderPagination(totalCount) {
+      const totalPages = Math.ceil(totalCount / pageSize) || 1;
+      const start = totalCount === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+      const end = Math.min(currentPage * pageSize, totalCount);
+
+      document.getElementById('paginationInfo').textContent = `Showing ${start} to ${end} of ${totalCount} entries`;
+
+      const controls = document.getElementById('paginationControls');
+      if (totalPages <= 1) {
+        controls.innerHTML = '';
+        return;
+      }
+
+      let btns = [];
+      btns.push(`
+        <button 
+          onclick="changePage(${currentPage - 1})" 
+          ${currentPage === 1 ? 'disabled class="px-2.5 py-1 rounded-lg border border-[#E2E8F0] text-slate-300 cursor-not-allowed"' : 'class="px-2.5 py-1 rounded-lg border border-[#CBD5E1] hover:bg-slate-100 text-[#0F172A]"'}
+        >
+          Prev
+        </button>
+      `);
+
+      for (let p = 1; p <= totalPages; p++) {
+        btns.push(`
+          <button 
+            onclick="changePage(${p})" 
+            class="px-2.5 py-1 rounded-lg text-xs font-bold ${p === currentPage ? 'bg-amber-600 text-white' : 'border border-[#CBD5E1] hover:bg-slate-100 text-[#0F172A]'}"
+          >
+            ${p}
+          </button>
+        `);
+      }
+
+      btns.push(`
+        <button 
+          onclick="changePage(${currentPage + 1})" 
+          ${currentPage === totalPages ? 'disabled class="px-2.5 py-1 rounded-lg border border-[#E2E8F0] text-slate-300 cursor-not-allowed"' : 'class="px-2.5 py-1 rounded-lg border border-[#CBD5E1] hover:bg-slate-100 text-[#0F172A]"'}
+        >
+          Next
+        </button>
+      `);
+
+      controls.innerHTML = btns.join('');
+    }
+
+    function changePage(page) {
+      const totalPages = Math.ceil(filteredComplaints.length / pageSize) || 1;
+      if (page < 1 || page > totalPages) return;
+      currentPage = page;
+      renderAuditTable();
+    }
+
+    // Modal Dossier Logic
+    async function openDossierModal(c) {
+      const student = c.profiles || {};
+      document.getElementById('dossierModalTracking').textContent = c.tracking_id;
+      document.getElementById('dossierCategory').textContent = c.category;
+      document.getElementById('dossierStatus').textContent = c.status.replace('_', ' ');
+      document.getElementById('dossierFiled').textContent = new Date(c.created_at).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
+      document.getElementById('dossierResolved').textContent = c.resolved_at ? new Date(c.resolved_at).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' }) : 'Unresolved';
+      document.getElementById('dossierStudentName').textContent = student.name || 'Resident';
+      document.getElementById('dossierStudentHostel').textContent = `${student.hostel_name || 'Vikramshila'} • Room ${student.room_number || 'N/A'}`;
+      document.getElementById('dossierDescription').textContent = c.description;
+      document.getElementById('dossierManagerNote').textContent = c.resolution_note || 'No manager note recorded for this ticket.';
+
+      // Load timeline from complaint_history
+      const timelineContainer = document.getElementById('dossierTimeline');
+      timelineContainer.innerHTML = `<div class="text-xs text-[#64748B]">Loading audit logs...</div>`;
+
+      try {
+        const { data } = await supabaseClient
+          .from('complaint_history')
+          .select('*')
+          .eq('complaint_id', c.id)
+          .order('changed_at', { ascending: false });
+
+        if (data && data.length > 0) {
+          timelineContainer.innerHTML = data.map(item => `
+            <div class="flex items-start justify-between gap-2 border-b border-[#E2E8F0] pb-1.5 last:border-b-0">
+              <div>
+                <span class="font-bold text-[#0F172A] capitalize">${item.status ? item.status.replace('_', ' ') : 'Event'}</span>
+                <p class="text-xs text-[#64748B]">${escapeHtml(item.note || '')}</p>
+              </div>
+              <span class="text-[10px] text-[#94A3B8] shrink-0">${new Date(item.changed_at).toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+            </div>
+          `).join('');
+        } else {
+          timelineContainer.innerHTML = `<div class="text-xs text-[#64748B]">Initial submission logged. No additional status transitions.</div>`;
+        }
+      } catch (err) {
+        timelineContainer.innerHTML = `<div class="text-xs text-red-600">Failed to load timeline history.</div>`;
+      }
+
+      document.getElementById('dossierModal').classList.remove('hidden');
+    }
+
+    function closeDossierModal() {
+      document.getElementById('dossierModal').classList.add('hidden');
+    }
+
+    // Export CSV of filtered or all records
+    function exportAuditCSV() {
+      const records = filteredComplaints.length > 0 ? filteredComplaints : allComplaints;
+      if (!records.length) {
+        showAppNotification('No complaints to export.', 'info');
+        return;
+      }
+
+      const headers = ['Tracking ID', 'Category', 'Student Name', 'Hostel', 'Room', 'Status', 'Escalated', 'Filed Date', 'Resolved Date', 'Manager Note', 'Description'];
+      const rows = records.map(c => {
+        const student = c.profiles || {};
+        return [
+          `"${(c.tracking_id || '').replace(/"/g, '""')}"`,
+          `"${(c.category || '').replace(/"/g, '""')}"`,
+          `"${(student.name || '').replace(/"/g, '""')}"`,
+          `"${(student.hostel_name || '').replace(/"/g, '""')}"`,
+          `"${(student.room_number || '').replace(/"/g, '""')}"`,
+          `"${(c.status || '').replace(/"/g, '""')}"`,
+          c.escalated ? 'Yes' : 'No',
+          `"${new Date(c.created_at).toISOString()}"`,
+          c.resolved_at ? `"${new Date(c.resolved_at).toISOString()}"` : '""',
+          `"${(c.resolution_note || '').replace(/"/g, '""')}"`,
+          `"${(c.description || '').replace(/"/g, '""')}"`
+        ].join(',');
+      });
+
+      const csvContent = [headers.join(','), ...rows].join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `foodbuddy_grievance_audit_${new Date().toISOString().slice(0, 10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showAppNotification('Grievance Audit CSV downloaded successfully.', 'success');
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    loadAuditTrail();
+  </script>
+</body>
+</html>

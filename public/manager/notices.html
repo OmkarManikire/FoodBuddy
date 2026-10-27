@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Post & Manage Notices — Food Buddy (Mess Manager)</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  
+  <!-- Supabase JS -->
+  <script src="/js/vendor/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- App Styles & Shell -->
+  <link rel="stylesheet" href="/css/main.css" />
+  <script src="/js/supabase-client.js"></script>
+  <script type="module" src="/js/auth.js"></script>
+  <script type="module" src="/js/app-shell.js"></script>
+
+  <style>
+    /* Post Notice custom styles */
+    .priority-chip {
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border-color);
+      background: #FFFFFF;
+      color: var(--text-muted);
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .priority-chip:hover {
+      background: #F8FAFC;
+    }
+    .priority-chip.selected {
+      background: #EFF6FF;
+      color: #2563EB;
+      border-color: #2563EB;
+    }
+    .priority-chip.selected[data-priority="urgent"] {
+      background: #FEF2F2;
+      color: #DC2626;
+      border-color: #DC2626;
+    }
+
+    /* Live Preview Card */
+    .phone-preview-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-card);
+      border-radius: 16px;
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+    .phone-preview-inner {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 16px;
+      margin: 16px;
+    }
+
+    /* Table styles */
+    .notices-table-container {
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      overflow-x: auto;
+      box-shadow: var(--shadow-sm);
+    }
+    .notices-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 840px;
+    }
+    .notices-table th {
+      background: #F8FAFC;
+      color: #475569;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+      text-align: left;
+    }
+    .notices-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #F1F5F9;
+      font-size: 13px;
+      color: var(--text-main);
+      vertical-align: middle;
+    }
+    .notices-table tr:hover td {
+      background: #F8FAFC;
+    }
+    .notices-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal-card {
+      background: #FFFFFF;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 580px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+      animation: modalSlide 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+  </style>
+</head>
+<body class="theme-manager">
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="app-sidebar"></aside>
+
+    <!-- Main Content Area -->
+    <div class="app-main">
+      <!-- Topbar -->
+      <header class="app-topbar"></header>
+
+      <!-- Page Content -->
+      <main class="content-container">
+      
+      <!-- Page Header -->
+      <div style="margin-bottom: 24px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+          <span class="badge" style="background: #EFF6FF; color: #2563EB; font-weight: 700; font-size: 12px; padding: 4px 10px; border-radius: 999px;">
+            <span class="material-symbols-outlined" style="font-size: 14px; vertical-align: middle;">campaign</span>
+            Communication Hub
+          </span>
+          <span style="font-size: 13px; color: var(--text-muted);">• Dining Notices & Circulars</span>
+        </div>
+        <h1 style="font-size: 24px; font-weight: 800; color: var(--text-main); margin: 0;">Broadcast Student Notices</h1>
+        <p style="font-size: 14px; color: var(--text-muted); margin: 4px 0 0 0;">
+          Post announcements, holiday timings, and food festival notices directly to the student dashboard.
+        </p>
+      </div>
+
+      <!-- Main Layout: Form (Left 8 cols) + Live Mobile Feed Preview (Right 4 cols) -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 24px; margin-bottom: 32px; align-items: start;">
+        
+        <!-- Create Notice Card -->
+        <div class="card" style="padding: 24px;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+            <div style="width: 36px; height: 36px; border-radius: 8px; background: #EFF6FF; color: #2563EB; display: flex; align-items: center; justify-content: center;">
+              <span class="material-symbols-outlined" style="font-size: 20px;">edit_note</span>
+            </div>
+            <div>
+              <h2 style="font-size: 16px; font-weight: 700; color: var(--text-main); margin: 0;">Draft New Announcement</h2>
+              <p style="font-size: 12px; color: var(--text-muted); margin: 2px 0 0 0;">Posted officially under "Mess Manager"</p>
+            </div>
+          </div>
+
+          <form id="noticeForm" style="display: flex; flex-direction: column; gap: 18px;">
+            <!-- Title -->
+            <div>
+              <label for="noticeTitle" style="display: block; font-size: 13px; font-weight: 600; color: var(--text-main); margin-bottom: 6px;">
+                Notice Title <span style="color: #DC2626;">*</span>
+              </label>
+              <input type="text" id="noticeTitle" class="input-field" placeholder="e.g. Special Festive Dinner Window & Token Reservations" required style="width: 100%;" />
+            </div>
+
+            <!-- Priority Selector -->
+            <div>
+              <label style="display: block; font-size: 13px; font-weight: 600; color: var(--text-main); margin-bottom: 6px;">
+                Priority Level
+              </label>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <div class="priority-chip selected" data-priority="normal">
+                  <span class="material-symbols-outlined" style="font-size: 16px;">info</span>
+                  <span>Normal</span>
+                </div>
+                <div class="priority-chip" data-priority="urgent">
+                  <span class="material-symbols-outlined" style="font-size: 16px; color: #DC2626;">priority_high</span>
+                  <span>Urgent / Action Required</span>
+                </div>
+                <div class="priority-chip" data-priority="special">
+                  <span class="material-symbols-outlined" style="font-size: 16px; color: #D97706;">star</span>
+                  <span>Feast / Festival</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Body -->
+            <div>
+              <label for="noticeBody" style="display: block; font-size: 13px; font-weight: 600; color: var(--text-main); margin-bottom: 6px;">
+                Announcement Details <span style="color: #DC2626;">*</span>
+              </label>
+              <textarea id="noticeBody" class="input-field" rows="4" placeholder="Detail the schedule changes, meal inclusions, or operational instructions..." required style="width: 100%; font-family: inherit; font-size: 13px; line-height: 1.5;"></textarea>
+            </div>
+
+            <!-- Expiry Date -->
+            <div style="display: grid; grid-template-columns: 1fr; gap: 14px;">
+              <div>
+                <label for="noticeExpiry" style="display: block; font-size: 13px; font-weight: 600; color: var(--text-main); margin-bottom: 6px;">
+                  Optional Expiry Date (Auto-Archives after this date)
+                </label>
+                <input type="date" id="noticeExpiry" class="input-field" style="width: 100%;" />
+                <span style="font-size: 11px; color: var(--text-muted); margin-top: 4px; display: block;">Leave blank if the notice remains indefinitely active.</span>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 6px;">
+              <button type="button" id="resetFormBtn" class="btn btn-secondary" style="font-size: 13px;">Clear Form</button>
+              <button type="submit" id="submitNoticeBtn" class="btn btn-primary" style="font-size: 13px; padding: 10px 20px; background: #2563EB; border-color: #2563EB;">
+                <span class="material-symbols-outlined" style="font-size: 18px;">send</span>
+                <span>Publish Notice Instantly</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Live Preview -->
+        <div class="phone-preview-card">
+          <div style="padding: 16px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: #F8FAFC;">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span class="material-symbols-outlined" style="color: #2563EB; font-size: 18px;">devices</span>
+              <span style="font-size: 13px; font-weight: 700; color: var(--text-main);">Student Portal Live Feed</span>
+            </div>
+            <span class="badge" style="background: #DCFCE7; color: #166534; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px;">
+              Live Preview
+            </span>
+          </div>
+
+          <div class="phone-preview-inner">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span id="previewTag" class="badge" style="background: #EFF6FF; color: #2563EB; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px;">
+                NORMAL NOTICE
+              </span>
+              <span style="font-size: 11px; color: var(--text-muted); font-weight: 500;">Just Now</span>
+            </div>
+            <h3 id="previewTitle" style="font-size: 15px; font-weight: 700; color: var(--text-main); margin: 0 0 6px 0; line-height: 1.35;">
+              Notice Title will appear here...
+            </h3>
+            <p id="previewBody" style="font-size: 13px; color: var(--text-muted); margin: 0 0 12px 0; line-height: 1.5; white-space: pre-wrap;">
+              Announcement details will show here live as you type in the draft box.
+            </p>
+            <div style="display: flex; justify-content: space-between; align-items: center; pt-2; border-top: 1px solid #E2E8F0; padding-top: 8px; font-size: 11px; color: var(--text-muted);">
+              <span>Posted by: <strong style="color: var(--text-main);">Mess Manager</strong></span>
+              <span id="previewExpiry" style="color: #64748B;">No Expiry</span>
+            </div>
+          </div>
+
+          <div style="padding: 12px 20px; background: #F1F5F9; border-top: 1px solid var(--border-color); font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 6px;">
+            <span class="material-symbols-outlined" style="font-size: 16px; color: #059669;">check_circle</span>
+            <span>Broadcasts to all hostel residences (Vikramshila & Mithila)</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Past Notices Section -->
+      <div style="margin-top: 32px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+          <div>
+            <h2 style="font-size: 18px; font-weight: 800; color: var(--text-main); margin: 0;">Notice History & Archives</h2>
+            <p style="font-size: 13px; color: var(--text-muted); margin: 2px 0 0 0;">
+              Past published notices. Edit content or toggle archive status. Hard deletion is restricted for audit compliance.
+            </p>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <select id="statusFilter" class="input-field" style="font-size: 13px; padding: 6px 12px;">
+              <option value="all">All Notices</option>
+              <option value="active" selected>Active Notices</option>
+              <option value="archived">Archived Notices</option>
+              <option value="authority">Official Authority Directives</option>
+            </select>
+            <button id="refreshNoticesBtn" class="btn btn-secondary" style="padding: 7px 12px; font-size: 13px;" title="Refresh">
+              <span class="material-symbols-outlined" style="font-size: 16px;">refresh</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="notices-table-container">
+          <table class="notices-table">
+            <thead>
+              <tr>
+                <th style="width: 35%;">Notice Title & Snippet</th>
+                <th>Priority</th>
+                <th>Author</th>
+                <th>Posted Date</th>
+                <th>Expiry Date</th>
+                <th>Status</th>
+                <th style="text-align: right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="noticesTableBody">
+              <tr>
+                <td colspan="7" style="text-align: center; padding: 36px; color: var(--text-muted);">
+                  <span class="material-symbols-outlined" style="font-size: 28px; animation: spin 1s linear infinite;">sync</span>
+                  <p style="margin-top: 6px;">Loading notices...</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Edit Notice Modal -->
+  <div class="modal-overlay" id="editModal">
+    <div class="modal-card">
+      <div style="padding: 18px 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: #F8FAFC;">
+        <h3 style="font-size: 17px; font-weight: 700; color: var(--text-main); margin: 0;">Edit Notice</h3>
+        <button id="closeEditModalBtn" style="background: none; border: none; cursor: pointer; color: var(--text-muted);">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <form id="editNoticeForm" style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+        <input type="hidden" id="editNoticeId" />
+        
+        <div>
+          <label style="display: block; font-size: 13px; font-weight: 600; color: var(--text-main); margin-bottom: 6px;">
+            Title
+          </label>
+          <input type="text" id="editNoticeTitle" class="input-field" required style="width: 100%;" />
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 13px; font-weight: 600; color: var(--text-main); margin-bottom: 6px;">
+            Priority
+          </label>
+          <select id="editNoticePriority" class="input-field" style="width: 100%;">
+            <option value="normal">Normal</option>
+            <option value="urgent">Urgent / Action Required</option>
+            <option value="special">Feast / Festival</option>
+          </select>
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 13px; font-weight: 600; color: var(--text-main); margin-bottom: 6px;">
+            Announcement Details
+          </label>
+          <textarea id="editNoticeBody" class="input-field" rows="4" required style="width: 100%; font-family: inherit; font-size: 13px; line-height: 1.5;"></textarea>
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 13px; font-weight: 600; color: var(--text-main); margin-bottom: 6px;">
+            Expiry Date
+          </label>
+          <input type="date" id="editNoticeExpiry" class="input-field" style="width: 100%;" />
+        </div>
+
+        <div style="padding-top: 12px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" id="cancelEditBtn" class="btn btn-secondary" style="font-size: 13px;">Cancel</button>
+          <button type="submit" id="saveEditBtn" class="btn btn-primary" style="font-size: 13px; background: #2563EB; border-color: #2563EB;">Update Notice</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let selectedPriority = 'normal';
+    let allNotices = [];
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      const user = await window.requireAuth?.('mess_manager');
+      if (!user) return;
+      await window.initAppShell?.({
+        activeNav: 'notices',
+        user: {
+          name: user.profile?.name || user.profile?.full_name || 'Rameshwar Kumar',
+          role: 'mess_manager',
+          hostel_block: 'Mess 1 • Vikramshila & Mithila'
+        }
+      });
+
+      setupNoticeEvents();
+      loadNotices();
+    });
+
+    function setupNoticeEvents() {
+      // Priority Chips
+      document.querySelectorAll('.priority-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          document.querySelectorAll('.priority-chip').forEach(c => c.classList.remove('selected'));
+          chip.classList.add('selected');
+          selectedPriority = chip.dataset.priority;
+          updatePreview();
+        });
+      });
+
+      // Live Preview Inputs
+      document.getElementById('noticeTitle').addEventListener('input', updatePreview);
+      document.getElementById('noticeBody').addEventListener('input', updatePreview);
+      document.getElementById('noticeExpiry').addEventListener('change', updatePreview);
+
+      // Form Submit
+      document.getElementById('noticeForm').addEventListener('submit', handlePublishNotice);
+      document.getElementById('resetFormBtn').addEventListener('click', () => {
+        document.getElementById('noticeForm').reset();
+        selectedPriority = 'normal';
+        document.querySelectorAll('.priority-chip').forEach(c => c.classList.remove('selected'));
+        document.querySelector('.priority-chip[data-priority="normal"]').classList.add('selected');
+        updatePreview();
+      });
+
+      // Filter and Refresh
+      document.getElementById('statusFilter').addEventListener('change', renderNoticesTable);
+      document.getElementById('refreshNoticesBtn').addEventListener('click', loadNotices);
+
+      // Edit Modal
+      document.getElementById('closeEditModalBtn').addEventListener('click', closeEditModal);
+      document.getElementById('cancelEditBtn').addEventListener('click', closeEditModal);
+      document.getElementById('editNoticeForm').addEventListener('submit', handleSaveEditedNotice);
+    }
+
+    function updatePreview() {
+      const title = document.getElementById('noticeTitle').value.trim();
+      const body = document.getElementById('noticeBody').value.trim();
+      const expiry = document.getElementById('noticeExpiry').value;
+
+      document.getElementById('previewTitle').textContent = title || 'Notice Title will appear here...';
+      document.getElementById('previewBody').textContent = body || 'Announcement details will show here live as you type in the draft box.';
+
+      const tag = document.getElementById('previewTag');
+      if (selectedPriority === 'urgent') {
+        tag.textContent = 'URGENT ANNOUNCEMENT';
+        tag.style.background = '#FEF2F2';
+        tag.style.color = '#DC2626';
+      } else if (selectedPriority === 'special') {
+        tag.textContent = 'SPECIAL FEAST';
+        tag.style.background = '#FEF3C7';
+        tag.style.color = '#92400E';
+      } else {
+        tag.textContent = 'NORMAL NOTICE';
+        tag.style.background = '#EFF6FF';
+        tag.style.color = '#2563EB';
+      }
+
+      document.getElementById('previewExpiry').textContent = expiry ? `Expires: ${expiry}` : 'No Expiry';
+    }
+
+    async function loadNotices() {
+      const tbody = document.getElementById('noticesTableBody');
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7" style="text-align: center; padding: 36px; color: var(--text-muted);">
+            <span class="material-symbols-outlined" style="font-size: 28px; animation: spin 1s linear infinite;">sync</span>
+            <p style="margin-top: 6px;">Loading notices...</p>
+          </td>
+        </tr>
+      `;
+
+      try {
+        const { data, error } = await supabaseClient
+          .from('notices')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        allNotices = data || [];
+        renderNoticesTable();
+      } catch (err) {
+        console.error('Error fetching notices:', err);
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" style="text-align: center; padding: 24px; color: #DC2626;">
+              <span class="material-symbols-outlined" style="font-size: 28px;">error</span>
+              <p style="margin-top: 6px; font-weight: 600;">Failed to load notices: ${err.message}</p>
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    function renderNoticesTable() {
+      const tbody = document.getElementById('noticesTableBody');
+      const filter = document.getElementById('statusFilter').value;
+
+      let filtered = allNotices;
+      if (filter === 'active') {
+        filtered = allNotices.filter(n => !n.is_archived);
+      } else if (filter === 'archived') {
+        filtered = allNotices.filter(n => n.is_archived);
+      } else if (filter === 'authority') {
+        filtered = allNotices.filter(n => n.posted_by === 'Authority' || n.posted_by === 'authority' || n.posted_by === 'Higher Authority');
+      }
+
+      if (!filtered.length) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" style="text-align: center; padding: 36px; color: var(--text-muted);">
+              <span class="material-symbols-outlined" style="font-size: 32px; color: #94A3B8;">inbox</span>
+              <p style="margin-top: 8px; font-weight: 500;">No ${filter === 'all' ? '' : filter} notices found.</p>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(notice => {
+        const isArchived = !!notice.is_archived;
+        const isAuthority = notice.posted_by === 'Authority' || notice.posted_by === 'authority' || notice.posted_by === 'Higher Authority';
+        const priorityBadge = getPriorityBadge(notice.priority);
+        const postedDate = new Date(notice.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const expiryDate = notice.expires_at 
+          ? new Date(notice.expires_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+          : '<span style="color: #94A3B8;">None</span>';
+
+        return `
+          <tr style="${isAuthority ? 'background: #FFFDF7;' : ''}">
+            <td>
+              <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 2px;">
+                <span style="font-weight: 600; color: var(--text-main);">${escapeHtml(notice.title)}</span>
+                ${isAuthority ? '<span class="badge" style="background: #FEF3C7; color: #92400E; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px;">OFFICIAL DIRECTIVE</span>' : ''}
+              </div>
+              <div style="font-size: 12px; color: var(--text-muted); max-width: 320px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                ${escapeHtml(notice.body)}
+              </div>
+            </td>
+            <td>${priorityBadge}</td>
+            <td>
+              ${isAuthority 
+                ? '<span class="badge" style="background: #FEF3C7; color: #92400E; border: 1px solid #FDE68A; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; display: inline-flex; align-items: center; gap: 4px;"><span class="material-symbols-outlined" style="font-size: 13px;">verified</span> Authority</span>'
+                : `<span style="font-weight: 500; color: var(--text-main);">${escapeHtml(notice.posted_by || 'Mess Manager')}</span>`
+              }
+            </td>
+            <td style="color: var(--text-muted); font-size: 12px;">${postedDate}</td>
+            <td style="font-size: 12px;">${expiryDate}</td>
+            <td>
+              <span class="badge" style="background: ${isArchived ? '#F1F5F9' : '#DCFCE7'}; color: ${isArchived ? '#64748B' : '#166534'}; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px;">
+                ${isArchived ? 'Archived' : 'Active'}
+              </span>
+            </td>
+            <td style="text-align: right;">
+              ${isAuthority ? `
+                <span style="font-size: 11px; color: #94A3B8; font-style: italic; display: inline-flex; align-items: center; gap: 4px;">
+                  <span class="material-symbols-outlined" style="font-size: 14px;">lock</span> Warden / Dean Order
+                </span>
+              ` : `
+                <div style="display: flex; justify-content: flex-end; gap: 6px;">
+                  <button class="btn btn-secondary" onclick="openEditModal('${notice.id}')" style="padding: 4px 8px; font-size: 12px;" title="Edit Notice">
+                    <span class="material-symbols-outlined" style="font-size: 16px;">edit</span>
+                  </button>
+                  <button class="btn btn-secondary" onclick="toggleArchiveNotice('${notice.id}', ${!isArchived})" style="padding: 4px 8px; font-size: 12px; color: ${isArchived ? '#059669' : '#D97706'};" title="${isArchived ? 'Restore to Active' : 'Archive Notice'}">
+                    <span class="material-symbols-outlined" style="font-size: 16px;">${isArchived ? 'unarchive' : 'archive'}</span>
+                  </button>
+                </div>
+              `}
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function getPriorityBadge(priority) {
+      if (priority === 'urgent') {
+        return '<span class="badge" style="background: #FEF2F2; color: #DC2626; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px;">Urgent</span>';
+      } else if (priority === 'special') {
+        return '<span class="badge" style="background: #FEF3C7; color: #92400E; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px;">Feast</span>';
+      }
+      return '<span class="badge" style="background: #EFF6FF; color: #2563EB; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px;">Normal</span>';
+    }
+
+    async function handlePublishNotice(e) {
+      e.preventDefault();
+      const submitBtn = document.getElementById('submitNoticeBtn');
+      const title = document.getElementById('noticeTitle').value.trim();
+      const body = document.getElementById('noticeBody').value.trim();
+      const expiry = document.getElementById('noticeExpiry').value;
+
+      if (!title || !body) {
+        showAppNotification('Title and description are required.', 'error');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 18px; animation: spin 1s linear infinite;">sync</span> Publishing...';
+
+      try {
+        const payload = {
+          title,
+          body,
+          priority: selectedPriority,
+          posted_by: 'Mess Manager',
+          author_name: 'Mess Manager',
+          is_archived: false,
+          expires_at: expiry ? new Date(expiry + 'T23:59:59Z').toISOString() : null
+        };
+
+        const { error } = await supabaseClient
+          .from('notices')
+          .insert([payload]);
+
+        if (error) throw error;
+
+        showAppNotification('Notice published successfully!', 'success');
+        document.getElementById('noticeForm').reset();
+        selectedPriority = 'normal';
+        document.querySelectorAll('.priority-chip').forEach(c => c.classList.remove('selected'));
+        document.querySelector('.priority-chip[data-priority="normal"]').classList.add('selected');
+        updatePreview();
+
+        await loadNotices();
+      } catch (err) {
+        console.error('Publish error:', err);
+        showAppNotification(`Failed to publish notice: ${err.message}`, 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 18px;">send</span><span>Publish Notice Instantly</span>';
+      }
+    }
+
+    function openEditModal(noticeId) {
+      const notice = allNotices.find(n => n.id === noticeId);
+      if (!notice) return;
+
+      document.getElementById('editNoticeId').value = notice.id;
+      document.getElementById('editNoticeTitle').value = notice.title;
+      document.getElementById('editNoticePriority').value = notice.priority || 'normal';
+      document.getElementById('editNoticeBody').value = notice.body;
+      document.getElementById('editNoticeExpiry').value = notice.expires_at ? notice.expires_at.split('T')[0] : '';
+
+      document.getElementById('editModal').classList.add('active');
+    }
+
+    function closeEditModal() {
+      document.getElementById('editModal').classList.remove('active');
+    }
+
+    async function handleSaveEditedNotice(e) {
+      e.preventDefault();
+      const saveBtn = document.getElementById('saveEditBtn');
+      const id = document.getElementById('editNoticeId').value;
+      const title = document.getElementById('editNoticeTitle').value.trim();
+      const priority = document.getElementById('editNoticePriority').value;
+      const body = document.getElementById('editNoticeBody').value.trim();
+      const expiry = document.getElementById('editNoticeExpiry').value;
+
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Saving...';
+
+      try {
+        const { error } = await supabaseClient
+          .from('notices')
+          .update({
+            title,
+            priority,
+            body,
+            expires_at: expiry ? new Date(expiry + 'T23:59:59Z').toISOString() : null
+          })
+          .eq('id', id);
+
+        if (error) throw error;
+
+        showAppNotification('Notice updated successfully', 'success');
+        closeEditModal();
+        await loadNotices();
+      } catch (err) {
+        console.error('Update notice error:', err);
+        showAppNotification(`Failed to update notice: ${err.message}`, 'error');
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Update Notice';
+      }
+    }
+
+    async function toggleArchiveNotice(noticeId, shouldArchive) {
+      try {
+        const { error } = await supabaseClient
+          .from('notices')
+          .update({ is_archived: shouldArchive })
+          .eq('id', noticeId);
+
+        if (error) throw error;
+
+        showAppNotification(`Notice ${shouldArchive ? 'archived' : 'restored to active'}`, 'success');
+        await loadNotices();
+      } catch (err) {
+        console.error('Archive error:', err);
+        showAppNotification(`Action failed: ${err.message}`, 'error');
+      }
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+  </script>
+</body>
+</html>

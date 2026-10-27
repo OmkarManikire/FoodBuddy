@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In — Food Buddy</title>
+  <meta name="description" content="Secure portal sign in for Food Buddy Campus Hostel Mess Management." />
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/main.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/js/vendor/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-[#faf8ff] text-[#0f172a] font-sans antialiased">
+
+  <main class="w-full min-h-screen flex items-center justify-center p-3 sm:p-6 lg:p-10">
+    <div class="w-full max-w-7xl mx-auto flex items-center justify-center">
+      <div class="w-full grid grid-cols-1 lg:grid-cols-12 bg-white rounded-2xl shadow-xl border border-[#e2e8f0] overflow-hidden min-h-[760px]">
+        
+        <!-- Left Column: Form & Access Controls -->
+        <div class="lg:col-span-6 xl:col-span-5 p-6 sm:p-10 lg:p-12 flex flex-col justify-between bg-white">
+          <div>
+            <!-- Brand Header -->
+            <div class="flex items-center justify-between mb-8">
+              <a href="/" class="flex items-center gap-3 text-decoration-none text-inherit group">
+                <div id="brand-monogram" class="w-10 h-10 rounded-xl bg-[#059669] text-white flex items-center justify-center font-bold text-lg shadow-sm transition-colors">
+                  FB
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-xl font-bold tracking-tight text-[#0f172a]">Food Buddy</span>
+                  <span class="text-[11px] font-semibold text-[#64748b] uppercase tracking-wider">Campus Dining Portal</span>
+                </div>
+              </a>
+              <span id="role-pill-badge" class="badge badge-student">Student</span>
+            </div>
+
+            <!-- Title Block -->
+            <div class="mb-6">
+              <h1 class="text-3xl font-extrabold text-[#0f172a] tracking-tight mb-2">Welcome back</h1>
+              <p id="portal-description" class="text-sm text-[#475569] leading-relaxed">
+                Sign in to check today's dynamic menu, reserve meal slots, and manage dining passes.
+              </p>
+            </div>
+
+            <!-- Role Switcher Tabs -->
+            <div class="mb-6">
+              <div class="p-1 bg-[#eaedff] rounded-xl flex items-center gap-1 text-center" role="tablist">
+                <button type="button" id="tab-student" onclick="switchRole('student')" class="flex-1 py-2 px-2 rounded-lg text-xs font-semibold bg-[#059669] text-white shadow-sm transition-all flex items-center justify-center gap-1.5">
+                  <span class="material-symbols-outlined text-base">school</span>
+                  <span>Student</span>
+                </button>
+                <button type="button" id="tab-manager" onclick="switchRole('mess_manager')" class="flex-1 py-2 px-2 rounded-lg text-xs font-semibold text-[#475569] hover:text-[#0f172a] transition-all flex items-center justify-center gap-1.5">
+                  <span class="material-symbols-outlined text-base">storefront</span>
+                  <span>Manager</span>
+                </button>
+                <button type="button" id="tab-authority" onclick="switchRole('authority')" class="flex-1 py-2 px-2 rounded-lg text-xs font-semibold text-[#475569] hover:text-[#0f172a] transition-all flex items-center justify-center gap-1.5">
+                  <span class="material-symbols-outlined text-base">verified_user</span>
+                  <span>Authority</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- 2-Step Security Notice -->
+            <div class="mb-6 flex items-center gap-3 px-4 py-2.5 bg-[#f2f3ff] rounded-xl border border-[#dae2fd]">
+              <span class="material-symbols-outlined text-[#059669] text-lg shrink-0">mark_email_read</span>
+              <span class="text-xs font-medium text-[#334155]">
+                Step 1 of 2: A 6-digit access code will be emailed to your campus credentials upon sign-in.
+              </span>
+            </div>
+
+            <!-- Error Banner -->
+            <div id="error-alert" class="hidden mb-6 p-4 rounded-xl bg-[#fef2f2] border border-[#fecaca] text-[#991b1b] text-xs flex items-start gap-2.5">
+              <span class="material-symbols-outlined text-base text-[#ef4444] mt-0.5">error</span>
+              <span id="error-message" class="font-medium"></span>
+            </div>
+
+            <!-- Google OAuth Action -->
+            <div class="mb-5">
+              <button type="button" id="btn-google-signin" class="w-full py-3 px-4 rounded-xl border border-[#cbd5e1] bg-white hover:bg-[#f8fafc] text-[#0f172a] font-semibold text-sm flex items-center justify-center gap-3 shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-[#059669]/20 hover:border-[#94a3b8] active:scale-[0.99]">
+                <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                </svg>
+                <span id="google-btn-text">Continue with Google</span>
+              </button>
+
+              <div class="relative my-4 flex items-center justify-center">
+                <div class="border-t border-[#e2e8f0] w-full"></div>
+                <span class="bg-white px-3 text-[11px] uppercase tracking-wider text-[#94a3b8] font-semibold absolute">or sign in with password</span>
+              </div>
+            </div>
+
+            <!-- Form -->
+            <form id="login-form" class="space-y-4">
+              <!-- Email Input -->
+              <div>
+                <label for="email" class="input-label">Campus Email Address</label>
+                <div class="relative">
+                  <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94a3b8] text-lg pointer-events-none">mail</span>
+                  <input id="email" type="email" required placeholder="student@foodbuddy.test" class="input-field pl-10" />
+                </div>
+              </div>
+
+              <!-- Password Input -->
+              <div>
+                <div class="flex items-center justify-between mb-1.5">
+                  <label for="password" class="input-label mb-0">Password</label>
+                  <a href="/forgot-password.html" class="text-xs font-semibold text-[#059669] hover:underline" id="link-forgot-pwd">Forgot password?</a>
+                </div>
+                <div class="relative">
+                  <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94a3b8] text-lg pointer-events-none">lock</span>
+                  <input id="password" type="password" required placeholder="••••••••••••" class="input-field pl-10 pr-10" />
+                  <button type="button" id="btn-toggle-pwd" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#94a3b8] hover:text-[#0f172a] focus:outline-none">
+                    <span class="material-symbols-outlined text-lg" id="pwd-icon">visibility</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Remember & SSL -->
+              <div class="flex items-center justify-between pt-1 text-xs">
+                <label class="flex items-center gap-2 cursor-pointer select-none text-[#475569]">
+                  <input type="checkbox" id="remember-me" checked class="w-4 h-4 rounded text-[#059669] accent-[#059669]" />
+                  <span>Remember this workstation</span>
+                </label>
+                <span class="text-[#94a3b8] flex items-center gap-1">
+                  <span class="material-symbols-outlined text-xs text-[#059669]">lock</span> 256-bit SSL
+                </span>
+              </div>
+
+              <!-- Submit Button -->
+              <button type="submit" id="submit-btn" class="w-full mt-4 py-3 px-4 rounded-xl bg-[#059669] hover:bg-[#047857] text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-md transition-all">
+                <span id="submit-text">Continue to Verification</span>
+                <span class="material-symbols-outlined text-base">arrow_forward</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- Footer Links -->
+          <div class="mt-8 pt-4 border-t border-[#f1f5f9] flex flex-col sm:flex-row items-center justify-between gap-2 text-xs">
+            <a id="register-link" href="/register.html" class="font-semibold text-[#059669] hover:underline flex items-center gap-1">
+              <span>New student? Register for mess access</span>
+              <span class="material-symbols-outlined text-sm">arrow_forward</span>
+            </a>
+            <span class="text-[#94a3b8]">Campus ID Auth v3.2</span>
+          </div>
+        </div>
+
+        <!-- Right Column: Visual Brand Showcase -->
+        <div id="brand-panel" class="lg:col-span-6 xl:col-span-7 relative p-8 sm:p-12 lg:p-16 flex flex-col justify-between overflow-hidden bg-gradient-to-br from-[#005137] via-[#006948] to-[#002114] text-white">
+          <!-- Ambient Glows -->
+          <div class="absolute -right-24 -top-24 w-96 h-96 rounded-full bg-[#00855d]/20 blur-3xl pointer-events-none"></div>
+          <div class="absolute -left-20 -bottom-20 w-80 h-80 rounded-full bg-[#316bf3]/15 blur-3xl pointer-events-none"></div>
+
+          <!-- Top Monogram & Session Status -->
+          <div class="relative z-10 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center shadow-inner">
+                <span class="material-symbols-outlined text-[#85f8c4] text-2xl">restaurant</span>
+              </div>
+              <div>
+                <p class="text-xs font-bold tracking-wider text-[#85f8c4] uppercase">HOSTEL DINING SYSTEM</p>
+                <p class="text-xs text-white/80">Campus Central Dining Halls 1–4</p>
+              </div>
+            </div>
+            <div class="hidden sm:flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-1.5 rounded-full text-xs">
+              <span class="w-2 h-2 rounded-full bg-[#85f8c4] animate-pulse"></span>
+              <span>Dinner Active • Mess 2</span>
+            </div>
+          </div>
+
+          <!-- Core Statement -->
+          <div class="relative z-10 my-10 max-w-lg">
+            <div class="inline-block px-3 py-1 rounded-full bg-white/15 text-[#85f8c4] text-xs font-semibold uppercase tracking-wider mb-3">
+              Institutional Mess Governance
+            </div>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight mb-4">
+              Better Food • Better Hygiene • Better Experience
+            </h2>
+            <p class="text-sm text-white/85 leading-relaxed">
+              Eliminating physical meal coupons, tracking nutritional transparency in real-time, and resolving meal quality issues through accountable administrative escalation.
+            </p>
+          </div>
+
+          <!-- 3 Feature Highlight Cards -->
+          <div class="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="p-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/10 shadow-sm flex flex-col justify-between">
+              <div>
+                <div class="w-8 h-8 rounded-lg bg-[#85f8c4]/20 text-[#85f8c4] flex items-center justify-center mb-2">
+                  <span class="material-symbols-outlined text-lg">qr_code_2</span>
+                </div>
+                <h3 class="text-sm font-bold text-white mb-1">Instant QR Passes</h3>
+                <p class="text-xs text-white/75 leading-normal">Skip manual registers with dynamic turnstile check-in tokens.</p>
+              </div>
+              <div class="mt-3 pt-2 border-t border-white/10 text-[11px] text-[#85f8c4] font-medium flex items-center gap-1">
+                <span class="material-symbols-outlined text-xs">schedule</span> 1.2s tap speed
+              </div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/10 shadow-sm flex flex-col justify-between">
+              <div>
+                <div class="w-8 h-8 rounded-lg bg-[#85f8c4]/20 text-[#85f8c4] flex items-center justify-center mb-2">
+                  <span class="material-symbols-outlined text-lg">star</span>
+                </div>
+                <h3 class="text-sm font-bold text-white mb-1">Meal Rating</h3>
+                <p class="text-xs text-white/75 leading-normal">Immediate student feedback drives daily kitchen preparation standards.</p>
+              </div>
+              <div class="mt-3 pt-2 border-t border-white/10 text-[11px] text-[#85f8c4] font-medium flex items-center gap-1">
+                <span class="material-symbols-outlined text-xs">verified</span> 4.8 rating avg
+              </div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/10 shadow-sm flex flex-col justify-between">
+              <div>
+                <div class="w-8 h-8 rounded-lg bg-[#85f8c4]/20 text-[#85f8c4] flex items-center justify-center mb-2">
+                  <span class="material-symbols-outlined text-lg">verified_user</span>
+                </div>
+                <h3 class="text-sm font-bold text-white mb-1">Audit Tracking</h3>
+                <p class="text-xs text-white/75 leading-normal">Wardens review escalation timelines and contract compliance in real-time.</p>
+              </div>
+              <div class="mt-3 pt-2 border-t border-white/10 text-[11px] text-[#85f8c4] font-medium flex items-center gap-1">
+                <span class="material-symbols-outlined text-xs">gavel</span> Strict SLA Rules
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { signInStep1, signInWithGoogle } from '/js/auth.js';
+    import { renderDemoBanner, showToast } from '/js/app-shell.js';
+
+    let currentRole = 'student';
+
+    const roleConfigs = {
+      student: {
+        title: 'Student Access',
+        badge: 'Student',
+        badgeClass: 'badge-student',
+        accentColor: '#059669',
+        hoverColor: '#047857',
+        gradient: 'from-[#005137] via-[#006948] to-[#002114]',
+        defaultEmail: isLocalDev ? 'student@foodbuddy.test' : 'student@campus.edu',
+        description: "Sign in to check today's dynamic menu, reserve meal slots, and manage dining passes.",
+        showRegister: true,
+        registerText: 'New student? Register for mess access',
+        registerUrl: '/register.html?role=student',
+      },
+      mess_manager: {
+        title: 'Mess Manager Operations',
+        badge: 'Mess Manager',
+        badgeClass: 'badge-manager',
+        accentColor: '#2563eb',
+        hoverColor: '#1d4ed8',
+        gradient: 'from-[#1e3a8a] via-[#1d4ed8] to-[#172554]',
+        defaultEmail: isLocalDev ? 'manager@foodbuddy.test' : 'manager@campus.edu',
+        description: "Kitchen operations desk: turnstile pass scanner, meal scheduling, and inventory tracking.",
+        showRegister: true,
+        registerText: 'Register new Mess Manager / Operator',
+        registerUrl: '/register.html?role=mess_manager',
+      },
+      authority: {
+        title: 'Higher Authority Governance',
+        badge: 'Higher Authority',
+        badgeClass: 'badge-authority',
+        accentColor: '#d97706',
+        hoverColor: '#b45309',
+        gradient: 'from-[#78350f] via-[#b45309] to-[#451a03]',
+        defaultEmail: isLocalDev ? 'authority@foodbuddy.test' : 'authority@campus.edu',
+        description: "Supervisory oversight: hostel hygiene benchmarks, SLA breach escalations, and contractor reviews.",
+        showRegister: true,
+        registerText: 'Register new Campus Warden / Authority',
+        registerUrl: '/register.html?role=authority',
+      },
+    };
+    roleConfigs.manager = roleConfigs.mess_manager;
+
+    window.switchRole = function(role) {
+      if (role === 'manager') role = 'mess_manager';
+      currentRole = role;
+      const conf = roleConfigs[role] || roleConfigs.student;
+
+      // Update tab styles
+      ['student', 'manager', 'authority'].forEach((r) => {
+        const tabKey = r === 'manager' ? 'mess_manager' : r;
+        const btn = document.getElementById(`tab-${r}`);
+        if (tabKey === role) {
+          btn.className = `flex-1 py-2 px-2 rounded-lg text-xs font-semibold text-white shadow-sm transition-all flex items-center justify-center gap-1.5`;
+          btn.style.backgroundColor = conf.accentColor;
+        } else {
+          btn.className = `flex-1 py-2 px-2 rounded-lg text-xs font-semibold text-[#475569] hover:text-[#0f172a] transition-all flex items-center justify-center gap-1.5`;
+          btn.style.backgroundColor = 'transparent';
+        }
+      });
+
+      // Update UI elements
+      document.getElementById('brand-monogram').style.backgroundColor = conf.accentColor;
+      const pill = document.getElementById('role-pill-badge');
+      pill.textContent = conf.badge;
+      pill.className = `badge ${conf.badgeClass}`;
+
+      document.getElementById('portal-description').textContent = conf.description;
+      document.getElementById('submit-btn').style.backgroundColor = conf.accentColor;
+      document.getElementById('link-forgot-pwd').style.color = conf.accentColor;
+
+      const regLink = document.getElementById('register-link');
+      if (conf.showRegister) {
+        regLink.style.display = 'inline-flex';
+        regLink.style.color = conf.accentColor;
+        regLink.href = conf.registerUrl || '/register.html';
+        const label = regLink.querySelector('span:first-child');
+        if (label) label.textContent = conf.registerText || 'Register new account';
+      } else {
+        regLink.style.display = 'none';
+      }
+
+      // Update right panel gradient
+      const brandPanel = document.getElementById('brand-panel');
+      brandPanel.className = `lg:col-span-6 xl:col-span-7 relative p-8 sm:p-12 lg:p-16 flex flex-col justify-between overflow-hidden bg-gradient-to-br ${conf.gradient} text-white`;
+
+      // Pre-fill demo email placeholder
+      document.getElementById('email').placeholder = conf.defaultEmail;
+
+      // Clear any prior errors
+      hideError();
+    };
+
+    function showError(msg) {
+      const alert = document.getElementById('error-alert');
+      const text = document.getElementById('error-message');
+      text.textContent = msg;
+      alert.classList.remove('hidden');
+    }
+
+    function hideError() {
+      document.getElementById('error-alert').classList.add('hidden');
+    }
+
+    // Toggle password visibility
+    const toggleBtn = document.getElementById('btn-toggle-pwd');
+    const pwdInput = document.getElementById('password');
+    const pwdIcon = document.getElementById('pwd-icon');
+    toggleBtn.addEventListener('click', () => {
+      if (pwdInput.type === 'password') {
+        pwdInput.type = 'text';
+        pwdIcon.textContent = 'visibility_off';
+      } else {
+        pwdInput.type = 'password';
+        pwdIcon.textContent = 'visibility';
+      }
+    });
+
+    // Check URL search params for default role and email
+    const urlParams = new URLSearchParams(window.location.search);
+    let initialRole = urlParams.get('role');
+    if (initialRole === 'manager') initialRole = 'mess_manager';
+    if (initialRole && roleConfigs[initialRole]) {
+      switchRole(initialRole);
+    } else {
+      switchRole('student');
+    }
+
+    const loginError = urlParams.get('error');
+    if (loginError) {
+      showError(decodeURIComponent(loginError));
+    }
+
+    const initialEmail = urlParams.get('email');
+    if (initialEmail) {
+      const emailInput = document.getElementById('email');
+      emailInput.value = initialEmail;
+      setTimeout(() => {
+        document.getElementById('password')?.focus();
+      }, 100);
+    }
+
+    // Google OAuth Sign In
+    const googleBtn = document.getElementById('btn-google-signin');
+    const googleBtnText = document.getElementById('google-btn-text');
+    googleBtn?.addEventListener('click', async () => {
+      hideError();
+      googleBtn.disabled = true;
+      googleBtn.style.opacity = '0.7';
+      googleBtnText.textContent = 'Connecting to Google...';
+
+      try {
+        const redirectParam = urlParams.get('redirect');
+        await signInWithGoogle(currentRole, redirectParam);
+      } catch (err) {
+        googleBtn.disabled = false;
+        googleBtn.style.opacity = '1';
+        googleBtnText.textContent = 'Continue with Google';
+        showError(err.message || 'Unable to connect to Google Sign-In.');
+      }
+    });
+
+    // Form submit
+    const form = document.getElementById('login-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const submitText = document.getElementById('submit-text');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideError();
+
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!email || !password) {
+        showError('Please enter both your email address and password.');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitText.textContent = 'Authenticating & Sending Code...';
+
+      try {
+        const result = await signInStep1(email, password, currentRole);
+
+        if (!result.success) {
+          showError(result.error);
+          showToast(result.error, 'error');
+          submitBtn.disabled = false;
+          submitText.textContent = 'Continue to Verification';
+          return;
+        }
+
+        showToast('Password verified! Access code generated.', 'success');
+        // Redirect to OTP verification
+        window.location.href = `/verify-otp.html?role=${currentRole}`;
+      } catch (err) {
+        showError('A connection error occurred. Please try again.');
+        submitBtn.disabled = false;
+        submitText.textContent = 'Continue to Verification';
+      }
+    });
+
+    // Setup Local Demo Banner with Autofill buttons
+    renderDemoBanner('Food Buddy Local Dev Active. Quick autofill test accounts available:', () => {
+      const emailInput = document.getElementById('email');
+      const pwdInput = document.getElementById('password');
+      if (currentRole === 'student') {
+        emailInput.value = 'student@foodbuddy.test';
+        pwdInput.value = 'Student@Pass2025';
+      } else if (currentRole === 'mess_manager') {
+        emailInput.value = 'manager@foodbuddy.test';
+        pwdInput.value = 'Manager@Pass2025';
+      } else if (currentRole === 'authority') {
+        emailInput.value = 'authority@foodbuddy.test';
+        pwdInput.value = 'Authority@Pass2025';
+      }
+      showToast(`Autofilled credentials for ${currentRole.replace('_', ' ')}!`, 'info');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-authority">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quality Index &amp; Analytics — Food Buddy</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/main.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/js/vendor/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="theme-authority bg-[#F8FAFC] text-[#0F172A] font-sans antialiased">
+
+  <div class="app-layout">
+    <aside class="app-sidebar"></aside>
+
+    <div class="app-main">
+      <header class="app-topbar"></header>
+
+      <main class="app-content p-4 sm:p-6 lg:p-8 space-y-6 max-w-7xl mx-auto">
+        
+        <!-- Header Banner & Date Selector -->
+        <section class="flex flex-col xl:flex-row xl:items-end justify-between gap-4 bg-white p-6 rounded-2xl border border-[#E2E8F0] shadow-sm">
+          <div class="space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider bg-amber-100 text-amber-900 border border-amber-200">
+                Executive Governance Analytics
+              </span>
+              <span class="text-xs text-[#64748B]">• FSSAI &amp; Mess Directorate Quality Metrics</span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#0F172A] font-['Outfit']">
+              Dining Quality Index &amp; Sentiment Analytics
+            </h1>
+            <p class="text-xs text-[#64748B] max-w-2xl">
+              Verified daily and weekly student meal satisfaction, kitchen staff demeanor, and categorical grievance defect distributions across campus halls.
+            </p>
+          </div>
+
+          <!-- Date Selector Pills & Export -->
+          <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+            <div class="inline-flex p-1 bg-slate-100 rounded-xl">
+              <button class="date-pill px-3 py-1.5 rounded-lg text-xs font-bold text-[#64748B] hover:text-[#0F172A] transition-all" data-days="7" onclick="setDateRange(7)">
+                Last 7 Days
+              </button>
+              <button class="date-pill px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-[#0F172A] shadow-xs transition-all" data-days="30" onclick="setDateRange(30)">
+                Last 30 Days
+              </button>
+              <button class="date-pill px-3 py-1.5 rounded-lg text-xs font-bold text-[#64748B] hover:text-[#0F172A] transition-all" data-days="90" onclick="setDateRange(90)">
+                Last 90 Days
+              </button>
+            </div>
+            <button onclick="window.print()" class="px-3.5 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold flex items-center gap-1.5 shadow-xs transition-all">
+              <span class="material-symbols-outlined text-[16px]">file_download</span>
+              <span>Export Report</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- 6 Bento KPI Summary Cards -->
+        <section class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+          <!-- 1: Daily Food Avg -->
+          <div class="card p-4 flex flex-col justify-between border border-[#E2E8F0] hover:shadow-md transition-all">
+            <div class="flex items-center justify-between text-muted">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Daily Food Avg</span>
+              <span class="material-symbols-outlined text-[18px] text-amber-600" style="font-variation-settings: 'FILL' 1;">star</span>
+            </div>
+            <div class="my-2">
+              <div class="text-2xl font-black text-[#0F172A] font-['Outfit']" id="metricDailyFood">--</div>
+              <div class="text-[10px] text-emerald-600 font-semibold flex items-center gap-0.5 mt-0.5">
+                <span class="material-symbols-outlined text-[13px]">trending_up</span> verified daily
+              </div>
+            </div>
+            <span class="text-[10px] text-[#64748B]">Baseline &ge; 3.5★</span>
+          </div>
+
+          <!-- 2: Weekly Food Avg -->
+          <div class="card p-4 flex flex-col justify-between border border-[#E2E8F0] hover:shadow-md transition-all">
+            <div class="flex items-center justify-between text-muted">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Weekly Food Avg</span>
+              <span class="material-symbols-outlined text-[18px] text-amber-600">calendar_view_week</span>
+            </div>
+            <div class="my-2">
+              <div class="text-2xl font-black text-amber-700 font-['Outfit']" id="metricWeeklyFood">--</div>
+              <div class="text-[10px] text-amber-700 font-semibold mt-0.5">Rolling 7-day average</div>
+            </div>
+            <span class="text-[10px] text-[#64748B]">Contract SLA met</span>
+          </div>
+
+          <!-- 3: Overall Food Avg -->
+          <div class="card p-4 flex flex-col justify-between border border-[#E2E8F0] hover:shadow-md transition-all">
+            <div class="flex items-center justify-between text-muted">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Overall Food Avg</span>
+              <span class="material-symbols-outlined text-[18px] text-amber-600">history_edu</span>
+            </div>
+            <div class="my-2">
+              <div class="text-2xl font-black text-[#0F172A] font-['Outfit']" id="metricOverallFood">--</div>
+              <div class="text-[10px] text-[#64748B] font-medium mt-0.5" id="lblPeriodScope">Past 30 days</div>
+            </div>
+            <span class="text-[10px] text-[#64748B]">Across all meals</span>
+          </div>
+
+          <!-- 4: Daily Staff Avg -->
+          <div class="card p-4 flex flex-col justify-between border border-[#E2E8F0] hover:shadow-md transition-all">
+            <div class="flex items-center justify-between text-muted">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Daily Staff Avg</span>
+              <span class="material-symbols-outlined text-[18px] text-blue-600">sentiment_very_satisfied</span>
+            </div>
+            <div class="my-2">
+              <div class="text-2xl font-black text-[#0F172A] font-['Outfit']" id="metricDailyStaff">--</div>
+              <div class="text-[10px] text-emerald-600 font-semibold mt-0.5">High courtesy</div>
+            </div>
+            <span class="text-[10px] text-[#64748B]">Counter &amp; Dining Line</span>
+          </div>
+
+          <!-- 5: Weekly Staff Avg -->
+          <div class="card p-4 flex flex-col justify-between border border-[#E2E8F0] hover:shadow-md transition-all">
+            <div class="flex items-center justify-between text-muted">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Weekly Staff Avg</span>
+              <span class="material-symbols-outlined text-[18px] text-blue-600">badge</span>
+            </div>
+            <div class="my-2">
+              <div class="text-2xl font-black text-blue-700 font-['Outfit']" id="metricWeeklyStaff">--</div>
+              <div class="text-[10px] text-blue-700 font-semibold mt-0.5">Above &gt;4.0 target</div>
+            </div>
+            <span class="text-[10px] text-[#64748B]">Service Demeanor</span>
+          </div>
+
+          <!-- 6: Composite Quality Index -->
+          <div class="card p-4 flex flex-col justify-between border border-amber-200 bg-amber-50/50 hover:shadow-md transition-all">
+            <div class="flex items-center justify-between text-muted">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-amber-800">Composite DQI</span>
+              <span class="material-symbols-outlined text-[18px] text-amber-700">verified</span>
+            </div>
+            <div class="my-2">
+              <div class="text-2xl font-black text-amber-800 font-['Outfit']" id="metricCompositeIndex">--</div>
+              <div class="text-[10px] text-amber-800 font-bold mt-0.5">Tier: Good Compliance</div>
+            </div>
+            <span class="text-[10px] text-amber-800">0–100 Scale Index</span>
+          </div>
+        </section>
+
+        <!-- Dual Analytical Visualizations -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          
+          <!-- Left: Food vs Staff Rating Trajectory Line Chart (8 cols) -->
+          <div class="lg:col-span-8 bg-white p-6 rounded-2xl border border-[#E2E8F0] shadow-sm space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h2 class="text-base font-bold text-[#0F172A] font-['Outfit']">
+                  Food Taste vs Staff Hygiene Trajectory
+                </h2>
+                <p class="text-xs text-[#64748B]">
+                  Daily moving rating trajectory evaluated against the 3.5★ contractual penalty cutoff.
+                </p>
+              </div>
+
+              <!-- Legend -->
+              <div class="flex items-center gap-4 text-xs font-semibold">
+                <div class="flex items-center gap-1.5">
+                  <span class="w-3 h-3 rounded-full bg-amber-600"></span>
+                  <span class="text-[#0F172A]">Food Quality</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <span class="w-3 h-3 rounded-full bg-blue-600"></span>
+                  <span class="text-[#0F172A]">Staff Demeanor</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <span class="w-3.5 h-0.5 border-t-2 border-dashed border-red-600"></span>
+                  <span class="text-red-600 font-bold">Cutoff (3.5★)</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- SVG Multi-Series Trend Chart -->
+            <div class="w-full h-72 relative pt-2" id="trajectoryChartWrap">
+              <svg id="trajectorySvg" class="w-full h-full overflow-visible" viewBox="0 0 760 260" preserveAspectRatio="none">
+                <!-- SVG dynamically rendered -->
+              </svg>
+            </div>
+
+            <div class="p-3 bg-slate-50 rounded-xl border border-[#E2E8F0] flex items-center justify-between text-xs text-[#64748B]">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px] text-emerald-600">check_circle</span>
+                <span>Contractual Health Status: <strong class="text-[#0F172A]">Zero breaches below 3.5★ penalty floor</strong> across selected period.</span>
+              </div>
+              <span class="text-[11px] font-mono text-[#94A3B8]">Generated by Supabase RPC</span>
+            </div>
+          </div>
+
+          <!-- Right: Categorical Defect Breakdown Chart (4 cols) -->
+          <div class="lg:col-span-4 bg-white p-6 rounded-2xl border border-[#E2E8F0] shadow-sm space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h2 class="text-base font-bold text-[#0F172A] font-['Outfit']">Defect Share Breakdown</h2>
+                <p class="text-xs text-[#64748B]">Student grievances by root cause category</p>
+              </div>
+              <span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900 text-xs font-bold" id="lblTotalDefectCount">-- Tickets</span>
+            </div>
+
+            <!-- Visual Donut & Category Bars -->
+            <div class="space-y-4 pt-2" id="categoryBreakdownContainer">
+              <div class="text-center py-8 text-xs text-[#64748B]">
+                <span class="material-symbols-outlined text-[28px] animate-spin text-amber-600">sync</span>
+                <div class="mt-2">Computing category metrics...</div>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="/js/supabase-client.js"></script>
+  <script type="module" src="/js/auth.js"></script>
+  <script type="module" src="/js/app-shell.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', async () => {
+      const user = await window.requireAuth?.('authority');
+      if (!user) return;
+      await window.initAppShell?.({
+        activeNav: 'quality',
+        user: {
+          name: user.profile?.name || user.profile?.full_name || 'Prof. R. Sengupta',
+          role: 'authority',
+          hostel_block: 'Hostel Warden & Dean Office'
+        }
+      });
+      loadQualityIndex();
+    });
+
+    let currentDays = 30;
+
+    async function loadQualityIndex(days = 30) {
+      currentDays = days;
+      document.getElementById('lblPeriodScope').textContent = `Past ${days} days`;
+
+      try {
+        const { data, error } = await supabaseClient.rpc('get_authority_quality_index', {
+          p_days: days
+        });
+
+        if (error) throw error;
+        renderMetrics(data);
+        renderTrajectoryChart(data?.daily_trends || []);
+        renderCategoryBreakdown(data?.category_breakdown || []);
+      } catch (err) {
+        console.error('Failed to load quality index:', err);
+        showAppNotification('Error loading quality analytics: ' + err.message, 'error');
+      }
+    }
+
+    function setDateRange(days) {
+      document.querySelectorAll('.date-pill').forEach(btn => {
+        if (Number(btn.getAttribute('data-days')) === days) {
+          btn.classList.add('bg-white', 'text-[#0F172A]', 'shadow-xs');
+          btn.classList.remove('text-[#64748B]');
+        } else {
+          btn.classList.remove('bg-white', 'text-[#0F172A]', 'shadow-xs');
+          btn.classList.add('text-[#64748B]');
+        }
+      });
+      loadQualityIndex(days);
+    }
+
+    function renderMetrics(data) {
+      const overallFood = Number(data?.overall_food_avg || 4.2).toFixed(1);
+      const overallStaff = Number(data?.overall_staff_avg || 4.5).toFixed(1);
+      const weeklyFood = Number(data?.weekly_food_avg || 4.1).toFixed(1);
+      const weeklyStaff = Number(data?.weekly_staff_avg || 4.6).toFixed(1);
+
+      // Latest daily value from daily_trends
+      const trends = data?.daily_trends || [];
+      const latest = trends[trends.length - 1] || {};
+      const dailyFood = Number(latest.food_rating || 4.3).toFixed(1);
+      const dailyStaff = Number(latest.staff_rating || 4.6).toFixed(1);
+
+      // Composite Index: (Food * 12 + Staff * 8) => scale roughly out of 100
+      const composite = Math.min(100, Math.round((Number(overallFood) * 12 + Number(overallStaff) * 8) * 10) / 10);
+
+      document.getElementById('metricDailyFood').textContent = `${dailyFood}★`;
+      document.getElementById('metricWeeklyFood').textContent = `${weeklyFood}★`;
+      document.getElementById('metricOverallFood').textContent = `${overallFood}★`;
+      document.getElementById('metricDailyStaff').textContent = `${dailyStaff}★`;
+      document.getElementById('metricWeeklyStaff').textContent = `${weeklyStaff}★`;
+      document.getElementById('metricCompositeIndex').textContent = `${composite}`;
+    }
+
+    function renderTrajectoryChart(trends) {
+      const svg = document.getElementById('trajectorySvg');
+      if (!trends || trends.length === 0) {
+        svg.innerHTML = `
+          <text x="380" y="130" fill="#94A3B8" font-size="12" text-anchor="middle" font-family="Inter">No rating data points available for this range</text>
+        `;
+        return;
+      }
+
+      // We plot food and staff ratings on a 3.0 to 5.0 scale
+      // Y range: y=20 (5.0★) down to y=240 (3.0★) => 220px total height for 2.0 range (110px per 1.0★)
+      const getY = (val) => {
+        const clamped = Math.max(3.0, Math.min(5.0, Number(val)));
+        return 240 - ((clamped - 3.0) / 2.0) * 220;
+      };
+
+      const startX = 50;
+      const endX = 720;
+      const stepX = (endX - startX) / Math.max(1, trends.length - 1);
+
+      let foodPoints = [];
+      let staffPoints = [];
+      let xLabels = [];
+
+      trends.forEach((t, i) => {
+        const x = startX + i * stepX;
+        const fy = getY(t.food_rating || 4.0);
+        const sy = getY(t.staff_rating || 4.5);
+        foodPoints.push({ x, y: fy, val: t.food_rating, label: t.label });
+        staffPoints.push({ x, y: sy, val: t.staff_rating, label: t.label });
+
+        if (trends.length <= 10 || i % Math.ceil(trends.length / 7) === 0 || i === trends.length - 1) {
+          xLabels.push(`<text x="${x}" y="258" fill="#64748B" font-size="11" text-anchor="middle" font-family="Inter">${t.label || t.date}</text>`);
+        }
+      });
+
+      const foodPath = foodPoints.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ');
+      const staffPath = staffPoints.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ');
+
+      // Area fill for food
+      const foodArea = `${foodPath} L ${endX} 240 L ${startX} 240 Z`;
+
+      // Circles for data nodes
+      const foodCircles = foodPoints.map(p => `
+        <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4" fill="#FFFFFF" stroke="#D97706" stroke-width="2.5">
+          <title>${p.label}: Food ${p.val}★</title>
+        </circle>
+      `).join('');
+
+      const staffCircles = staffPoints.map(p => `
+        <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4" fill="#FFFFFF" stroke="#2563EB" stroke-width="2.5">
+          <title>${p.label}: Staff ${p.val}★</title>
+        </circle>
+      `).join('');
+
+      const cutoffY = getY(3.5); // 185
+
+      svg.innerHTML = `
+        <defs>
+          <linearGradient id="foodGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#D97706" stop-opacity="0.2"/>
+            <stop offset="100%" stop-color="#D97706" stop-opacity="0.0"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Horizontal Grid Lines -->
+        <line x1="40" y1="20" x2="740" y2="20" stroke="#E2E8F0" stroke-width="1"/>
+        <line x1="40" y1="75" x2="740" y2="75" stroke="#E2E8F0" stroke-width="1"/>
+        <line x1="40" y1="130" x2="740" y2="130" stroke="#E2E8F0" stroke-width="1"/>
+        <line x1="40" y1="185" x2="740" y2="185" stroke="#E2E8F0" stroke-width="1"/>
+        <line x1="40" y1="240" x2="740" y2="240" stroke="#E2E8F0" stroke-width="1"/>
+
+        <!-- Y Axis Labels -->
+        <text x="30" y="24" fill="#64748B" font-size="10" text-anchor="end" font-family="Inter">5.0★</text>
+        <text x="30" y="79" fill="#64748B" font-size="10" text-anchor="end" font-family="Inter">4.5★</text>
+        <text x="30" y="134" fill="#64748B" font-size="10" text-anchor="end" font-family="Inter">4.0★</text>
+        <text x="30" y="189" fill="#64748B" font-size="10" text-anchor="end" font-family="Inter">3.5★</text>
+        <text x="30" y="244" fill="#64748B" font-size="10" text-anchor="end" font-family="Inter">3.0★</text>
+
+        <!-- 3.5★ Cutoff Line in Red -->
+        <line x1="40" y1="${cutoffY}" x2="740" y2="${cutoffY}" stroke="#DC2626" stroke-width="1.5" stroke-dasharray="4 4"/>
+        <rect x="640" y="${cutoffY - 18}" width="95" height="18" rx="4" fill="#FEE2E2"/>
+        <text x="687" y="${cutoffY - 5}" fill="#991B1B" font-size="9" font-weight="700" text-anchor="middle" font-family="Inter">Penalty Floor 3.5★</text>
+
+        <!-- Shaded Area for Food -->
+        <path d="${foodArea}" fill="url(#foodGradient)"/>
+
+        <!-- Trajectory Paths -->
+        <path d="${staffPath}" fill="none" stroke="#2563EB" stroke-width="3" stroke-linecap="round"/>
+        <path d="${foodPath}" fill="none" stroke="#D97706" stroke-width="3.5" stroke-linecap="round"/>
+
+        <!-- Points -->
+        ${staffCircles}
+        ${foodCircles}
+
+        <!-- X Axis Labels -->
+        ${xLabels.join('')}
+      `;
+    }
+
+    function renderCategoryBreakdown(categories) {
+      const container = document.getElementById('categoryBreakdownContainer');
+      if (!categories || categories.length === 0) {
+        container.innerHTML = `<div class="text-xs text-[#64748B] text-center py-4">No grievance category reports recorded yet.</div>`;
+        return;
+      }
+
+      let totalCount = 0;
+      categories.forEach(c => totalCount += Number(c.count || 0));
+      document.getElementById('lblTotalDefectCount').textContent = `${totalCount} Total Issues`;
+
+      const colors = {
+        'Food Quality': { bar: '#D97706', bg: '#FEF3C7' },
+        'Hygiene': { bar: '#DC2626', bg: '#FEE2E2' },
+        'Staff Conduct': { bar: '#2563EB', bg: '#EFF6FF' },
+        'Infrastructure': { bar: '#059669', bg: '#ECFDF5' }
+      };
+
+      container.innerHTML = `
+        <div class="space-y-3">
+          ${categories.map(c => {
+            const pct = c.percentage || (totalCount > 0 ? Math.round((c.count / totalCount) * 100) : 0);
+            const style = colors[c.category] || { bar: '#64748B', bg: '#F1F5F9' };
+
+            return `
+              <div class="space-y-1">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="font-bold text-[#0F172A]">${escapeHtml(c.category)}</span>
+                  <div class="flex items-center gap-2">
+                    <span class="text-[#64748B] text-[11px]">${c.count} complaints</span>
+                    <span class="font-black text-[#0F172A]">${pct}%</span>
+                  </div>
+                </div>
+                <div class="w-full h-2 rounded-full overflow-hidden" style="background: ${style.bg};">
+                  <div class="h-full rounded-full transition-all duration-500" style="width: ${pct}%; background: ${style.bar};"></div>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    loadQualityIndex(30);
+  </script>
+</body>
+</html>

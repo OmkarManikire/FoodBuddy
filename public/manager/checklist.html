@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pre-Meal Quality Checklist — Food Buddy (Mess Manager)</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  
+  <!-- Supabase JS -->
+  <script src="/js/vendor/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <link rel="stylesheet" href="/css/main.css" />
+  <script src="/js/supabase-client.js"></script>
+  <script type="module" src="/js/auth.js"></script>
+  <script type="module" src="/js/app-shell.js"></script>
+
+  <style>
+    /* Checklist Custom Card & Inputs */
+    .check-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 20px;
+    }
+    .check-card-header {
+      padding: 16px 20px;
+      background: #F8FAFC;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .check-item-row {
+      padding: 18px 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      border-bottom: 1px solid #F1F5F9;
+      transition: background 0.15s ease;
+    }
+    .check-item-row:hover {
+      background: #F8FAFC;
+    }
+    .check-item-row:last-child {
+      border-bottom: none;
+    }
+
+    .custom-checkbox {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      border: 2px solid #CBD5E1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background: #FFFFFF;
+      flex-shrink: 0;
+      transition: all 0.15s ease;
+      margin-top: 2px;
+    }
+    .custom-checkbox.checked {
+      background: #2563EB;
+      border-color: #2563EB;
+      color: #FFFFFF;
+    }
+
+    /* Past Checklist Table */
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 680px;
+    }
+    .history-table th {
+      background: #F8FAFC;
+      color: #475569;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+      text-align: left;
+    }
+    .history-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #F1F5F9;
+      font-size: 13px;
+      color: var(--text-main);
+    }
+  </style>
+</head>
+<body class="theme-manager">
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="app-sidebar"></aside>
+
+    <!-- Main Content Area -->
+    <div class="app-main">
+      <!-- Topbar -->
+      <header class="app-topbar"></header>
+
+      <!-- Page Content -->
+      <main class="content-container">
+      
+      <!-- Page Header -->
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+            <span class="badge" style="background: #EFF6FF; color: #2563EB; font-weight: 700; font-size: 12px; padding: 4px 10px; border-radius: 999px;">
+              <span class="material-symbols-outlined" style="font-size: 14px; vertical-align: middle;">fact_check</span>
+              FSSAI Quality Assurance
+            </span>
+            <span style="font-size: 13px; color: var(--text-muted);">• Mandatory Pre-Service Verification</span>
+          </div>
+          <h1 style="font-size: 24px; font-weight: 800; color: var(--text-main); margin: 0;">Pre-Meal Quality Checklist</h1>
+          <p style="font-size: 14px; color: var(--text-muted); margin: 4px 0 0 0;">
+            Inspect food taste, thermal levels, hygiene standards, and roti softness before unlocking the dining gates.
+          </p>
+        </div>
+
+        <!-- Shift & Date Selector -->
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <input type="date" id="checklistDate" class="input-field" style="font-size: 13px; padding: 7px 12px;" />
+          <select id="checklistSlot" class="input-field" style="font-size: 13px; padding: 7px 12px; font-weight: 600;">
+            <option value="breakfast">Breakfast</option>
+            <option value="lunch" selected>Lunch</option>
+            <option value="snacks">Snacks & Tea</option>
+            <option value="dinner">Dinner</option>
+          </select>
+          <button id="loadChecklistBtn" class="btn btn-secondary" style="font-size: 13px; padding: 8px 14px;">
+            <span class="material-symbols-outlined" style="font-size: 16px;">refresh</span>
+            Load Slot
+          </button>
+        </div>
+      </div>
+
+      <!-- Active Session Status Alert Bar -->
+      <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-left: 6px solid #2563EB; border-radius: 14px; padding: 18px 24px; box-shadow: var(--shadow-sm); margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <div style="width: 44px; height: 44px; border-radius: 10px; background: #EFF6FF; color: #2563EB; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <span class="material-symbols-outlined" style="font-size: 24px;">lock_clock</span>
+          </div>
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <h3 id="statusAlertTitle" style="font-size: 16px; font-weight: 700; color: var(--text-main); margin: 0;">
+                Inspection Slot: Lunch Service
+              </h3>
+              <span id="signoffBadge" class="badge" style="background: #FEF3C7; color: #92400E; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px;">
+                Pending Sign-Off
+              </span>
+            </div>
+            <p id="statusAlertDesc" style="font-size: 13px; color: var(--text-muted); margin: 3px 0 0 0;">
+              All 4 core quality checks must be marked verified prior to digital head cook authentication.
+            </p>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 12px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 8px 16px;">
+          <div style="text-align: right;">
+            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Check Progress</div>
+            <div id="checkProgressText" style="font-size: 16px; font-weight: 800; color: #2563EB;">0 / 4 Items</div>
+          </div>
+          <span class="material-symbols-outlined" style="color: #2563EB; font-size: 24px;">checklist</span>
+        </div>
+      </div>
+
+      <!-- Main Inspection Checklist Grid -->
+      <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
+        
+        <!-- Checklist Group -->
+        <div class="check-card">
+          <div class="check-card-header">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="material-symbols-outlined" style="color: #2563EB; font-size: 20px;">restaurant</span>
+              <h2 style="font-size: 15px; font-weight: 700; color: var(--text-main); margin: 0;">Core Kitchen Compliance Criteria</h2>
+            </div>
+            <span style="font-size: 12px; color: var(--text-muted);">Required for Gate Authorization</span>
+          </div>
+
+          <div>
+            <!-- Item 1: Salt & Seasoning -->
+            <div class="check-item-row">
+              <div class="custom-checkbox" id="chk_seasoning" onclick="toggleCheck('seasoning')">
+                <span class="material-symbols-outlined" style="font-size: 16px; font-weight: bold; display: none;">check</span>
+              </div>
+              <div style="flex: 1;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+                  <strong style="font-size: 14px; color: var(--text-main);">1. Salt & Seasoning Tasted by Head Cook</strong>
+                  <span class="badge" style="background: #F1F5F9; color: #475569; font-size: 11px;">Sensory Check</span>
+                </div>
+                <p style="font-size: 13px; color: var(--text-muted); margin: 0;">
+                  Head cook tasted dal, curry, and vegetable sides. Salt balance verified, spices non-pungent, and oiliness within limits.
+                </p>
+              </div>
+            </div>
+
+            <!-- Item 2: Temperature Checked -->
+            <div class="check-item-row">
+              <div class="custom-checkbox" id="chk_temperature" onclick="toggleCheck('temperature')">
+                <span class="material-symbols-outlined" style="font-size: 16px; font-weight: bold; display: none;">check</span>
+              </div>
+              <div style="flex: 1;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+                  <strong style="font-size: 14px; color: var(--text-main);">2. Food Serving Temperature Checked</strong>
+                  <span class="badge" style="background: #F1F5F9; color: #475569; font-size: 11px;">Probe Thermal Check</span>
+                </div>
+                <p style="font-size: 13px; color: var(--text-muted); margin: 0;">
+                  Calibrated food thermometer reads hot gravies & rice &gt;65°C and cold raita/curd &lt;8°C in warming wells.
+                </p>
+              </div>
+            </div>
+
+            <!-- Item 3: Hygiene Checked -->
+            <div class="check-item-row">
+              <div class="custom-checkbox" id="chk_hygiene" onclick="toggleCheck('hygiene')">
+                <span class="material-symbols-outlined" style="font-size: 16px; font-weight: bold; display: none;">check</span>
+              </div>
+              <div style="flex: 1;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+                  <strong style="font-size: 14px; color: var(--text-main);">3. Kitchen & Counter Hygiene Checked</strong>
+                  <span class="badge" style="background: #F1F5F9; color: #475569; font-size: 11px;">Sanitation</span>
+                </div>
+                <p style="font-size: 13px; color: var(--text-muted); margin: 0;">
+                  Serving crew wearing headnets, aprons, and gloves. Serving counters sanitized, sneeze guards wiped clean, clean plates dry.
+                </p>
+              </div>
+            </div>
+
+            <!-- Item 4: Rotis not soggy -->
+            <div class="check-item-row">
+              <div class="custom-checkbox" id="chk_rotis" onclick="toggleCheck('rotis')">
+                <span class="material-symbols-outlined" style="font-size: 16px; font-weight: bold; display: none;">check</span>
+              </div>
+              <div style="flex: 1;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+                  <strong style="font-size: 14px; color: var(--text-main);">4. Rotis / Phulkas Fresh & Not Soggy</strong>
+                  <span class="badge" style="background: #F1F5F9; color: #475569; font-size: 11px;">Bakery Quality</span>
+                </div>
+                <p style="font-size: 13px; color: var(--text-muted); margin: 0;">
+                  Chapatis / rotis freshly rolled, soft, fully cooked without charring, and properly insulated in hot cases without condensation sogginess.
+                </p>
+              </div>
+            </div>
+
+            <!-- Item 5: Food Sample Retained -->
+            <div class="check-item-row">
+              <div class="custom-checkbox checked" id="chk_sample" onclick="toggleCheck('sample')">
+                <span class="material-symbols-outlined" style="font-size: 16px; font-weight: bold;">check</span>
+              </div>
+              <div style="flex: 1;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+                  <strong style="font-size: 14px; color: var(--text-main);">5. 200g Retained Food Sample Vaulted</strong>
+                  <span class="badge" style="background: #DCFCE7; color: #166534; font-size: 11px;">Mandatory Storage</span>
+                </div>
+                <p style="font-size: 13px; color: var(--text-muted); margin: 0;">
+                  Representative sample of each item sealed in dated, labeled container and stored in 4°C retention refrigerator for 48 hours.
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Head Cook & Operations Sign-off Authorization Box -->
+        <div class="card" style="padding: 24px; border-left: 6px solid #059669;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="material-symbols-outlined" style="color: #059669; font-size: 22px;">verified</span>
+                <h3 style="font-size: 17px; font-weight: 700; color: var(--text-main); margin: 0;">Sign-off & Gate Authorization</h3>
+              </div>
+              <p style="font-size: 13px; color: var(--text-muted); margin: 2px 0 0 0;">
+                Digital head cook verification stamp saved to Supabase quality_checklists ledger.
+              </p>
+            </div>
+            <div id="alreadySignedNote" style="display: none; align-items: center; gap: 6px; background: #DCFCE7; color: #166534; padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 600;">
+              <span class="material-symbols-outlined" style="font-size: 18px;">task_alt</span>
+              <span id="signedByLabel">Signed by Chef M. Verma</span>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 20px;">
+            <div>
+              <label for="headCookName" style="display: block; font-size: 13px; font-weight: 600; color: var(--text-main); margin-bottom: 6px;">
+                Head Cook Name <span style="color: #DC2626;">*</span>
+              </label>
+              <input type="text" id="headCookName" class="input-field" value="Chef M. Verma (Head Cook)" placeholder="e.g. Chef M. Verma" style="width: 100%;" />
+            </div>
+
+            <div>
+              <label for="checklistNotes" style="display: block; font-size: 13px; font-weight: 600; color: var(--text-main); margin-bottom: 6px;">
+                Kitchen Notes / Inspection Remarks
+              </label>
+              <input type="text" id="checklistNotes" class="input-field" placeholder="e.g. All thermal hot wells nominal at 72°C. Fresh batch ready." style="width: 100%;" />
+            </div>
+          </div>
+
+          <!-- Declaration Checkbox & Button -->
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; padding-top: 16px; border-top: 1px solid var(--border-color);">
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 13px; color: var(--text-main); max-width: 580px;">
+              <input type="checkbox" id="affirmationCheckbox" style="width: 18px; height: 18px; accent-color: #2563EB;" />
+              <span>I confirm that all dishes have been tasted, temperatures recorded, and hygiene checks strictly adhere to campus mess standards.</span>
+            </label>
+
+            <button id="signoffBtn" class="btn btn-primary" style="font-size: 14px; padding: 12px 24px; background: #2563EB; border-color: #2563EB; display: flex; align-items: center; gap: 8px;">
+              <span class="material-symbols-outlined" style="font-size: 20px;">draw</span>
+              <span>Head Cook Sign-off & Authorize</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Past Audits Table -->
+        <div class="card" style="padding: 20px;">
+          <h3 style="font-size: 16px; font-weight: 700; color: var(--text-main); margin: 0 0 16px 0;">Past Inspection Audits</h3>
+          <div style="overflow-x: auto;">
+            <table class="history-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Meal Slot</th>
+                  <th>Head Cook</th>
+                  <th>Items Verified</th>
+                  <th>Signed At</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody id="historyTableBody">
+                <tr>
+                  <td colspan="6" style="text-align: center; padding: 24px; color: var(--text-muted);">
+                    Loading inspection records...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const checkState = {
+      seasoning: false,
+      temperature: false,
+      hygiene: false,
+      rotis: false,
+      sample: true
+    };
+
+    let activeChecklistRow = null;
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      const user = await window.requireAuth?.('mess_manager');
+      if (!user) return;
+      await window.initAppShell?.({
+        activeNav: 'checklist',
+        user: {
+          name: user.profile?.name || user.profile?.full_name || 'Rameshwar Kumar',
+          role: 'mess_manager',
+          hostel_block: 'Mess 1 • Vikramshila & Mithila'
+        }
+      });
+
+      // Default date to today
+      const todayStr = new Date().toISOString().split('T')[0];
+      document.getElementById('checklistDate').value = todayStr;
+
+      setupChecklistEvents();
+      loadChecklistForSlot();
+      loadAuditHistory();
+    });
+
+    function setupChecklistEvents() {
+      document.getElementById('loadChecklistBtn').addEventListener('click', () => {
+        loadChecklistForSlot();
+      });
+
+      document.getElementById('checklistSlot').addEventListener('change', () => {
+        loadChecklistForSlot();
+      });
+
+      document.getElementById('checklistDate').addEventListener('change', () => {
+        loadChecklistForSlot();
+      });
+
+      document.getElementById('signoffBtn').addEventListener('click', handleSignoff);
+    }
+
+    window.toggleCheck = function(key) {
+      checkState[key] = !checkState[key];
+      const box = document.getElementById(`chk_${key}`);
+      const icon = box.querySelector('span');
+
+      if (checkState[key]) {
+        box.classList.add('checked');
+        icon.style.display = 'block';
+      } else {
+        box.classList.remove('checked');
+        icon.style.display = 'none';
+      }
+
+      updateProgress();
+    };
+
+    function updateProgress() {
+      const checkedCount = Object.values(checkState).filter(Boolean).length;
+      document.getElementById('checkProgressText').textContent = `${checkedCount} / 5 Items`;
+    }
+
+    async function loadChecklistForSlot() {
+      const date = document.getElementById('checklistDate').value;
+      const slot = document.getElementById('checklistSlot').value;
+
+      document.getElementById('statusAlertTitle').textContent = `Inspection Slot: ${slot.toUpperCase()} — ${date}`;
+
+      try {
+        const { data, error } = await supabaseClient
+          .from('quality_checklists')
+          .select('*')
+          .eq('date', date)
+          .eq('meal_slot', slot)
+          .maybeSingle();
+
+        if (error) throw error;
+
+        activeChecklistRow = data;
+        const signoffBadge = document.getElementById('signoffBadge');
+        const signedNote = document.getElementById('alreadySignedNote');
+        const signoffBtn = document.getElementById('signoffBtn');
+        const headCookInput = document.getElementById('headCookName');
+        const notesInput = document.getElementById('checklistNotes');
+        const decl = document.getElementById('affirmationCheckbox');
+
+        if (data && data.signed_at) {
+          signoffBadge.textContent = 'Signed & Verified ✓';
+          signoffBadge.style.background = '#DCFCE7';
+          signoffBadge.style.color = '#166534';
+
+          signedNote.style.display = 'flex';
+          document.getElementById('signedByLabel').textContent = `Signed by ${data.head_cook_name || 'Chef'}`;
+
+          signoffBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 20px;">check_circle</span><span>Re-confirm Sign-off</span>';
+          headCookInput.value = data.head_cook_name || 'Chef M. Verma (Head Cook)';
+          notesInput.value = data.notes || '';
+          decl.checked = true;
+
+          // Restore items
+          if (data.items) {
+            Object.keys(checkState).forEach(k => {
+              checkState[k] = !!data.items[k];
+              const box = document.getElementById(`chk_${k}`);
+              if (box) {
+                const icon = box.querySelector('span');
+                if (checkState[k]) {
+                  box.classList.add('checked');
+                  icon.style.display = 'block';
+                } else {
+                  box.classList.remove('checked');
+                  icon.style.display = 'none';
+                }
+              }
+            });
+          }
+        } else {
+          signoffBadge.textContent = 'Pending Sign-Off';
+          signoffBadge.style.background = '#FEF3C7';
+          signoffBadge.style.color = '#92400E';
+
+          signedNote.style.display = 'none';
+          signoffBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 20px;">draw</span><span>Head Cook Sign-off & Authorize</span>';
+          decl.checked = false;
+
+          // Default state
+          checkState.seasoning = false;
+          checkState.temperature = false;
+          checkState.hygiene = false;
+          checkState.rotis = false;
+          checkState.sample = true;
+
+          Object.keys(checkState).forEach(k => {
+            const box = document.getElementById(`chk_${k}`);
+            if (box) {
+              const icon = box.querySelector('span');
+              if (checkState[k]) {
+                box.classList.add('checked');
+                icon.style.display = 'block';
+              } else {
+                box.classList.remove('checked');
+                icon.style.display = 'none';
+              }
+            }
+          });
+        }
+
+        updateProgress();
+      } catch (err) {
+        console.error('Error fetching checklist:', err);
+      }
+    }
+
+    async function handleSignoff() {
+      const date = document.getElementById('checklistDate').value;
+      const slot = document.getElementById('checklistSlot').value;
+      const cookName = document.getElementById('headCookName').value.trim();
+      const notes = document.getElementById('checklistNotes').value.trim();
+      const decl = document.getElementById('affirmationCheckbox');
+      const signoffBtn = document.getElementById('signoffBtn');
+
+      if (!cookName) {
+        showAppNotification('Head Cook name is required for digital sign-off.', 'error');
+        document.getElementById('headCookName').focus();
+        return;
+      }
+
+      if (!decl.checked) {
+        showAppNotification('Please check the affirmation declaration before signing off.', 'error');
+        decl.focus();
+        return;
+      }
+
+      signoffBtn.disabled = true;
+      signoffBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 20px; animation: spin 1s linear infinite;">sync</span> Recording Sign-off...';
+
+      try {
+        const currentUser = (await supabaseClient.auth.getUser())?.data?.user;
+
+        const payload = {
+          date,
+          meal_slot: slot,
+          items: checkState,
+          signed_by: currentUser?.id,
+          signed_at: new Date().toISOString(),
+          head_cook_name: cookName,
+          notes: notes || 'Verified and approved for meal service.'
+        };
+
+        const { error } = await supabaseClient
+          .from('quality_checklists')
+          .upsert([payload], { onConflict: 'date,meal_slot' });
+
+        if (error) throw error;
+
+        showAppNotification(`Quality checklist for ${slot.toUpperCase()} signed off successfully!`, 'success');
+        await loadChecklistForSlot();
+        await loadAuditHistory();
+      } catch (err) {
+        console.error('Sign-off error:', err);
+        showAppNotification(`Sign-off failed: ${err.message}`, 'error');
+      } finally {
+        signoffBtn.disabled = false;
+      }
+    }
+
+    async function loadAuditHistory() {
+      const tbody = document.getElementById('historyTableBody');
+      try {
+        const { data, error } = await supabaseClient
+          .from('quality_checklists')
+          .select('*')
+          .order('date', { ascending: false })
+          .limit(10);
+
+        if (error) throw error;
+
+        if (!data || !data.length) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="6" style="text-align: center; padding: 24px; color: var(--text-muted);">
+                No inspection audits recorded yet.
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        tbody.innerHTML = data.map(row => {
+          const verifiedItems = row.items ? Object.values(row.items).filter(Boolean).length : 0;
+          const signedTime = row.signed_at 
+            ? new Date(row.signed_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+            : '—';
+
+          return `
+            <tr>
+              <td style="font-weight: 600;">${row.date}</td>
+              <td style="text-transform: capitalize; font-weight: 600; color: #2563EB;">${escapeHtml(row.meal_slot)}</td>
+              <td>${escapeHtml(row.head_cook_name || 'Chef')}</td>
+              <td>
+                <span class="badge" style="background: #DCFCE7; color: #166534; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px;">
+                  ${verifiedItems} / 5 Checks Passed
+                </span>
+              </td>
+              <td style="color: var(--text-muted); font-size: 12px;">${signedTime}</td>
+              <td style="font-size: 12px; color: var(--text-muted); max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                ${escapeHtml(row.notes || '—')}
+              </td>
+            </tr>
+          `;
+        }).join('');
+      } catch (err) {
+        console.error('Error fetching audit history:', err);
+        tbody.innerHTML = `<tr><td colspan="6" style="color: #DC2626; text-align: center;">Failed to load audit history.</td></tr>`;
+      }
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+  </script>
+</body>
+</html>

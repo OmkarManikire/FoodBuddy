@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-authority">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Escalated Queue (&gt;48h) — Food Buddy</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/main.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/js/vendor/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    .drawer-overlay {
+      background: rgba(15, 23, 42, 0.5);
+      backdrop-filter: blur(4px);
+    }
+  </style>
+</head>
+<body class="theme-authority bg-[#F8FAFC] text-[#0F172A] font-sans antialiased">
+
+  <div class="app-layout">
+    <aside class="app-sidebar"></aside>
+
+    <div class="app-main">
+      <header class="app-topbar"></header>
+
+      <main class="app-content p-4 sm:p-6 lg:p-8 space-y-6 max-w-7xl mx-auto">
+        
+        <!-- Top Critical SLA Alert Banner -->
+        <div class="rounded-2xl bg-red-50/80 border border-red-200 p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xs">
+          <div class="flex items-center gap-4 min-w-0">
+            <div class="w-11 h-11 rounded-xl bg-red-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+              <span class="material-symbols-outlined text-[24px]">gavel</span>
+            </div>
+            <div class="flex flex-col min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="text-base font-extrabold text-red-950 font-['Outfit']" id="bannerBreachedText">
+                  Critical Grievances Breached 48h Resolution SLA
+                </span>
+                <span class="px-2.5 py-0.5 rounded-full bg-red-600 text-white text-[10px] font-black uppercase tracking-wider">
+                  Immediate Intervention
+                </span>
+              </div>
+              <p class="text-xs text-red-800/80 mt-0.5">
+                Contractor financial deductions and inquiry summons applicable under University Dining Code Clause 14B for unresolved delays.
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <button onclick="runManualEscalationCheck()" class="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-100 text-[#0F172A] border border-red-200 text-xs font-bold shadow-xs flex items-center gap-1.5 transition-all">
+              <span class="material-symbols-outlined text-[16px] text-amber-700">sync</span>
+              <span>Run SLA Check</span>
+            </button>
+            <a href="/authority/audit.html" class="px-3.5 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-xs flex items-center gap-1.5 transition-all">
+              <span class="material-symbols-outlined text-[16px]">verified_user</span>
+              <span>Full Audit Trail</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Header Section & Quick Metrics -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#64748B] mb-1">
+              <span class="text-amber-700">Supervisory Oversight Console</span>
+              <span>•</span>
+              <span class="text-red-600 font-extrabold">Automatic SLA Escalation (&gt;48h)</span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#0F172A] font-['Outfit']">
+              Escalated Grievances Queue
+            </h1>
+            <p class="text-xs text-[#64748B] max-w-2xl mt-1">
+              Complaints unresolved for over 48 hours require Higher Authority oversight. Review assigned kitchen managers, inspect evidence, and issue direct accountability demands.
+            </p>
+          </div>
+
+          <!-- Metrics Ribbon -->
+          <div class="flex items-center gap-4 bg-white p-3 px-5 rounded-2xl border border-[#E2E8F0] shadow-xs self-start md:self-auto">
+            <div class="flex flex-col">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Total Overdue</span>
+              <span class="text-2xl font-black text-red-600 font-['Outfit']" id="metricTotalOverdue">0</span>
+            </div>
+            <div class="w-px h-8 bg-slate-200"></div>
+            <div class="flex flex-col">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Max Delay</span>
+              <span class="text-2xl font-black text-amber-700 font-['Outfit']" id="metricMaxDelay">+0h</span>
+            </div>
+            <div class="w-px h-8 bg-slate-200"></div>
+            <div class="flex flex-col">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">SLA Rule</span>
+              <span class="text-xs font-bold text-slate-800 mt-1">&gt;48h Unresolved</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter Chips Bar -->
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-1.5 p-1 bg-slate-100 rounded-xl overflow-x-auto max-w-full">
+            <button class="cat-chip px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-[#0F172A] shadow-xs transition-all whitespace-nowrap" data-cat="all" onclick="filterCategory('all')">
+              All Breached (<span id="chipAllCount">0</span>)
+            </button>
+            <button class="cat-chip px-3 py-1.5 rounded-lg text-xs font-bold text-[#64748B] hover:text-[#0F172A] transition-all whitespace-nowrap" data-cat="Food Quality" onclick="filterCategory('Food Quality')">
+              Food Quality
+            </button>
+            <button class="cat-chip px-3 py-1.5 rounded-lg text-xs font-bold text-[#64748B] hover:text-[#0F172A] transition-all whitespace-nowrap" data-cat="Hygiene" onclick="filterCategory('Hygiene')">
+              Hygiene &amp; Cleanliness
+            </button>
+            <button class="cat-chip px-3 py-1.5 rounded-lg text-xs font-bold text-[#64748B] hover:text-[#0F172A] transition-all whitespace-nowrap" data-cat="Infrastructure" onclick="filterCategory('Infrastructure')">
+              Infrastructure
+            </button>
+          </div>
+          <div class="flex items-center gap-2 text-xs text-[#64748B]">
+            <span class="w-2 h-2 rounded-full bg-red-600 animate-pulse"></span>
+            <span>Realtime Escalation Sync Active</span>
+          </div>
+        </div>
+
+        <!-- Main Escalated Table (Desktop) / Cards (Mobile) -->
+        <div class="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm overflow-hidden">
+          
+          <!-- Desktop Table -->
+          <div class="hidden md:block overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="bg-[#F8FAFC] text-[#64748B] font-bold uppercase tracking-wider text-[11px] border-b border-[#E2E8F0]">
+                  <th class="py-3.5 px-4">Ticket ID</th>
+                  <th class="py-3.5 px-4">Category</th>
+                  <th class="py-3.5 px-4">Student &amp; Residence</th>
+                  <th class="py-3.5 px-4">SLA Overdue</th>
+                  <th class="py-3.5 px-4">Assigned Manager</th>
+                  <th class="py-3.5 px-4">Kitchen Status</th>
+                  <th class="py-3.5 px-4 text-right">Administrative Action</th>
+                </tr>
+              </thead>
+              <tbody id="escalatedTableBody" class="divide-y divide-[#E2E8F0]">
+                <tr>
+                  <td colspan="7" class="py-12 text-center text-[#64748B]">
+                    <span class="material-symbols-outlined text-[32px] animate-spin text-amber-600">sync</span>
+                    <div class="mt-2 text-xs">Querying escalated complaints...</div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Mobile Cards Container -->
+          <div class="md:hidden divide-y divide-[#E2E8F0]" id="escalatedMobileCards">
+            <div class="p-6 text-center text-xs text-[#64748B]">
+              <span class="material-symbols-outlined text-[28px] animate-spin text-amber-600">sync</span>
+              <div class="mt-2">Loading escalated tickets...</div>
+            </div>
+          </div>
+
+          <!-- Table Footer -->
+          <div class="p-4 bg-[#F8FAFC] border-t border-[#E2E8F0] flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-[#64748B]">
+            <span id="footerCountText">Showing 0 escalated tickets</span>
+            <span class="flex items-center gap-1 font-mono text-[11px]">
+              <span class="material-symbols-outlined text-[14px] text-amber-600">lock_clock</span>
+              Automated trigger threshold: 48h from filing
+            </span>
+          </div>
+        </div>
+
+        <!-- Statutory Penalty Clause Callout Card -->
+        <div class="rounded-2xl bg-white border border-[#E2E8F0] p-6 shadow-xs flex flex-col md:flex-row items-start gap-4">
+          <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[26px]">policy</span>
+          </div>
+          <div class="flex-1">
+            <h3 class="font-bold text-sm text-[#0F172A] font-['Outfit']">
+              Institute Dining Governance • Clause 14B Fiscal Penalties
+            </h3>
+            <p class="text-xs text-[#64748B] mt-1 leading-relaxed">
+              Any meal hygiene, quality, or water service complaint lingering without verified resolution past 48 hours empowers the Warden to levy automatic invoice deductions of up to 5% per billing cycle, summon catering contractors for inquiry, or enact kitchen sanitization orders.
+            </p>
+            <div class="flex items-center gap-4 mt-3 text-xs flex-wrap">
+              <span class="text-amber-800 font-bold flex items-center gap-1">
+                <span class="material-symbols-outlined text-[14px]">check_circle</span> Statutory Powers Active
+              </span>
+              <span class="text-[#64748B] flex items-center gap-1">
+                <span class="material-symbols-outlined text-[14px]">history</span> Direct Decrees Audited in System
+              </span>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Slide-Over Drawer / Bottom Sheet for "Demand Accountability" -->
+  <div id="drawerOverlay" class="fixed inset-0 z-50 drawer-overlay hidden" onclick="closeDrawer()"></div>
+
+  <aside id="demandDrawer" class="fixed top-0 right-0 bottom-0 w-full sm:w-[480px] bg-white z-50 shadow-2xl border-l border-[#E2E8F0] transform translate-x-full transition-transform duration-300 flex flex-col">
+    <!-- Drawer Header -->
+    <div class="p-5 bg-slate-50 border-b border-[#E2E8F0] flex items-start justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-red-600 animate-pulse"></span>
+          <span class="text-[11px] font-black uppercase tracking-wider text-amber-800">Executive Direct Action</span>
+        </div>
+        <h2 class="text-xl font-extrabold text-[#0F172A] tracking-tight font-['Outfit'] mt-1" id="drawerTrackingId">
+          FB-2026-00000
+        </h2>
+      </div>
+      <button onclick="closeDrawer()" class="p-1.5 rounded-lg text-[#94A3B8] hover:text-[#0F172A] hover:bg-slate-200 transition-colors">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <!-- Overdue SLA Banner in Drawer -->
+    <div class="px-5 py-2.5 bg-red-100 text-red-950 flex items-center justify-between border-b border-red-200">
+      <div class="flex items-center gap-1.5 text-xs font-bold">
+        <span class="material-symbols-outlined text-[16px] text-red-700">timer_off</span>
+        <span id="drawerElapsedText">Elapsed: -- Hours</span>
+      </div>
+      <span class="px-2 py-0.5 rounded bg-red-600 text-white text-[10px] font-black uppercase" id="drawerBreachBadge">
+        +0h SLA Breach
+      </span>
+    </div>
+
+    <!-- Drawer Scrollable Body -->
+    <div class="flex-1 overflow-y-auto p-5 space-y-5 text-xs">
+      
+      <!-- Student Grievance Summary Box -->
+      <div class="p-4 rounded-xl bg-slate-50 border border-[#E2E8F0] space-y-3">
+        <div class="flex items-start justify-between gap-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-full bg-amber-100 text-amber-900 flex items-center justify-center font-bold text-xs" id="drawerStudentAvatar">
+              ST
+            </div>
+            <div>
+              <div class="font-bold text-sm text-[#0F172A]" id="drawerStudentName">Student Name</div>
+              <div class="text-[11px] text-[#64748B]" id="drawerStudentDetails">Hostel &amp; Room</div>
+            </div>
+          </div>
+          <span class="text-[11px] text-[#64748B]" id="drawerFiledDate">Oct 24, 2026</span>
+        </div>
+
+        <div>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block mb-1">Reported Grievance:</span>
+          <p class="p-3 rounded-lg bg-white border border-[#E2E8F0] text-sm text-[#0F172A] leading-relaxed" id="drawerDescription">
+            Complaint description goes here...
+          </p>
+        </div>
+
+        <!-- Evidence Attachment (if present) -->
+        <div id="drawerEvidenceBox" class="hidden">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block mb-1">Attached Evidence:</span>
+          <div id="drawerEvidenceImg" class="rounded-lg overflow-hidden border border-[#E2E8F0] max-h-48 bg-black flex items-center justify-center">
+            <!-- Image loaded here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Assigned Manager Activity & History -->
+      <div class="space-y-2">
+        <span class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Assigned Manager Status</span>
+        <div class="p-3.5 rounded-xl bg-slate-50 border border-[#E2E8F0] space-y-2">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-1.5 font-bold text-[#0F172A]">
+              <span class="material-symbols-outlined text-[16px] text-amber-700">badge</span>
+              <span>Mess Manager (Operations Lead)</span>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-900 capitalize" id="drawerKitchenStatus">
+              Under Review
+            </span>
+          </div>
+          <p class="text-xs text-[#64748B] italic" id="drawerManagerLatestNote">
+            No manager resolution note logged. Exceeded 48h mandatory resolution timeframe.
+          </p>
+        </div>
+      </div>
+
+      <!-- Past Accountability Directives on this Ticket -->
+      <div id="drawerExistingCommentsWrap" class="space-y-2 hidden">
+        <span class="text-[10px] font-bold uppercase tracking-wider text-amber-800">Issued Authority Decrees</span>
+        <div class="space-y-2" id="drawerExistingCommentsList">
+          <!-- Comments inserted here -->
+        </div>
+      </div>
+
+      <!-- Demand Accountability Action Section -->
+      <div class="p-4 rounded-xl bg-amber-50/70 border border-amber-200 space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-1.5 font-bold text-sm text-amber-950 font-['Outfit']">
+            <span class="material-symbols-outlined text-[18px] text-amber-700">gavel</span>
+            <span>Issue Direct Accountability Mandate</span>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-amber-200 text-amber-900 text-[10px] font-black uppercase">
+            Warden Power
+          </span>
+        </div>
+
+        <!-- Fast Presets Chips -->
+        <div>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block mb-1.5">Action Presets:</span>
+          <div class="flex flex-wrap gap-1.5">
+            <button type="button" onclick="insertPreset('Clause 14B Deduction: Levy mandatory 5% invoice deduction from caterer due to persistent unaddressed kitchen grievance.')" class="px-2.5 py-1 rounded-lg bg-white border border-amber-200 hover:bg-amber-100 text-[#0F172A] text-[11px] font-semibold transition-all shadow-2xs">
+              Deduct Payment (Clause 14B)
+            </button>
+            <button type="button" onclick="insertPreset('Contractor Lead is summoned to Directorate Office Room 102 tomorrow at 9:00 AM sharp with supplier manifests and compliance logs.')" class="px-2.5 py-1 rounded-lg bg-white border border-amber-200 hover:bg-amber-100 text-[#0F172A] text-[11px] font-semibold transition-all shadow-2xs">
+              Summon Contractor
+            </button>
+            <button type="button" onclick="insertPreset('Mandatory deep sanitization and kitchen inspection order before dinner service today; submission of photo proof certified by Warden office.')" class="px-2.5 py-1 rounded-lg bg-white border border-amber-200 hover:bg-amber-100 text-[#0F172A] text-[11px] font-semibold transition-all shadow-2xs">
+              Kitchen Sanitization Order
+            </button>
+          </div>
+        </div>
+
+        <!-- Directive Comment Box -->
+        <div class="space-y-1">
+          <label class="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block" for="drawerCommentInput">
+            Warden's Official Directive to Manager &amp; Caterer:
+          </label>
+          <textarea 
+            id="drawerCommentInput" 
+            rows="3" 
+            class="w-full p-3 rounded-xl border border-amber-300 bg-white text-xs text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-amber-500/30 leading-relaxed"
+            placeholder="Type binding administrative directive or choose a preset above..."
+          ></textarea>
+        </div>
+
+        <!-- Submit Button -->
+        <button 
+          type="button" 
+          id="btnSubmitDemand"
+          onclick="submitAccountabilityDemand()"
+          class="w-full py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 active:scale-[0.98]"
+        >
+          <span class="material-symbols-outlined text-[16px]">send</span>
+          <span>Dispatch Order &amp; Enforce</span>
+        </button>
+      </div>
+
+    </div>
+  </aside>
+
+  <script src="/js/supabase-client.js"></script>
+  <script type="module" src="/js/auth.js"></script>
+  <script type="module" src="/js/app-shell.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', async () => {
+      const user = await window.requireAuth?.('authority');
+      if (!user) return;
+      await window.initAppShell?.({
+        activeNav: 'escalated',
+        user: {
+          name: user.profile?.name || user.profile?.full_name || 'Prof. R. Sengupta',
+          role: 'authority',
+          hostel_block: 'Hostel Warden & Dean Office'
+        }
+      });
+      loadEscalatedQueue();
+    });
+
+    let escalatedComplaints = [];
+    let currentCategory = 'all';
+    let selectedComplaint = null;
+
+    async function loadEscalatedQueue() {
+      try {
+        // Query escalated complaints that are not resolved or rejected
+        const { data, error } = await supabaseClient
+          .from('complaints')
+          .select(`
+            *,
+            profiles:student_id(name, room_number, hostel_name, roll_number)
+          `)
+          .eq('escalated', true)
+          .neq('status', 'resolved')
+          .neq('status', 'rejected')
+          .order('created_at', { ascending: true });
+
+        if (error) throw error;
+        escalatedComplaints = data || [];
+        updateMetrics();
+        filterCategory(currentCategory);
+      } catch (err) {
+        console.error('Failed to load escalated queue:', err);
+        showAppNotification('Error loading escalated complaints: ' + err.message, 'error');
+      }
+    }
+
+    function updateMetrics() {
+      const count = escalatedComplaints.length;
+      document.getElementById('metricTotalOverdue').textContent = count;
+      document.getElementById('chipAllCount').textContent = count;
+      document.getElementById('bannerBreachedText').textContent = `${count} Critical Grievance${count === 1 ? '' : 's'} Breached 48h SLA`;
+
+      let maxHours = 0;
+      const now = new Date();
+      escalatedComplaints.forEach(c => {
+        const diffHours = Math.floor((now - new Date(c.created_at)) / (1000 * 60 * 60));
+        const overdue = Math.max(0, diffHours - 48);
+        if (overdue > maxHours) maxHours = overdue;
+      });
+
+      document.getElementById('metricMaxDelay').textContent = `+${maxHours}h`;
+    }
+
+    function filterCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.cat-chip').forEach(btn => {
+        if (btn.getAttribute('data-cat') === cat) {
+          btn.classList.add('bg-white', 'text-[#0F172A]', 'shadow-xs');
+          btn.classList.remove('text-[#64748B]');
+        } else {
+          btn.classList.remove('bg-white', 'text-[#0F172A]', 'shadow-xs');
+          btn.classList.add('text-[#64748B]');
+        }
+      });
+
+      let filtered = escalatedComplaints;
+      if (cat !== 'all') {
+        filtered = filtered.filter(c => c.category === cat);
+      }
+
+      renderDesktopTable(filtered);
+      renderMobileCards(filtered);
+      document.getElementById('footerCountText').textContent = `Showing ${filtered.length} of ${escalatedComplaints.length} SLA breached tickets`;
+    }
+
+    function renderDesktopTable(list) {
+      const tbody = document.getElementById('escalatedTableBody');
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="py-12 text-center text-[#64748B]">
+              <span class="material-symbols-outlined text-[36px] text-emerald-600">task_alt</span>
+              <div class="mt-2 text-xs font-semibold text-[#0F172A]">Zero SLA Breaches in this category</div>
+              <div class="text-[11px] text-[#64748B]">All grievances are within the standard 48-hour manager triage window.</div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      const now = new Date();
+
+      tbody.innerHTML = list.map(c => {
+        const student = c.profiles || {};
+        const filedDate = new Date(c.created_at);
+        const elapsedHours = Math.floor((now - filedDate) / (1000 * 60 * 60));
+        const overdueHours = Math.max(0, elapsedHours - 48);
+
+        return `
+          <tr class="hover:bg-amber-50/40 transition-colors cursor-pointer" onclick='openDrawer(${JSON.stringify(c).replace(/'/g, "&#39;")})'>
+            <td class="py-3.5 px-4 font-mono font-bold text-amber-900">
+              <div class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-red-600"></span>
+                <span>${escapeHtml(c.tracking_id)}</span>
+              </div>
+            </td>
+            <td class="py-3.5 px-4">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-200">
+                ${escapeHtml(c.category)}
+              </span>
+            </td>
+            <td class="py-3.5 px-4">
+              <div class="font-bold text-[#0F172A]">${escapeHtml(student.name || 'Resident')}</div>
+              <div class="text-[11px] text-[#64748B]">${escapeHtml(student.hostel_name || 'Vikramshila')} • ${escapeHtml(student.room_number || '')}</div>
+            </td>
+            <td class="py-3.5 px-4">
+              <div class="flex flex-col">
+                <span class="font-extrabold text-red-600">${elapsedHours}h Elapsed</span>
+                <span class="px-1.5 py-0.2 rounded bg-red-100 text-red-700 text-[10px] font-black w-fit mt-0.5">
+                  +${overdueHours}h SLA breach
+                </span>
+              </div>
+            </td>
+            <td class="py-3.5 px-4">
+              <div class="font-semibold text-[#0F172A]">Operations Lead</div>
+              <div class="text-[11px] text-[#64748B]">Mess Manager</div>
+            </td>
+            <td class="py-3.5 px-4">
+              <span class="badge ${c.status === 'in_progress' ? 'badge-progress' : 'badge-pending'} capitalize">
+                ${escapeHtml(c.status.replace('_', ' '))}
+              </span>
+            </td>
+            <td class="py-3.5 px-4 text-right" onclick="event.stopPropagation()">
+              <button 
+                onclick='openDrawer(${JSON.stringify(c).replace(/'/g, "&#39;")})'
+                class="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 shadow-xs flex items-center gap-1 ml-auto transition-all"
+              >
+                <span class="material-symbols-outlined text-[15px]">priority_high</span>
+                <span>Demand Accountability</span>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderMobileCards(list) {
+      const container = document.getElementById('escalatedMobileCards');
+      if (!list || list.length === 0) {
+        container.innerHTML = `
+          <div class="p-8 text-center text-xs text-[#64748B]">
+            <span class="material-symbols-outlined text-[32px] text-emerald-600">task_alt</span>
+            <div class="mt-2 font-bold text-[#0F172A]">Queue Clear</div>
+            <div class="text-[11px]">No unresolved complaints older than 48h.</div>
+          </div>
+        `;
+        return;
+      }
+
+      const now = new Date();
+
+      container.innerHTML = list.map(c => {
+        const student = c.profiles || {};
+        const elapsedHours = Math.floor((now - new Date(c.created_at)) / (1000 * 60 * 60));
+        const overdueHours = Math.max(0, elapsedHours - 48);
+
+        return `
+          <div class="p-4 space-y-3 relative overflow-hidden" onclick='openDrawer(${JSON.stringify(c).replace(/'/g, "&#39;")})'>
+            <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-red-600"></div>
+            
+            <div class="flex items-start justify-between gap-2 pl-1">
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span class="font-mono text-xs font-black text-amber-900">${escapeHtml(c.tracking_id)}</span>
+                  <span class="text-[11px] text-[#64748B]">• ${escapeHtml(c.category)}</span>
+                </div>
+                <h3 class="font-bold text-sm text-[#0F172A] mt-0.5 line-clamp-2">${escapeHtml(c.description)}</h3>
+              </div>
+              <span class="px-2 py-0.5 rounded bg-red-600 text-white text-[10px] font-black shrink-0">
+                +${overdueHours}h Overdue
+              </span>
+            </div>
+
+            <div class="flex items-center justify-between text-xs text-[#64748B] bg-slate-50 p-2.5 rounded-xl pl-2">
+              <div>
+                <span class="font-semibold text-[#0F172A]">${escapeHtml(student.name || 'Resident')}</span>
+                <span class="text-[11px]">(${escapeHtml(student.hostel_name || 'Vikramshila')})</span>
+              </div>
+              <span class="badge ${c.status === 'in_progress' ? 'badge-progress' : 'badge-pending'} capitalize">
+                ${escapeHtml(c.status.replace('_', ' '))}
+              </span>
+            </div>
+
+            <button 
+              onclick='event.stopPropagation(); openDrawer(${JSON.stringify(c).replace(/'/g, "&#39;")});'
+              class="w-full py-2 rounded-xl text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 shadow-xs flex items-center justify-center gap-1.5"
+            >
+              <span class="material-symbols-outlined text-[16px]">gavel</span>
+              <span>Demand Accountability</span>
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Drawer Logic
+    async function openDrawer(complaint) {
+      selectedComplaint = complaint;
+      const student = complaint.profiles || {};
+      const now = new Date();
+      const elapsedHours = Math.floor((now - new Date(complaint.created_at)) / (1000 * 60 * 60));
+      const overdueHours = Math.max(0, elapsedHours - 48);
+
+      document.getElementById('drawerTrackingId').textContent = complaint.tracking_id;
+      document.getElementById('drawerElapsedText').textContent = `Elapsed: ${elapsedHours} Hours`;
+      document.getElementById('drawerBreachBadge').textContent = `+${overdueHours}h SLA Breach`;
+
+      const initials = (student.name || 'ST').split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
+      document.getElementById('drawerStudentAvatar').textContent = initials;
+      document.getElementById('drawerStudentName').textContent = student.name || 'Hostel Resident';
+      document.getElementById('drawerStudentDetails').textContent = `${student.hostel_name || 'Hostel'} • Room ${student.room_number || 'N/A'}`;
+      document.getElementById('drawerFiledDate').textContent = new Date(complaint.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+      document.getElementById('drawerDescription').textContent = complaint.description;
+      document.getElementById('drawerKitchenStatus').textContent = (complaint.status || 'submitted').replace('_', ' ');
+
+      // Image evidence
+      const evidenceBox = document.getElementById('drawerEvidenceBox');
+      const evidenceImg = document.getElementById('drawerEvidenceImg');
+      if (complaint.media_urls && complaint.media_urls.length > 0) {
+        evidenceBox.classList.remove('hidden');
+        try {
+          const path = complaint.media_urls[0];
+          const { data } = await supabaseClient.storage.from('complaint_media').createSignedUrl(path, 3600);
+          if (data?.signedUrl) {
+            evidenceImg.innerHTML = `<img src="${data.signedUrl}" alt="Visual Evidence" class="w-full h-40 object-cover" />`;
+          } else {
+            evidenceBox.classList.add('hidden');
+          }
+        } catch {
+          evidenceBox.classList.add('hidden');
+        }
+      } else {
+        evidenceBox.classList.add('hidden');
+      }
+
+      // Load existing accountability comments
+      await loadAccountabilityComments(complaint.id);
+
+      // Reset comment field
+      document.getElementById('drawerCommentInput').value = '';
+
+      // Open drawer
+      document.getElementById('drawerOverlay').classList.remove('hidden');
+      document.getElementById('demandDrawer').classList.remove('translate-x-full');
+    }
+
+    function closeDrawer() {
+      document.getElementById('drawerOverlay').classList.add('hidden');
+      document.getElementById('demandDrawer').classList.add('translate-x-full');
+      selectedComplaint = null;
+    }
+
+    async function loadAccountabilityComments(complaintId) {
+      const wrap = document.getElementById('drawerExistingCommentsWrap');
+      const list = document.getElementById('drawerExistingCommentsList');
+
+      try {
+        const { data, error } = await supabaseClient
+          .from('accountability_comments')
+          .select('*, profiles:created_by(name, role)')
+          .eq('complaint_id', complaintId)
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          wrap.classList.remove('hidden');
+          list.innerHTML = data.map(c => `
+            <div class="p-3 rounded-lg bg-amber-50 border border-amber-200">
+              <div class="flex items-center justify-between text-[11px] mb-1">
+                <span class="font-bold text-amber-900">${escapeHtml(c.profiles?.name || 'Hostel Warden / Dean')}</span>
+                <span class="text-[#64748B]">${new Date(c.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', month: 'short', day: 'numeric' })}</span>
+              </div>
+              <p class="text-xs text-[#0F172A] leading-relaxed">${escapeHtml(c.comment)}</p>
+            </div>
+          `).join('');
+        } else {
+          wrap.classList.add('hidden');
+        }
+      } catch (err) {
+        console.error('Error loading accountability comments:', err);
+        wrap.classList.add('hidden');
+      }
+    }
+
+    function insertPreset(text) {
+      document.getElementById('drawerCommentInput').value = text;
+      document.getElementById('drawerCommentInput').focus();
+    }
+
+    async function submitAccountabilityDemand() {
+      if (!selectedComplaint) return;
+      const comment = document.getElementById('drawerCommentInput').value.trim();
+
+      if (!comment) {
+        showAppNotification('Please enter a directive note or choose an action preset.', 'error');
+        document.getElementById('drawerCommentInput').focus();
+        return;
+      }
+
+      const btn = document.getElementById('btnSubmitDemand');
+      btn.disabled = true;
+      btn.innerHTML = `<span class="material-symbols-outlined text-[16px] animate-spin">sync</span><span>Dispatching Order...</span>`;
+
+      try {
+        const { data, error } = await supabaseClient.rpc('demand_accountability', {
+          p_complaint_id: selectedComplaint.id,
+          p_comment: comment
+        });
+
+        if (error) throw error;
+
+        showAppNotification('Official Accountability Mandate dispatched to Mess Manager!', 'success');
+        document.getElementById('drawerCommentInput').value = '';
+        await loadAccountabilityComments(selectedComplaint.id);
+        await loadEscalatedQueue();
+      } catch (err) {
+        console.error('Failed to demand accountability:', err);
+        showAppNotification('Error dispatching mandate: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<span class="material-symbols-outlined text-[16px]">send</span><span>Dispatch Order &amp; Enforce</span>`;
+      }
+    }
+
+    async function runManualEscalationCheck() {
+      try {
+        const { data, error } = await supabaseClient.rpc('process_complaint_escalations');
+        if (error) throw error;
+        const count = data?.escalated_count || 0;
+        showAppNotification(`SLA Escalation Check executed. ${count} new complaints escalated.`, 'success');
+        await loadEscalatedQueue();
+      } catch (err) {
+        showAppNotification('Error running escalation check: ' + err.message, 'error');
+      }
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // Realtime subscriptions
+    supabaseClient
+      .channel('authority-escalations-channel')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'complaints' }, () => {
+        loadEscalatedQueue();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'accountability_comments' }, () => {
+        if (selectedComplaint) {
+          loadAccountabilityComments(selectedComplaint.id);
+        }
+      })
+      .subscribe();
+
+    loadEscalatedQueue();
+  </script>
+</body>
+</html>

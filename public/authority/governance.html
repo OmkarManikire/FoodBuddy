@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-authority">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Caterer Governance &amp; Scorecards — Food Buddy</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/main.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/js/vendor/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="theme-authority bg-[#F8FAFC] text-[#0F172A] font-sans antialiased">
+
+  <div class="app-layout">
+    <aside class="app-sidebar"></aside>
+
+    <div class="app-main">
+      <header class="app-topbar"></header>
+
+      <main class="app-content p-4 sm:p-6 lg:p-8 space-y-6 max-w-7xl mx-auto">
+        
+        <!-- Header / Contextual Title Area -->
+        <section class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4 bg-white p-6 rounded-2xl border border-[#E2E8F0] shadow-sm">
+          <div class="space-y-1">
+            <div class="flex items-center gap-2 text-amber-700">
+              <span class="material-symbols-outlined text-[18px]">verified</span>
+              <span class="text-[11px] font-bold uppercase tracking-wider">Institutional Oversight • Statutory Level</span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#0F172A] font-['Outfit']">
+              Caterer Governance &amp; Vendor Scorecards
+            </h1>
+            <p class="text-xs text-[#64748B] max-w-3xl">
+              Contractual compliance management, monthly dining quality scorecards, SLA breach penalties, and tender renewal recommendations.
+            </p>
+          </div>
+
+          <!-- Action & Month Filter -->
+          <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+            <div class="relative">
+              <select id="selectMonth" onchange="loadScorecard(this.value)" class="pl-9 pr-8 py-2 rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] text-xs font-bold text-[#0F172A] focus:outline-none focus:bg-white focus:border-amber-600 cursor-pointer">
+                <option value="2026-10" selected>Month: October 2026</option>
+                <option value="2026-09">Month: September 2026</option>
+                <option value="2026-08">Month: August 2026</option>
+              </select>
+              <span class="material-symbols-outlined text-amber-700 text-[18px] absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none">calendar_month</span>
+            </div>
+
+            <button onclick="openActionModal('renewal')" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center gap-1.5 shadow-xs transition-all">
+              <span class="material-symbols-outlined text-[16px]">thumb_up</span>
+              <span>Recommend Renewal</span>
+            </button>
+            <button onclick="openActionModal('penalty')" class="px-3.5 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold flex items-center gap-1.5 shadow-xs transition-all">
+              <span class="material-symbols-outlined text-[16px]">gavel</span>
+              <span>Apply Penalty</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Operational Status Bar -->
+        <section class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+          <div class="p-4 rounded-xl bg-white border border-[#E2E8F0] shadow-xs flex items-center justify-between">
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Messes Supervised</span>
+              <div class="text-xl sm:text-2xl font-black text-[#0F172A] font-['Outfit'] mt-1">14 Halls</div>
+              <div class="text-[10px] text-emerald-600 font-semibold flex items-center gap-0.5 mt-0.5">
+                <span class="material-symbols-outlined text-[12px]">check_circle</span> 100% Audited
+              </div>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+              <span class="material-symbols-outlined text-[20px]">apartment</span>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-white border border-[#E2E8F0] shadow-xs flex items-center justify-between">
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Contract Health Avg</span>
+              <div class="text-xl sm:text-2xl font-black text-[#0F172A] font-['Outfit'] mt-1" id="statHealthAvg">-- / 100</div>
+              <div class="text-[10px] text-amber-700 font-semibold mt-0.5">Evaluated monthly</div>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center">
+              <span class="material-symbols-outlined text-[20px]">speed</span>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-white border border-[#E2E8F0] shadow-xs flex items-center justify-between">
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">SLA Breaches (&gt;48h)</span>
+              <div class="text-xl sm:text-2xl font-black text-red-600 font-['Outfit'] mt-1" id="statBreachesCount">0</div>
+              <div class="text-[10px] text-red-600 font-semibold mt-0.5">Under hearing</div>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center">
+              <span class="material-symbols-outlined text-[20px]">warning</span>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-white border border-[#E2E8F0] shadow-xs flex items-center justify-between">
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Accrued Deductions</span>
+              <div class="text-xl sm:text-2xl font-black text-[#0F172A] font-['Outfit'] mt-1" id="statDeductions">₹0</div>
+              <div class="text-[10px] text-[#64748B] font-medium mt-0.5">Invoice hold</div>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-slate-100 text-[#0F172A] flex items-center justify-center">
+              <span class="material-symbols-outlined text-[20px]">currency_rupee</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Main Scorecard Card -->
+        <section class="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm p-6 space-y-6">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-[#E2E8F0]">
+            <div>
+              <span class="text-[11px] font-bold uppercase tracking-wider text-[#64748B] block" id="scorecardMonthLabel">
+                Monthly Vendor Dossier • October 2026
+              </span>
+              <h2 class="text-xl font-extrabold text-[#0F172A] font-['Outfit'] mt-0.5" id="catererName">
+                Annapurna Caterers &amp; Hospitality Consortium
+              </h2>
+              <span class="text-xs text-[#64748B]" id="contractScope">Campus Central Dining Halls 1–4 (Capacity: 2,400 students)</span>
+            </div>
+            <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 self-start md:self-auto" id="contractGradeBadge">
+              Grade A Certified
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+            
+            <!-- Dial / Score Gauge Graphic Section (5 cols) -->
+            <div class="lg:col-span-5 flex flex-col items-center justify-center p-6 bg-[#F8FAFC] rounded-2xl border border-[#E2E8F0] text-center space-y-3">
+              <span class="text-xs font-bold uppercase tracking-wider text-[#64748B]">Monthly Compliance Score Index</span>
+              
+              <!-- SVG Gauge -->
+              <div class="relative w-36 h-36 flex items-center justify-center">
+                <svg class="w-36 h-36 transform -rotate-90" viewBox="0 0 36 36">
+                  <!-- Background Track -->
+                  <path class="text-slate-200" stroke-width="3.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                  <!-- Score Stroke -->
+                  <path id="gaugePath" class="text-amber-600 transition-all duration-700" stroke-width="3.5" stroke-dasharray="84, 100" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                </svg>
+                <div class="absolute flex flex-col items-center">
+                  <span class="text-3xl font-black text-[#0F172A] font-['Outfit']" id="gaugeScore">84</span>
+                  <span class="text-[10px] text-[#64748B] font-semibold uppercase">/ 100 pts</span>
+                </div>
+              </div>
+
+              <div class="text-xs text-[#64748B]">
+                Cutoff threshold: <strong class="text-[#0F172A]">&ge; 75 points</strong> required for renewal.
+              </div>
+            </div>
+
+            <!-- Operational Scorecard Pillars (7 cols) -->
+            <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <!-- Average Student Rating -->
+              <div class="p-4 rounded-xl bg-white border border-[#E2E8F0] shadow-xs flex flex-col justify-between">
+                <div>
+                  <span class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Average Rating</span>
+                  <div class="text-2xl font-black text-[#0F172A] font-['Outfit'] mt-2 flex items-center gap-1">
+                    <span id="scorecardAvgRating">4.2</span>
+                    <span class="material-symbols-outlined text-[18px] text-amber-600" style="font-variation-settings: 'FILL' 1;">star</span>
+                  </div>
+                </div>
+                <div class="mt-3 text-[11px] text-[#64748B]">
+                  Verified student reviews
+                </div>
+              </div>
+
+              <!-- Average Resolution Time -->
+              <div class="p-4 rounded-xl bg-white border border-[#E2E8F0] shadow-xs flex flex-col justify-between">
+                <div>
+                  <span class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Avg Resolution</span>
+                  <div class="text-2xl font-black text-[#0F172A] font-['Outfit'] mt-2" id="scorecardResolutionTime">
+                    2.4h
+                  </div>
+                </div>
+                <div class="mt-3 text-[11px] text-emerald-600 font-semibold">
+                  Well within 48h limit
+                </div>
+              </div>
+
+              <!-- Total Escalations (>48h) -->
+              <div class="p-4 rounded-xl bg-white border border-[#E2E8F0] shadow-xs flex flex-col justify-between">
+                <div>
+                  <span class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Escalations (&gt;48h)</span>
+                  <div class="text-2xl font-black text-red-600 font-['Outfit'] mt-2" id="scorecardEscalations">
+                    0
+                  </div>
+                </div>
+                <div class="mt-3 text-[11px] text-red-600 font-semibold" id="scorecardEscalationLabel">
+                  0 penalty deductions
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Bottom Action Buttons in Scorecard -->
+          <div class="pt-4 border-t border-[#E2E8F0] flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-2 text-xs text-[#64748B]">
+              <span class="material-symbols-outlined text-[16px] text-amber-600">verified</span>
+              <span>All governance decrees recorded here trigger administrative notices and audit records.</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <button onclick="openActionModal('renewal')" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all">
+                <span class="material-symbols-outlined text-[16px]">thumb_up</span>
+                <span>Recommend Renewal</span>
+              </button>
+              <button onclick="openActionModal('penalty')" class="px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all">
+                <span class="material-symbols-outlined text-[16px]">gavel</span>
+                <span>Apply Penalty</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Statutory Penalty Clause Reference Matrix -->
+        <section class="space-y-3">
+          <h2 class="text-base font-bold text-[#0F172A] font-['Outfit']">Statutory Dining Governance Penalties (University Charter)</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="p-4 rounded-xl bg-white border border-[#E2E8F0] shadow-xs space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-800">Clause 14B</span>
+                <span class="text-xs font-black text-red-600">₹15,000 / breach</span>
+              </div>
+              <h4 class="font-bold text-xs text-[#0F172A]">Unresolved Grievance &gt;48 Hours</h4>
+              <p class="text-[11px] text-[#64748B] leading-relaxed">
+                Failure to resolve student health or food quality tickets within the 48-hour SLA allows direct deduction from monthly catering payout.
+              </p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-white border border-[#E2E8F0] shadow-xs space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-800">Clause 11.2</span>
+                <span class="text-xs font-black text-red-600">₹25,000 / occurrence</span>
+              </div>
+              <h4 class="font-bold text-xs text-[#0F172A]">Water Filtration / Hygiene Breach</h4>
+              <p class="text-[11px] text-[#64748B] leading-relaxed">
+                FSSAI microbiological potability test failures or water chiller filter replacement non-compliance invokes immediate daily sanction.
+              </p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-white border border-[#E2E8F0] shadow-xs space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-800">Clause 18.0</span>
+                <span class="text-xs font-black text-red-600">₹25,000 / occurrence</span>
+              </div>
+              <h4 class="font-bold text-xs text-[#0F172A]">Early Kitchen Closure / Rationing</h4>
+              <p class="text-[11px] text-[#64748B] leading-relaxed">
+                Denying meal entry before official session wrap or curtailing menu items without prior Warden sanction constitutes breach of tender.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Governance Decrees & Actions Ledger -->
+        <section class="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm p-6 space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-[#E2E8F0]">
+            <div>
+              <h3 class="font-bold text-base text-[#0F172A] font-['Outfit']">Governance Decrees &amp; Disciplinary Records</h3>
+              <p class="text-xs text-[#64748B]">Audited history of contract renewals, formal penalties, and inquiries.</p>
+            </div>
+            <span class="px-2.5 py-0.5 rounded bg-slate-100 text-[#475569] text-xs font-bold" id="badgeActionsCount">0 Recorded</span>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="bg-[#F8FAFC] text-[#64748B] font-bold uppercase tracking-wider text-[11px] border-b border-[#E2E8F0]">
+                  <th class="py-3 px-4">Period</th>
+                  <th class="py-3 px-4">Action Taken</th>
+                  <th class="py-3 px-4">Justification / Decree Note</th>
+                  <th class="py-3 px-4">Issued By</th>
+                  <th class="py-3 px-4 text-right">Recorded Timestamp</th>
+                </tr>
+              </thead>
+              <tbody id="governanceLedgerBody" class="divide-y divide-[#E2E8F0]">
+                <tr>
+                  <td colspan="5" class="py-8 text-center text-[#64748B]">
+                    <span class="material-symbols-outlined text-[28px] animate-spin text-amber-600">sync</span>
+                    <div class="mt-2 text-xs">Loading governance history...</div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Governance Action Modal (Renewal / Penalty) -->
+  <div id="actionModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm hidden">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-[#E2E8F0] space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-[#E2E8F0]">
+        <div class="flex items-center gap-2">
+          <span class="w-8 h-8 rounded-lg flex items-center justify-center font-bold" id="modalIconWrap">
+            <span class="material-symbols-outlined text-[18px]" id="modalIcon">gavel</span>
+          </span>
+          <div>
+            <h3 class="font-bold text-sm text-[#0F172A] font-['Outfit']" id="modalTitle">Record Governance Action</h3>
+            <span class="text-[10px] text-[#64748B]" id="modalSubtitle">Contractor Compliance Ruling</span>
+          </div>
+        </div>
+        <button onclick="closeActionModal()" class="text-[#94A3B8] hover:text-[#0F172A]">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <form id="governanceActionForm" class="space-y-4 text-xs" onsubmit="event.preventDefault(); submitGovernanceAction();">
+        <input type="hidden" id="actionType" value="penalty" />
+
+        <div class="space-y-1">
+          <label class="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block" for="actionMonthInput">
+            Accounting Month
+          </label>
+          <input 
+            type="text" 
+            id="actionMonthInput" 
+            class="w-full px-3 py-2 rounded-xl border border-[#CBD5E1] bg-slate-50 text-xs font-semibold text-[#0F172A] focus:outline-none" 
+            readonly 
+          />
+        </div>
+
+        <div class="space-y-1">
+          <label class="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block" for="actionNoteInput">
+            Statutory Justification &amp; Order Decree Note
+          </label>
+          <textarea 
+            id="actionNoteInput" 
+            rows="4" 
+            class="w-full p-3 rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] text-xs text-[#0F172A] focus:outline-none focus:bg-white focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20 leading-relaxed" 
+            placeholder="State the formal rationale, contract clause invoked, financial deduction or renewal approval details..."
+            required
+          ></textarea>
+        </div>
+
+        <div class="p-3 bg-amber-50 rounded-xl border border-amber-200 text-[#0F172A] space-y-1">
+          <span class="font-bold text-amber-900 block">Notice Broadcast:</span>
+          <p class="text-[11px] text-[#64748B]">
+            Submitting this action publishes an official high-priority notice to student and manager feeds stamped with the "Authority" seal.
+          </p>
+        </div>
+
+        <div class="pt-2 border-t border-[#E2E8F0] flex justify-end gap-2">
+          <button type="button" onclick="closeActionModal()" class="px-4 py-2 rounded-xl border border-[#CBD5E1] text-xs font-bold text-[#475569] hover:bg-slate-100">
+            Cancel
+          </button>
+          <button type="submit" id="modalSubmitBtn" class="px-4 py-2 rounded-xl text-white text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all">
+            <span>Confirm Decree</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/supabase-client.js"></script>
+  <script type="module" src="/js/auth.js"></script>
+  <script type="module" src="/js/app-shell.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', async () => {
+      const user = await window.requireAuth?.('authority');
+      if (!user) return;
+      await window.initAppShell?.({
+        activeNav: 'governance',
+        user: {
+          name: user.profile?.name || user.profile?.full_name || 'Prof. R. Sengupta',
+          role: 'authority',
+          hostel_block: 'Hostel Warden & Dean Office'
+        }
+      });
+      loadScorecard();
+    });
+
+    let currentScorecard = null;
+    let currentMonth = '2026-10';
+
+    async function loadScorecard(month = '2026-10') {
+      currentMonth = month;
+      document.getElementById('scorecardMonthLabel').textContent = `Monthly Vendor Dossier • ${formatMonth(month)}`;
+
+      try {
+        const { data, error } = await supabaseClient.rpc('get_caterer_scorecard', {
+          p_month: month
+        });
+
+        if (error) throw error;
+        currentScorecard = data;
+        renderScorecard(data);
+      } catch (err) {
+        console.error('Failed to load scorecard:', err);
+        showAppNotification('Error loading caterer scorecard: ' + err.message, 'error');
+      }
+    }
+
+    function formatMonth(m) {
+      const [year, month] = m.split('-');
+      const d = new Date(year, month - 1);
+      return d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    }
+
+    function renderScorecard(data) {
+      if (!data) return;
+
+      const score = Math.round(Number(data.compliance_score || 84));
+      const avgRating = Number(data.avg_rating || 4.2).toFixed(1);
+      const resolutionHours = Number(data.avg_resolution_hours || 2.4).toFixed(1);
+      const escalations = Number(data.total_escalations || 0);
+
+      // Status Bar
+      document.getElementById('statHealthAvg').textContent = `${score} / 100`;
+      document.getElementById('statBreachesCount').textContent = `${escalations} Violations`;
+      const penaltyAmount = escalations * 15000;
+      document.getElementById('statDeductions').textContent = `₹${penaltyAmount.toLocaleString('en-IN')}`;
+
+      // Scorecard Card
+      document.getElementById('catererName').textContent = data.vendor_name || 'Annapurna Caterers & Hospitality Consortium';
+      document.getElementById('contractScope').textContent = data.contract_scope || 'Campus Central Dining Halls 1–4';
+      document.getElementById('gaugeScore').textContent = score;
+
+      // Update SVG gauge stroke-dasharray
+      const gauge = document.getElementById('gaugePath');
+      gauge.setAttribute('stroke-dasharray', `${score}, 100`);
+
+      if (score >= 80) {
+        gauge.setAttribute('class', 'text-emerald-600 transition-all duration-700');
+        document.getElementById('contractGradeBadge').className = 'px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 self-start md:self-auto';
+        document.getElementById('contractGradeBadge').textContent = 'Grade A Compliant';
+      } else if (score >= 75) {
+        gauge.setAttribute('class', 'text-amber-600 transition-all duration-700');
+        document.getElementById('contractGradeBadge').className = 'px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200 self-start md:self-auto';
+        document.getElementById('contractGradeBadge').textContent = 'Grade B Satisfactory';
+      } else {
+        gauge.setAttribute('class', 'text-red-600 transition-all duration-700');
+        document.getElementById('contractGradeBadge').className = 'px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800 border border-red-200 self-start md:self-auto';
+        document.getElementById('contractGradeBadge').textContent = 'Non-Compliant (Under Hearing)';
+      }
+
+      document.getElementById('scorecardAvgRating').textContent = avgRating;
+      document.getElementById('scorecardResolutionTime').textContent = `${resolutionHours}h`;
+      document.getElementById('scorecardEscalations').textContent = escalations;
+      document.getElementById('scorecardEscalationLabel').textContent = escalations > 0 ? `Clause 14B deduction applied` : 'Zero breaches';
+
+      // Render governance ledger
+      renderGovernanceLedger(data.governance_actions || []);
+    }
+
+    function renderGovernanceLedger(actions) {
+      const tbody = document.getElementById('governanceLedgerBody');
+      document.getElementById('badgeActionsCount').textContent = `${actions.length} Recorded`;
+
+      if (!actions || actions.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="py-8 text-center text-[#64748B]">
+              <span class="material-symbols-outlined text-[32px] text-emerald-600">verified</span>
+              <div class="mt-2 text-xs">No disciplinary penalties or special renewal rulings recorded for this period.</div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = actions.map(item => {
+        let actionBadge = '';
+        if (item.action === 'renewal') {
+          actionBadge = '<span class="px-2 py-0.5 rounded text-[10px] font-black bg-emerald-100 text-emerald-800">RECOMMEND RENEWAL</span>';
+        } else if (item.action === 'penalty') {
+          actionBadge = '<span class="px-2 py-0.5 rounded text-[10px] font-black bg-red-100 text-red-700">PENALTY NOTICE</span>';
+        } else {
+          actionBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-900 uppercase">${escapeHtml(item.action)}</span>`;
+        }
+
+        const date = new Date(item.created_at).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+        return `
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="py-3 px-4 font-mono font-bold text-amber-900">${escapeHtml(item.month)}</td>
+            <td class="py-3 px-4">${actionBadge}</td>
+            <td class="py-3 px-4 max-w-md">
+              <p class="text-xs text-[#0F172A] leading-relaxed">${escapeHtml(item.note)}</p>
+            </td>
+            <td class="py-3 px-4 font-semibold text-[#0F172A]">Hostel Warden / Dean</td>
+            <td class="py-3 px-4 text-right text-[#64748B]">${date}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Modal Action
+    function openActionModal(action) {
+      document.getElementById('actionType').value = action;
+      document.getElementById('actionMonthInput').value = currentMonth;
+      document.getElementById('actionNoteInput').value = '';
+
+      const submitBtn = document.getElementById('modalSubmitBtn');
+      const icon = document.getElementById('modalIcon');
+      const iconWrap = document.getElementById('modalIconWrap');
+
+      if (action === 'renewal') {
+        document.getElementById('modalTitle').textContent = 'Recommend Contract Renewal';
+        document.getElementById('modalSubtitle').textContent = 'University Hostel Mess Board Endorsement';
+        icon.textContent = 'thumb_up';
+        iconWrap.className = 'w-8 h-8 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold';
+        submitBtn.className = 'px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center gap-1.5 shadow-sm';
+        submitBtn.innerHTML = `<span>Submit Renewal Recommendation</span>`;
+        document.getElementById('actionNoteInput').placeholder = 'State performance highlights, student satisfaction rating benchmarks met, and term renewal conditions...';
+      } else {
+        document.getElementById('modalTitle').textContent = 'Apply Formal Penalty Notice';
+        document.getElementById('modalSubtitle').textContent = 'Statutory Fiscal Deduction Order';
+        icon.textContent = 'gavel';
+        iconWrap.className = 'w-8 h-8 rounded-lg bg-red-100 text-red-800 flex items-center justify-center font-bold';
+        submitBtn.className = 'px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold flex items-center gap-1.5 shadow-sm';
+        submitBtn.innerHTML = `<span>Issue Formal Penalty Order</span>`;
+        document.getElementById('actionNoteInput').placeholder = 'State contract clause invoked (e.g. Clause 14B), deduction amount, infraction details, and contractor cure period...';
+      }
+
+      document.getElementById('actionModal').classList.remove('hidden');
+    }
+
+    function closeActionModal() {
+      document.getElementById('actionModal').classList.add('hidden');
+    }
+
+    async function submitGovernanceAction() {
+      const action = document.getElementById('actionType').value;
+      const month = document.getElementById('actionMonthInput').value;
+      const note = document.getElementById('actionNoteInput').value.trim();
+
+      if (!note) {
+        showAppNotification('Please provide a justification decree note.', 'error');
+        document.getElementById('actionNoteInput').focus();
+        return;
+      }
+
+      const btn = document.getElementById('modalSubmitBtn');
+      btn.disabled = true;
+      btn.innerHTML = `<span class="material-symbols-outlined text-[16px] animate-spin">sync</span><span>Recording...</span>`;
+
+      try {
+        const { data, error } = await supabaseClient.rpc('record_governance_action', {
+          p_month: month,
+          p_action: action,
+          p_note: note
+        });
+
+        if (error) throw error;
+
+        showAppNotification(`Governance decree [${action.toUpperCase()}] logged and broadcasted successfully!`, 'success');
+        closeActionModal();
+        await loadScorecard(month);
+      } catch (err) {
+        console.error('Failed to record action:', err);
+        showAppNotification('Error recording governance action: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<span>Confirm Decree</span>`;
+      }
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    loadScorecard('2026-10');
+  </script>
+</body>
+</html>

@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      "colors": {
+        "on-primary": "#ffffff",
+        "tertiary-fixed": "#ffdcc3",
+        "on-error": "#ffffff",
+        "surface-container": "#eaedff",
+        "primary-fixed-dim": "#68dba9",
+        "on-tertiary-container": "#fffbff",
+        "surface-dim": "#d2d9f4",
+        "inverse-on-surface": "#eef0ff",
+        "error-container": "#ffdad6",
+        "inverse-primary": "#68dba9",
+        "on-primary-fixed-variant": "#005137",
+        "primary": "#006948",
+        "surface-variant": "#dae2fd",
+        "outline-variant": "#bccac0",
+        "secondary-fixed-dim": "#b4c5ff",
+        "outline": "#6d7a72",
+        "on-tertiary-fixed": "#2f1500",
+        "on-tertiary-fixed-variant": "#6e3900",
+        "on-primary-container": "#f5fff7",
+        "surface-bright": "#faf8ff",
+        "tertiary": "#8d4b00",
+        "secondary-container": "#316bf3",
+        "background": "#faf8ff",
+        "error": "#ba1a1a",
+        "on-secondary": "#ffffff",
+        "surface-container-low": "#f2f3ff",
+        "tertiary-container": "#b15f00",
+        "inverse-surface": "#283044",
+        "on-secondary-fixed": "#00174b",
+        "surface-container-high": "#e2e7ff",
+        "on-background": "#131b2e",
+        "secondary": "#0051d5",
+        "on-primary-fixed": "#002114",
+        "on-surface": "#131b2e",
+        "on-tertiary": "#ffffff",
+        "primary-fixed": "#85f8c4",
+        "surface-container-lowest": "#ffffff",
+        "on-secondary-container": "#fefcff",
+        "surface-container-highest": "#dae2fd",
+        "primary-container": "#00855d",
+        "surface": "#faf8ff",
+        "on-surface-variant": "#3d4a42",
+        "on-secondary-fixed-variant": "#003ea8",
+        "secondary-fixed": "#dbe1ff",
+        "tertiary-fixed-dim": "#ffb77d",
+        "on-error-container": "#93000a",
+        "surface-tint": "#006c4a"
+      },
+      "borderRadius": {
+        "DEFAULT": "0.25rem",
+        "lg": "0.5rem",
+        "xl": "0.75rem",
+        "full": "9999px"
+      },
+      "spacing": {
+        "gutter-desktop": "1.5rem",
+        "space-xl": "2rem",
+        "space-base": "1rem",
+        "margin": "1rem",
+        "space-2xl": "3rem",
+        "margin-desktop": "2rem",
+        "margin-tablet": "1.5rem",
+        "space-lg": "1.5rem",
+        "space-xxs": "0.125rem",
+        "space-sm": "0.5rem",
+        "space-xs": "0.25rem",
+        "space-md": "0.75rem",
+        "gutter": "1rem"
+      },
+      "fontFamily": {
+        "display-lg": [
+          "Inter"
+        ],
+        "headline-md": [
+          "Inter"
+        ],
+        "display-lg-mobile": [
+          "Inter"
+        ],
+        "label-sm": [
+          "Inter"
+        ],
+        "metric-number": [
+          "Inter"
+        ],
+        "headline-sm": [
+          "Inter"
+        ],
+        "headline-lg": [
+          "Inter"
+        ],
+        "body-lg": [
+          "Inter"
+        ],
+        "label-md": [
+          "Inter"
+        ],
+        "label-lg": [
+          "Inter"
+        ],
+        "body-md": [
+          "Inter"
+        ],
+        "body-sm": [
+          "Inter"
+        ]
+      },
+      "fontSize": {
+        "display-lg": [
+          "32px",
+          {
+            "lineHeight": "40px",
+            "letterSpacing": "-0.02em",
+            "fontWeight": "700"
+          }
+        ],
+        "headline-md": [
+          "20px",
+          {
+            "lineHeight": "28px",
+            "letterSpacing": "-0.01em",
+            "fontWeight": "600"
+          }
+        ],
+        "display-lg-mobile": [
+          "24px",
+          {
+            "lineHeight": "32px",
+            "letterSpacing": "-0.015em",
+            "fontWeight": "700"
+          }
+        ],
+        "label-sm": [
+          "11px",
+          {
+            "lineHeight": "14px",
+            "letterSpacing": "0.02em",
+            "fontWeight": "600"
+          }
+        ],
+        "metric-number": [
+          "28px",
+          {
+            "lineHeight": "32px",
+            "letterSpacing": "-0.02em",
+            "fontWeight": "600"
+          }
+        ],
+        "headline-sm": [
+          "16px",
+          {
+            "lineHeight": "24px",
+            "letterSpacing": "-0.005em",
+            "fontWeight": "600"
+          }
+        ],
+        "headline-lg": [
+          "24px",
+          {
+            "lineHeight": "32px",
+            "letterSpacing": "-0.015em",
+            "fontWeight": "600"
+          }
+        ],
+        "body-lg": [
+          "16px",
+          {
+            "lineHeight": "24px",
+            "fontWeight": "400"
+          }
+        ],
+        "label-md": [
+          "12px",
+          {
+            "lineHeight": "16px",
+            "fontWeight": "500"
+          }
+        ],
+        "label-lg": [
+          "14px",
+          {
+            "lineHeight": "20px",
+            "fontWeight": "500"
+          }
+        ],
+        "body-md": [
+          "14px",
+          {
+            "lineHeight": "20px",
+            "fontWeight": "400"
+          }
+        ],
+        "body-sm": [
+          "12px",
+          {
+            "lineHeight": "16px",
+            "fontWeight": "400"
+          }
+        ]
+      }
+    }
+  }
+}</script></head><body class="bg-background font-body-md text-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-[260px] bg-surface-container-lowest z-50 flex flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col flex-1 overflow-y-auto"><div class="h-16 px-space-base flex items-center gap-space-sm"><div class="w-9 h-9 rounded-lg bg-secondary flex items-center justify-center text-on-secondary shadow-[0_1px_2px_0_rgba(15,23,42,0.05)]"><span class="material-symbols-outlined text-[20px]">restaurant_menu</span></div><div class="flex flex-col"><span class="font-headline-sm text-headline-sm tracking-tight text-on-surface">FoodBuddy</span><span class="font-label-sm text-label-sm text-secondary font-semibold uppercase tracking-wider">Operations Lead</span></div></div><div class="px-space-base py-space-xs"><div class="rounded-lg bg-surface-container-low px-space-sm py-space-xs flex items-center gap-space-xs"><span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span><span class="font-label-sm text-label-sm text-on-surface-variant truncate">South Mess • Shift 1 Active</span></div></div><nav class="flex-1 px-space-sm py-space-sm space-y-space-md" data-active-classes="bg-secondary-container text-on-secondary-container font-semibold shadow-[0_1px_2px_0_rgba(15,23,42,0.05)]"><div class="space-y-space-xxs"><div class="px-space-sm py-space-xs font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Overview</div><a aria-current="page" class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg transition-colors bg-secondary-container text-on-secondary-container font-semibold shadow-[0_1px_2px_0_rgba(15,23,42,0.05)]" data-path="overview" href="#"><span class="material-symbols-outlined text-[18px]">space_dashboard</span><span class="font-label-lg text-label-lg">Overview</span></a></div><div class="space-y-space-xxs"><div class="px-space-sm py-space-xs font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Operations</div><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="attendance" href="#"><span class="material-symbols-outlined text-[18px]">how_to_reg</span><span class="font-label-lg text-label-lg">Attendance</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="live-qr" href="#"><span class="material-symbols-outlined text-[18px]">qr_code_scanner</span><span class="font-label-lg text-label-lg">Live QR</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="menu-management" href="#"><span class="material-symbols-outlined text-[18px]">menu_book</span><span class="font-label-lg text-label-lg">Menu Management</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="pre-meal-checklist" href="#"><span class="material-symbols-outlined text-[18px]">fact_check</span><span class="font-label-lg text-label-lg">Pre-Meal Checklist</span></a></div><div class="space-y-space-xxs"><div class="px-space-sm py-space-xs font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Feedback</div><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="complaints-queue" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px]">inbox</span><span class="font-label-lg text-label-lg">Complaints Queue</span></div><span class="px-space-xs py-space-xxs rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold">5</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="ratings-and-analytics" href="#"><span class="material-symbols-outlined text-[18px]">insights</span><span class="font-label-lg text-label-lg">Ratings &amp; Analytics</span></a></div><div class="space-y-space-xxs"><div class="px-space-sm py-space-xs font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Communication</div><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="post-notice" href="#"><span class="material-symbols-outlined text-[18px]">campaign</span><span class="font-label-lg text-label-lg">Post Notice</span></a></div></nav></div><div class="p-space-sm"><div class="rounded-xl bg-surface-container-low p-space-sm flex items-center gap-space-sm"><div class="w-9 h-9 rounded-full bg-secondary flex items-center justify-center text-on-secondary shrink-0"><span class="material-symbols-outlined text-[18px]">badge</span></div><div class="flex flex-col min-w-0"><span class="font-label-md text-label-md font-semibold text-on-surface truncate">Rajesh Sharma</span><span class="font-label-sm text-label-sm text-on-surface-variant truncate">Operations Lead</span><span class="font-label-sm text-label-sm text-outline truncate">South Mess Block</span></div></div></div></aside><div class="pl-[260px]"><header class="fixed top-0 left-[260px] right-0 h-16 bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-gutter-desktop"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs text-on-surface-variant font-label-md text-label-md"><span class="hover:text-on-surface cursor-pointer">Operations</span><span class="material-symbols-outlined text-[16px] text-outline">chevron_right</span><span class="text-on-surface font-semibold">Control Center</span></div><div class="hidden lg:flex items-center gap-space-xs px-space-sm py-space-xs rounded-full bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm"><span class="w-2 h-2 rounded-full bg-primary"></span><span class="font-medium text-on-surface">Central Dining Hall 01</span><span class="text-outline">•</span><span class="text-primary font-semibold">Shift Active</span></div></div><div class="flex items-center gap-space-base"><div class="relative hidden sm:block"><span class="material-symbols-outlined absolute left-space-sm top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span><input class="w-64 pl-9 pr-space-sm py-space-xs rounded-lg bg-surface-container-low font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest shadow-[0_1px_2px_0_rgba(15,23,42,0.05)]" placeholder="Search token, student ID, item..." type="text"/></div><button aria-label="Notifications" class="relative w-9 h-9 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-error"></span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><main class="relative pt-16 bg-background w-full min-h-screen px-gutter-desktop py-space-lg"><div class="flex flex-col w-full space-y-space-lg">
+<!-- Dashboard Top Bar / Actions -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-space-base pb-space-xs">
+<div>
+<div class="flex items-center gap-space-sm mb-space-xs">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-semibold bg-secondary-fixed text-on-secondary-fixed px-space-xs py-space-xxs rounded">Mess Operations Suite</span>
+<span class="text-outline text-label-sm font-label-sm">•</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Shift 1 (Lunch Cycle: 12:00 - 14:30)</span>
+</div>
+<h1 class="font-display-lg text-display-lg text-on-surface tracking-tight">Operations Overview</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-space-xxs">Real-time kitchen logistics, meal headcount validation, and critical issue escalation.</p>
+</div>
+<div class="flex items-center gap-space-sm shrink-0">
+<div class="flex items-center gap-space-xs px-space-md py-space-xs rounded-lg bg-surface-container-lowest shadow-sm text-on-surface font-label-md text-label-md">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+<span class="font-semibold text-on-surface">Live Turnstile Sync</span>
+<span class="text-outline font-normal">| 14.8s ago</span>
+</div>
+<button class="flex items-center gap-space-xs px-space-md py-space-xs rounded-lg bg-secondary text-on-secondary font-label-md text-label-md font-semibold hover:bg-secondary-container transition-all shadow-sm active:scale-95" id="downloadSummaryBtn">
+<span class="material-symbols-outlined text-[18px]">cloud_download</span>
+<span>Download Shift Summary</span>
+</button>
+</div>
+</div>
+<!-- KPI Cards (4 columns) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-space-base">
+<!-- Card 1: Headcount -->
+<div class="rounded-xl bg-surface-container-lowest p-space-base shadow-sm relative overflow-hidden flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">Today's Live Headcount</span>
+<div class="mt-space-xs flex items-baseline gap-space-xs">
+<span class="font-metric-number text-metric-number text-on-surface font-bold">1,248</span>
+<span class="font-body-md text-body-md text-outline">/ 1,420 Exp.</span>
+</div>
+</div>
+<div class="w-10 h-10 rounded-lg bg-secondary-fixed flex items-center justify-center text-secondary shrink-0">
+<span class="material-symbols-outlined text-[20px]">badge</span>
+</div>
+</div>
+<div class="mt-space-md space-y-space-xs">
+<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full rounded-full" style="width: 87.8%;"></div>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>Breakfast: <strong class="text-on-surface">1,120</strong></span>
+<span class="text-outline">•</span>
+<span>Lunch: <strong class="text-secondary">1,248 live</strong></span>
+<span class="text-outline">•</span>
+<span>Dinner: <strong class="text-on-surface">1,350 f'cast</strong></span>
+</div>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between">
+<span class="inline-flex items-center gap-space-xxs px-space-xs py-space-xxs rounded bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">trending_up</span>
+          +4.2% vs yesterday
+        </span>
+<span class="font-label-sm text-label-sm text-outline">Turnout Pace</span>
+</div>
+</div>
+<!-- Card 2: Complaints -->
+<div class="rounded-xl bg-surface-container-lowest p-space-base shadow-sm relative overflow-hidden flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">Pending Issues</span>
+<div class="mt-space-xs flex items-baseline gap-space-xs">
+<span class="font-metric-number text-metric-number text-tertiary-container font-bold">3</span>
+<span class="font-body-md text-body-md text-tertiary font-semibold">Action Items</span>
+</div>
+</div>
+<div class="w-10 h-10 rounded-lg bg-tertiary-fixed flex items-center justify-center text-tertiary shrink-0">
+<span class="material-symbols-outlined text-[20px]">warning</span>
+</div>
+</div>
+<div class="mt-space-md flex items-center gap-space-sm">
+<span class="inline-flex items-center gap-space-xxs px-space-xs py-space-xxs rounded bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold">
+          1 Critical Hygiene
+        </span>
+<span class="inline-flex items-center gap-space-xxs px-space-xs py-space-xxs rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">
+          2 Food Quality
+        </span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between">
+<span class="inline-flex items-center gap-space-xxs px-space-xs py-space-xxs rounded bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">trending_down</span>
+          -2 vs yesterday
+        </span>
+<span class="font-label-sm text-label-sm text-outline">Queue Health</span>
+</div>
+</div>
+<!-- Card 3: Food Rating -->
+<div class="rounded-xl bg-surface-container-lowest p-space-base shadow-sm relative overflow-hidden flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">Today's Avg Food Rating</span>
+<div class="mt-space-xs flex items-baseline gap-space-xs">
+<span class="font-metric-number text-metric-number text-on-surface font-bold">4.2</span>
+<span class="font-body-md text-body-md text-outline">/ 5.0</span>
+</div>
+</div>
+<div class="w-10 h-10 rounded-lg bg-primary-fixed flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[20px]">star</span>
+</div>
+</div>
+<div class="mt-space-md flex items-center gap-space-xs">
+<div class="flex text-tertiary">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]">star_half</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">(482 verified ratings)</span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between">
+<span class="inline-flex items-center gap-space-xxs px-space-xs py-space-xxs rounded bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">trending_up</span>
+          +0.3 vs last week
+        </span>
+<span class="font-label-sm text-label-sm text-outline">Student Sentiment</span>
+</div>
+</div>
+<!-- Card 4: Staff & Service Rating -->
+<div class="rounded-xl bg-surface-container-lowest p-space-base shadow-sm relative overflow-hidden flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">Staff &amp; Counter Service</span>
+<div class="mt-space-xs flex items-baseline gap-space-xs">
+<span class="font-metric-number text-metric-number text-on-surface font-bold">4.7</span>
+<span class="font-body-md text-body-md text-outline">/ 5.0</span>
+</div>
+</div>
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-secondary shrink-0">
+<span class="material-symbols-outlined text-[20px]">room_service</span>
+</div>
+</div>
+<div class="mt-space-md">
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-space-xs truncate">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+          Speed, Hygiene &amp; Staff Demeanor
+        </span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between">
+<span class="inline-flex items-center gap-space-xxs px-space-xs py-space-xxs rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">horizontal_rule</span>
+          Consistent
+        </span>
+<span class="font-label-sm text-label-sm text-outline">30d Metric</span>
+</div>
+</div>
+</div>
+<!-- Main 12-Column Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+<!-- LEFT COLUMN (8 cols): Charts & Operations Status -->
+<div class="lg:col-span-8 flex flex-col space-y-space-lg">
+<!-- Headcount & Turnout Analysis Chart Container -->
+<div class="rounded-xl bg-surface-container-lowest p-space-lg shadow-sm">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm mb-space-base">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Headcount &amp; Turnout Analysis</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-space-xxs">Scanning throughput and shift participation curve for October 24</p>
+</div>
+<div class="flex items-center gap-space-sm bg-surface-container-low p-space-xxs rounded-lg">
+<button class="px-space-sm py-space-xs rounded font-label-sm text-label-sm font-semibold bg-surface-container-lowest text-on-surface shadow-xs">Today</button>
+<button class="px-space-sm py-space-xs rounded font-label-sm text-label-sm font-medium text-on-surface-variant hover:text-on-surface">Yesterday</button>
+<button class="px-space-sm py-space-xs rounded font-label-sm text-label-sm font-medium text-on-surface-variant hover:text-on-surface">7-Day Avg</button>
+</div>
+</div>
+<!-- Meal Turnout Comparison Pill Rows -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-space-sm mb-space-base">
+<div class="p-space-sm rounded-lg bg-surface-container-low flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="w-2.5 h-2.5 rounded-full bg-tertiary"></span>
+<div>
+<span class="font-label-sm text-label-sm text-outline uppercase block">Breakfast</span>
+<span class="font-label-lg text-label-lg font-bold text-on-surface">88% (1,120)</span>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-semibold">Completed</span>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-high flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary animate-pulse"></span>
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase block">Lunch</span>
+<span class="font-label-lg text-label-lg font-bold text-secondary">92% (1,248)</span>
+</div>
+</div>
+<span class="font-label-sm text-label-sm px-space-xs py-space-xxs rounded bg-secondary text-on-secondary font-semibold">In Progress</span>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-low flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="w-2.5 h-2.5 rounded-full bg-outline"></span>
+<div>
+<span class="font-label-sm text-label-sm text-outline uppercase block">Projected Dinner</span>
+<span class="font-label-lg text-label-lg font-bold text-on-surface">95% (1,350)</span>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-outline font-medium">Pending 19:30</span>
+</div>
+</div>
+<!-- Inline SVG Hourly Histogram & Scans -->
+<div class="relative w-full pt-space-xs pb-space-sm">
+<div class="flex items-center justify-between text-label-sm font-label-sm text-outline mb-space-xs">
+<span>Scan Throughput Rate (per 15-min interval)</span>
+<span class="text-secondary font-semibold flex items-center gap-space-xxs">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+              Peak: 340 scans @ 12:30 PM
+            </span>
+</div>
+<!-- SVG Chart -->
+<div class="w-full h-48 relative">
+<svg aria-label="Hourly scanning volume chart" class="w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 680 180">
+<defs>
+<lineargradient id="barGradientActive" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#316bf3" stop-opacity="1"></stop>
+<stop offset="100%" stop-color="#0051d5" stop-opacity="0.85"></stop>
+</lineargradient>
+<lineargradient id="barGradientPassed" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#bccac0" stop-opacity="0.6"></stop>
+<stop offset="100%" stop-color="#85f8c4" stop-opacity="0.3"></stop>
+</lineargradient>
+<lineargradient id="lineTrend" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0%" stop-color="#0051d5"></stop>
+<stop offset="100%" stop-color="#316bf3"></stop>
+</lineargradient>
+</defs>
+<!-- Horizontal Grid Lines -->
+<line stroke="#eaedff" stroke-dasharray="3 3" stroke-width="1" x1="0" x2="680" y1="20" y2="20"></line>
+<line stroke="#eaedff" stroke-dasharray="3 3" stroke-width="1" x1="0" x2="680" y1="65" y2="65"></line>
+<line stroke="#eaedff" stroke-dasharray="3 3" stroke-width="1" x1="0" x2="680" y1="110" y2="110"></line>
+<line stroke="#dae2fd" stroke-width="1" x1="0" x2="680" y1="155" y2="155"></line>
+<!-- Breakfast Bars (07:30 - 09:30) -->
+<rect fill="url(#barGradientPassed)" height="40" rx="3" width="22" x="25" y="115"></rect>
+<rect fill="url(#barGradientPassed)" height="75" rx="3" width="22" x="55" y="80"></rect>
+<rect fill="url(#barGradientPassed)" height="95" rx="3" width="22" x="85" y="60"></rect>
+<rect fill="url(#barGradientPassed)" height="65" rx="3" width="22" x="115" y="90"></rect>
+<rect fill="url(#barGradientPassed)" height="25" rx="3" width="22" x="145" y="130"></rect>
+<!-- Lunch Pre-Rush & Active Rush (11:45 - 14:00) -->
+<rect fill="url(#barGradientActive)" height="20" opacity="0.4" rx="3" width="22" x="220" y="135"></rect>
+<rect fill="url(#barGradientActive)" height="70" opacity="0.6" rx="3" width="22" x="250" y="85"></rect>
+<rect fill="url(#barGradientActive)" height="120" opacity="0.85" rx="3" width="22" x="280" y="35"></rect>
+<!-- Peak Bar 12:30 PM -->
+<rect fill="url(#barGradientActive)" height="140" rx="3" width="22" x="310" y="15"></rect>
+<rect fill="url(#barGradientActive)" height="110" rx="3" width="22" x="340" y="45"></rect>
+<rect fill="url(#barGradientActive)" height="85" rx="3" width="22" x="370" y="70"></rect>
+<rect fill="url(#barGradientActive)" height="45" opacity="0.5" rx="3" width="22" x="400" y="110"></rect>
+<!-- Projected Evening/Dinner Bars (dotted forecast) -->
+<rect fill="#dae2fd" height="30" rx="3" stroke="#bccac0" stroke-dasharray="2 2" stroke-width="1" width="22" x="480" y="125"></rect>
+<rect fill="#dae2fd" height="80" rx="3" stroke="#bccac0" stroke-dasharray="2 2" stroke-width="1" width="22" x="510" y="75"></rect>
+<rect fill="#dae2fd" height="125" rx="3" stroke="#bccac0" stroke-dasharray="2 2" stroke-width="1" width="22" x="540" y="30"></rect>
+<rect fill="#dae2fd" height="115" rx="3" stroke="#bccac0" stroke-dasharray="2 2" stroke-width="1" width="22" x="570" y="40"></rect>
+<rect fill="#dae2fd" height="65" rx="3" stroke="#bccac0" stroke-dasharray="2 2" stroke-width="1" width="22" x="600" y="90"></rect>
+<rect fill="#dae2fd" height="20" rx="3" stroke="#bccac0" stroke-dasharray="2 2" stroke-width="1" width="22" x="630" y="135"></rect>
+<!-- Highlight Indicator Tag on Peak -->
+<circle cx="321" cy="15" fill="#0051d5" r="4"></circle>
+<circle cx="321" cy="15" fill="#316bf3" opacity="0.25" r="8"></circle>
+</svg>
+</div>
+<!-- Chart X Axis Labels -->
+<div class="flex justify-between text-label-sm font-label-sm text-outline px-space-xs mt-space-xxs">
+<span>07:30 (B'fast)</span>
+<span>08:30</span>
+<span>12:00</span>
+<span class="text-secondary font-bold">12:30 (Peak)</span>
+<span>13:30</span>
+<span>19:30 (Dinner Exp)</span>
+<span>21:00</span>
+</div>
+</div>
+<!-- Quick Turnstile Metrics Strip -->
+<div class="mt-space-base pt-space-md bg-surface-container-low rounded-lg p-space-sm flex flex-wrap items-center justify-around gap-space-md">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-[20px] text-primary">speed</span>
+<div>
+<span class="font-label-sm text-label-sm text-outline block">Avg Turnstile Clearance</span>
+<span class="font-label-lg text-label-lg font-bold text-on-surface">0.8s / student</span>
+</div>
+</div>
+<div class="w-px h-8 bg-surface-container-high hidden sm:block"></div>
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-[20px] text-tertiary">hourglass_bottom</span>
+<div>
+<span class="font-label-sm text-label-sm text-outline block">Peak Counter Queue Wait</span>
+<span class="font-label-lg text-label-lg font-bold text-on-surface">4 mins max</span>
+</div>
+</div>
+<div class="w-px h-8 bg-surface-container-high hidden sm:block"></div>
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-[20px] text-secondary">swap_calls</span>
+<div>
+<span class="font-label-sm text-label-sm text-outline block">Active Serving Lanes</span>
+<span class="font-label-lg text-label-lg font-bold text-on-surface">6 of 6 Open</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Shift Operations Status: Kitchen Team, Gas/Boiler, Refrigerator Temp -->
+<div class="rounded-xl bg-surface-container-lowest p-space-lg shadow-sm">
+<div class="flex items-center justify-between mb-space-base">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Shift Operations Status</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Live physical kitchen health check and crew allocations</p>
+</div>
+<span class="px-space-sm py-space-xs rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm font-semibold flex items-center gap-space-xxs">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+            All Logs Audited
+          </span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-base">
+<!-- Kitchen Team -->
+<div class="rounded-lg bg-surface-container-low p-space-base flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Crew on Duty</span>
+<span class="material-symbols-outlined text-secondary text-[20px]">groups</span>
+</div>
+<div class="font-headline-sm text-headline-sm text-on-surface font-bold">13 Personnel</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-space-xxs">
+                Head Cook: <span class="font-semibold text-on-surface">M. Verma</span><br/>
+                12 preparation &amp; line staff active
+              </p>
+</div>
+<div class="mt-space-md pt-space-xs flex items-center gap-space-xs text-primary font-label-sm text-label-sm font-medium">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+              Full attendance verified
+            </div>
+</div>
+<!-- Gas & Boiler Audit -->
+<div class="rounded-lg bg-surface-container-low p-space-base flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Gas &amp; Boiler Bank</span>
+<span class="material-symbols-outlined text-primary text-[20px]">local_fire_department</span>
+</div>
+<div class="font-headline-sm text-headline-sm text-on-surface font-bold">Normal (4.2 Bar)</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-space-xxs">
+                Piping line manifold pressurized.<br/>
+                Commercial steam kettle #1 &amp; #2 on.
+              </p>
+</div>
+<div class="mt-space-md pt-space-xs flex items-center gap-space-xs text-primary font-label-sm text-label-sm font-medium">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+              Next sensor test in 4h 30m
+            </div>
+</div>
+<!-- Refrigerator Temp -->
+<div class="rounded-lg bg-surface-container-low p-space-base flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Cold Storage Room</span>
+<span class="material-symbols-outlined text-secondary text-[20px]">ac_unit</span>
+</div>
+<div class="font-headline-sm text-headline-sm text-on-surface font-bold">+3.2°C</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-space-xxs">
+                Dairy &amp; perishables chamber.<br/>
+                Target range: +2.0°C to +4.5°C.
+              </p>
+</div>
+<div class="mt-space-md pt-space-xs flex items-center gap-space-xs text-primary font-label-sm text-label-sm font-medium">
+<span class="material-symbols-outlined text-[16px]">thermostat</span>
+              Safe compliance zone
+            </div>
+</div>
+</div>
+<!-- Kitchen Inspection Snapshot Note -->
+<div class="mt-space-base p-space-sm rounded-lg bg-surface-container flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-secondary text-[22px]">health_and_safety</span>
+<span class="font-body-sm text-body-sm text-on-surface">
+              Last Hazard Analysis Critical Control Point (HACCP) sign-off performed at <strong>11:15 AM</strong> by Quality Supervisor K. Nair.
+            </span>
+</div>
+<button class="font-label-sm text-label-sm text-secondary font-semibold hover:underline shrink-0 ml-space-sm">
+            View Inspection Log
+          </button>
+</div>
+</div>
+</div>
+<!-- RIGHT COLUMN (4 cols): Pending Complaints & Quick Actions -->
+<div class="lg:col-span-4 flex flex-col space-y-space-lg">
+<!-- Needs Attention Widget -->
+<div class="rounded-xl bg-surface-container-lowest p-space-base shadow-sm">
+<div class="flex items-center justify-between pb-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="w-2.5 h-2.5 rounded-full bg-error"></span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Needs Attention</h2>
+</div>
+<span class="font-label-sm text-label-sm font-semibold text-outline">Oldest 3 Pending</span>
+</div>
+<div class="space-y-space-base mt-space-xs">
+<!-- Ticket 1 (Critical Paneer issue) -->
+<div class="rounded-lg bg-surface-container-low p-space-sm shadow-xs transition-shadow hover:shadow-md">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-bold text-secondary">FB-2026-00123</span>
+<span class="inline-flex items-center px-space-xs py-space-xxs rounded bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm font-semibold">
+                Under Review
+              </span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mt-space-xs leading-snug">
+              Undercooked paneer in lunch curry
+            </h3>
+<div class="mt-space-xxs font-body-sm text-body-sm text-on-surface-variant flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-outline">person</span>
+<span>Aarav P. (Room B-314)</span>
+<span class="text-outline">•</span>
+<span class="text-tertiary font-medium">48m ago</span>
+</div>
+<div class="mt-space-sm flex items-center gap-space-xs">
+<span class="px-space-xs py-space-xxs rounded bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold">
+                Food Quality
+              </span>
+</div>
+<!-- Escalation Alert Banner -->
+<div class="mt-space-sm p-space-xs rounded bg-surface-container-highest flex items-start gap-space-xs text-tertiary">
+<span class="material-symbols-outlined text-[16px] shrink-0 mt-0.5">timer</span>
+<span class="font-label-sm text-label-sm">
+<strong>Warning:</strong> Auto-escalates to Warden in 3h 12m
+              </span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center gap-space-sm">
+<button class="flex-1 py-space-xs px-space-sm rounded bg-primary text-on-primary font-label-sm text-label-sm font-semibold hover:bg-primary-container transition-colors shadow-xs" onclick="resolveTicket('FB-2026-00123')">
+                Inspect &amp; Resolve
+              </button>
+<button class="py-space-xs px-space-sm rounded bg-surface-container-lowest text-on-surface-variant font-label-sm text-label-sm hover:text-on-surface">
+                Assign
+              </button>
+</div>
+</div>
+<!-- Ticket 2 (Water Cooler Leaking) -->
+<div class="rounded-lg bg-surface-container-low p-space-sm shadow-xs transition-shadow hover:shadow-md">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-bold text-outline">FB-2026-00121</span>
+<span class="inline-flex items-center px-space-xs py-space-xxs rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold">
+                Pending
+              </span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mt-space-xs leading-snug">
+              Water cooler tap leaking near Counter 2
+            </h3>
+<div class="mt-space-xxs font-body-sm text-body-sm text-on-surface-variant flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-outline">schedule</span>
+<span>Submitted 2h 15m ago</span>
+<span class="text-outline">•</span>
+<span>Hostel Block C lead</span>
+</div>
+<div class="mt-space-sm flex items-center gap-space-xs">
+<span class="px-space-xs py-space-xxs rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm font-semibold">
+                Infrastructure
+              </span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-tertiary font-medium">Plumbing ticket dispatched</span>
+<button class="font-label-sm text-label-sm text-secondary font-semibold hover:underline" onclick="resolveTicket('FB-2026-00121')">
+                Mark Fixed
+              </button>
+</div>
+</div>
+<!-- Ticket 3 (Roti Basket Empty) -->
+<div class="rounded-lg bg-surface-container-low p-space-sm shadow-xs transition-shadow hover:shadow-md">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-bold text-outline">FB-2026-00118</span>
+<span class="inline-flex items-center px-space-xs py-space-xxs rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold">
+                Pending
+              </span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mt-space-xs leading-snug">
+              Roti basket empty at Counter 4
+            </h3>
+<div class="mt-space-xxs font-body-sm text-body-sm text-on-surface-variant flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-outline">schedule</span>
+<span>Submitted 3h 10m ago</span>
+<span class="text-outline">•</span>
+<span>Student Council</span>
+</div>
+<div class="mt-space-sm flex items-center gap-space-xs">
+<span class="px-space-xs py-space-xxs rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm font-semibold">
+                Service Speed
+              </span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline">Batch buffer restocked</span>
+<button class="font-label-sm text-label-sm text-secondary font-semibold hover:underline" onclick="resolveTicket('FB-2026-00118')">
+                Close Ticket
+              </button>
+</div>
+</div>
+</div>
+<div class="mt-space-base pt-space-xs">
+<a class="w-full py-space-xs flex items-center justify-center gap-space-xxs rounded-lg bg-surface-container-low text-secondary font-label-sm text-label-sm font-semibold hover:bg-surface-container-high transition-colors" href="#">
+<span>View Full Complaints Queue (5 Active)</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</div>
+</div>
+<!-- Quick Operations Links & Approvals Card -->
+<div class="rounded-xl bg-surface-container-lowest p-space-base shadow-sm space-y-space-sm">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Manager Action Hub</h2>
+<!-- Action 1: Pre-Meal Sign-off -->
+<div class="p-space-sm rounded-lg bg-surface-container-low flex items-start justify-between gap-space-sm">
+<div class="flex items-start gap-space-sm">
+<div class="w-8 h-8 rounded bg-tertiary-fixed flex items-center justify-center text-tertiary shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[18px]">rule</span>
+</div>
+<div>
+<span class="font-label-md text-label-md font-semibold text-on-surface block">Pre-Meal Checklist Sign-Off</span>
+<span class="font-label-sm text-label-sm text-tertiary font-semibold">Pending for Dinner (Due 18:45)</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-space-xxs">Food temperature, sample reservation &amp; counter hygiene check.</p>
+</div>
+</div>
+<button class="shrink-0 p-space-xs rounded-lg bg-secondary text-on-secondary hover:bg-secondary-container transition-colors shadow-xs" title="Open Checklist">
+<span class="material-symbols-outlined text-[18px]">edit_document</span>
+</button>
+</div>
+<!-- Action 2: Broadcast Notice -->
+<div class="p-space-sm rounded-lg bg-surface-container-low flex items-start justify-between gap-space-sm">
+<div class="flex items-start gap-space-sm">
+<div class="w-8 h-8 rounded bg-surface-container flex items-center justify-center text-secondary shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[18px]">campaign</span>
+</div>
+<div>
+<span class="font-label-md text-label-md font-semibold text-on-surface block">Broadcast Student Notice</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Instant push to hostel dining portal</span>
+<p class="font-body-sm text-body-sm text-outline mt-space-xxs">e.g. Special festive dinner timings or menu swap notification.</p>
+</div>
+</div>
+<button class="shrink-0 p-space-xs rounded-lg bg-surface-container-lowest text-on-surface hover:bg-surface-container-high transition-colors shadow-xs" title="Create Notice">
+<span class="material-symbols-outlined text-[18px]">send</span>
+</button>
+</div>
+<!-- Action 3: Live QR Scanner Terminal Launch -->
+<div class="p-space-sm rounded-lg bg-surface-container-low flex items-start justify-between gap-space-sm">
+<div class="flex items-start gap-space-sm">
+<div class="w-8 h-8 rounded bg-primary-fixed flex items-center justify-center text-primary shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[18px]">qr_code_scanner</span>
+</div>
+<div>
+<span class="font-label-md text-label-md font-semibold text-on-surface block">Turnstile Gate Terminal</span>
+<span class="font-label-sm text-label-sm text-primary font-semibold">Active: 6 of 6 Gates Synced</span>
+</div>
+</div>
+<button class="shrink-0 p-space-xs rounded-lg bg-surface-container-lowest text-on-surface hover:bg-surface-container-high transition-colors shadow-xs" title="Manage Gate">
+<span class="material-symbols-outlined text-[18px]">open_in_new</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+  function resolveTicket(ticketId) {
+    const banner = document.createElement('div');
+    banner.className = 'fixed bottom-6 right-6 bg-surface-container-lowest text-on-surface px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 z-50 border border-secondary transition-all transform duration-300';
+    banner.innerHTML = `
+      <span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+      <div class="flex flex-col">
+        <span class="font-label-md text-label-md font-bold text-on-surface">Ticket Action Executed</span>
+        <span class="font-body-sm text-body-sm text-on-surface-variant">${ticketId} marked for immediate kitchen review.</span>
+      </div>
+      <button onclick="this.parentElement.remove()" class="text-outline hover:text-on-surface ml-2">
+        <span class="material-symbols-outlined text-[18px]">close</span>
+      </button>
+    `;
+    document.body.appendChild(banner);
+    setTimeout(() => {
+      banner.style.opacity = '0';
+      setTimeout(() => banner.remove(), 300);
+    }, 4000);
+  }
+
+  document.getElementById('downloadSummaryBtn')?.addEventListener('click', function() {
+    const prevText = this.innerHTML;
+    this.innerHTML = `<span class="material-symbols-outlined text-[18px] animate-spin">refresh</span> Generating PDF...`;
+    setTimeout(() => {
+      this.innerHTML = `<span class="material-symbols-outlined text-[18px]">task_alt</span> Report Ready`;
+      setTimeout(() => {
+        this.innerHTML = prevText;
+      }, 2000);
+    }, 1200);
+  });
+</script></main></div></body></html>

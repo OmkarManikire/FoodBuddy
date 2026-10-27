@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"on-primary-container":"#f5fff7","secondary-fixed":"#dbe1ff","inverse-surface":"#283044","primary-fixed":"#85f8c4","surface":"#faf8ff","on-secondary-container":"#fefcff","on-secondary":"#ffffff","surface-tint":"#006c4a","primary":"#006948","surface-container-low":"#f2f3ff","on-tertiary":"#ffffff","on-primary-fixed-variant":"#005137","error-container":"#ffdad6","outline-variant":"#bccac0","surface-bright":"#faf8ff","primary-fixed-dim":"#68dba9","outline":"#6d7a72","surface-container-high":"#e2e7ff","on-secondary-fixed-variant":"#003ea8","tertiary":"#8d4b00","on-tertiary-container":"#fffbff","primary-container":"#00855d","on-error":"#ffffff","background":"#faf8ff","secondary":"#0051d5","surface-container-lowest":"#ffffff","surface-container":"#eaedff","tertiary-container":"#b15f00","surface-dim":"#d2d9f4","on-tertiary-fixed":"#2f1500","on-surface-variant":"#3d4a42","surface-variant":"#dae2fd","on-error-container":"#93000a","secondary-container":"#316bf3","tertiary-fixed":"#ffdcc3","on-tertiary-fixed-variant":"#6e3900","on-secondary-fixed":"#00174b","error":"#ba1a1a","on-background":"#131b2e","secondary-fixed-dim":"#b4c5ff","inverse-primary":"#68dba9","surface-container-highest":"#dae2fd","on-surface":"#131b2e","on-primary-fixed":"#002114","on-primary":"#ffffff","inverse-on-surface":"#eef0ff","tertiary-fixed-dim":"#ffb77d"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"space-xl":"2rem","space-base":"1rem","gutter-desktop":"1.5rem","margin-tablet":"1.5rem","space-lg":"1.5rem","space-sm":"0.5rem","margin-desktop":"2rem","gutter":"1rem","space-2xl":"3rem","space-xxs":"0.125rem","space-xs":"0.25rem","margin":"1rem","space-md":"0.75rem"},"fontFamily":{"body-md":["Inter"],"headline-sm":["Inter"],"headline-md":["Inter"],"body-sm":["Inter"],"display-lg-mobile":["Inter"],"body-lg":["Inter"],"display-lg":["Inter"],"headline-lg":["Inter"],"label-sm":["Inter"],"label-lg":["Inter"],"metric-number":["Inter"],"label-md":["Inter"]},"fontSize":{"body-md":["14px",{"lineHeight":"20px","fontWeight":"400"}],"headline-sm":["16px",{"lineHeight":"24px","letterSpacing":"-0.005em","fontWeight":"600"}],"headline-md":["20px",{"lineHeight":"28px","letterSpacing":"-0.01em","fontWeight":"600"}],"body-sm":["12px",{"lineHeight":"16px","fontWeight":"400"}],"display-lg-mobile":["24px",{"lineHeight":"32px","letterSpacing":"-0.015em","fontWeight":"700"}],"body-lg":["16px",{"lineHeight":"24px","fontWeight":"400"}],"display-lg":["32px",{"lineHeight":"40px","letterSpacing":"-0.02em","fontWeight":"700"}],"headline-lg":["24px",{"lineHeight":"32px","letterSpacing":"-0.015em","fontWeight":"600"}],"label-sm":["11px",{"lineHeight":"14px","letterSpacing":"0.02em","fontWeight":"600"}],"label-lg":["14px",{"lineHeight":"20px","fontWeight":"500"}],"metric-number":["28px",{"lineHeight":"32px","letterSpacing":"-0.02em","fontWeight":"600"}],"label-md":["12px",{"lineHeight":"16px","fontWeight":"500"}]}}}};</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-[260px] bg-surface-container-lowest z-50 flex flex-col justify-between border-r border-outline-variant/30 shadow-[0_1px_8px_rgba(0,0,0,0.03)]"><div class="flex flex-col"><div class="p-space-base pb-space-sm border-b border-outline-variant/20"><div class="flex items-center gap-space-sm"><div class="w-9 h-9 rounded-lg bg-tertiary flex items-center justify-center text-on-tertiary shadow-sm"><span class="material-symbols-outlined text-[20px]">restaurant</span></div><div class="flex flex-col"><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm text-on-surface tracking-tight">FoodBuddy</span><span class="px-space-xs py-space-xxs rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm uppercase tracking-wider font-semibold">Warden</span></div><span class="font-body-sm text-body-sm text-on-surface-variant truncate">Dining Directorate</span></div></div></div><div class="px-space-base pt-space-md"><span class="font-label-sm text-label-sm uppercase tracking-wider text-outline block mb-space-sm">Supervisory Oversight</span></div><nav class="flex flex-col gap-space-xxs px-space-sm" data-active-classes="bg-tertiary-fixed text-on-tertiary-fixed font-label-lg font-semibold rounded-lg"><div class="px-space-sm pt-space-xs pb-space-xxs"><span class="font-label-sm text-label-sm uppercase tracking-wider text-outline">Overview</span></div><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="overview" href="#"><span class="material-symbols-outlined text-[20px]">grid_view</span><span class="font-label-lg text-label-lg">Overview</span></a><div class="px-space-sm pt-space-sm pb-space-xxs"><span class="font-label-sm text-label-sm uppercase tracking-wider text-outline">Oversight</span></div><a class="flex items-center justify-between px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="escalated-queue" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">warning</span><span class="font-label-lg text-label-lg">Escalated Queue</span></div><span class="px-space-xs py-space-xxs rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold">4</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="audit-trail" href="#"><span class="material-symbols-outlined text-[20px]">verified_user</span><span class="font-label-lg text-label-lg">Audit Trail</span></a><div class="px-space-sm pt-space-sm pb-space-xxs"><span class="font-label-sm text-label-sm uppercase tracking-wider text-outline">Analytics</span></div><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="quality-index" href="#"><span class="material-symbols-outlined text-[20px]">trending_up</span><span class="font-label-lg text-label-lg">Quality Index</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="caterer-governance" href="#"><span class="material-symbols-outlined text-[20px]">verified</span><span class="font-label-lg text-label-lg">Caterer Governance</span></a><div class="px-space-sm pt-space-sm pb-space-xxs"><span class="font-label-sm text-label-sm uppercase tracking-wider text-outline">Communication</span></div><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="directives-and-orders" href="#"><span class="material-symbols-outlined text-[20px]">campaign</span><span class="font-label-lg text-label-lg">Directives &amp; Orders</span></a></nav></div><div class="p-space-base border-t border-outline-variant/20 bg-surface-container-low/40"><div class="flex items-center gap-space-sm"><div class="w-9 h-9 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-lg flex items-center justify-center font-semibold">RK</div><div class="flex flex-col min-w-0 flex-1"><span class="font-label-lg text-label-lg font-semibold text-on-surface truncate">Dr. K. Raman</span><span class="font-body-sm text-body-sm text-on-surface-variant truncate">Dining Chair &amp; Warden</span><div class="flex items-center gap-space-xs mt-space-xxs"><span class="w-2 h-2 rounded-full bg-tertiary-container"></span><span class="font-label-sm text-label-sm text-tertiary font-medium">Wardenship Active</span></div></div></div></div></aside><div class="pl-[260px]"><header class="fixed top-0 left-[260px] right-0 h-16 bg-surface-container-lowest/90 backdrop-blur-md border-b border-outline-variant/30 z-40 flex items-center justify-between px-space-lg"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-xs font-body-sm text-body-sm text-on-surface-variant"><span class="hover:text-on-surface cursor-pointer">Directorate</span><span class="material-symbols-outlined text-[14px]">chevron_right</span><span class="hover:text-on-surface cursor-pointer">Supervisory Oversight</span><span class="material-symbols-outlined text-[14px]">chevron_right</span><span class="text-on-surface font-semibold">Console</span></div><div class="hidden xl:flex items-center gap-space-xs px-space-sm py-space-xxs rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm"><span class="material-symbols-outlined text-[16px] text-tertiary">apartment</span><span>All 14 Campus Messes • Semester II</span></div></div><div class="flex items-center gap-space-md"><div class="relative hidden md:block w-72"><span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span><input class="w-full pl-9 pr-3 py-1.5 rounded-lg border border-outline-variant/40 bg-surface text-on-surface font-body-sm text-body-sm placeholder:text-outline focus:outline-none focus:border-tertiary transition-colors" placeholder="Search complaints, ticket ID..." type="text"/></div><button class="relative p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-tertiary-container text-on-tertiary font-label-sm text-[10px] flex items-center justify-center font-bold leading-none">4</span></button><button class="p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors"><span class="material-symbols-outlined text-[20px]">swap_horiz</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center cursor-pointer shadow-sm"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><main class="relative pt-16 bg-surface min-h-screen"><div class="flex flex-col w-full">
+<div class="px-space-lg py-space-xl max-w-[1400px] mx-auto w-full space-y-space-xl">
+<!-- Header Unit -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-base bg-surface-container-lowest p-space-lg rounded-xl shadow-sm relative overflow-hidden">
+<div class="absolute -right-8 -top-8 w-44 h-44 rounded-full bg-tertiary-fixed/30 blur-2xl pointer-events-none"></div>
+<div class="flex flex-col space-y-space-xxs z-10">
+<div class="flex items-center gap-space-sm mb-space-xxs">
+<span class="px-space-xs py-space-xxs rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm uppercase tracking-wider font-semibold">Statutory Registry • Article 14</span>
+<span class="font-body-sm text-body-sm text-outline">• Ref: SEN-DIR-2026/S2</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Executive Directives &amp; Statutory Orders</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">Issue priority statutory notices and mandatory kitchen compliance circulars with legal institutional authority across campus dining halls.</p>
+</div>
+<div class="flex items-center gap-space-sm shrink-0 z-10">
+<button class="px-space-md py-2 rounded-lg bg-surface-container-high hover:bg-surface-container text-on-surface font-label-lg text-label-lg flex items-center gap-space-xs shadow-sm transition-all" id="quickJumpFormBtn">
+<span class="material-symbols-outlined text-[18px] text-tertiary">edit_document</span>
+<span>Draft New Order</span>
+</button>
+<button class="px-space-md py-2 rounded-lg bg-tertiary hover:bg-tertiary-container text-on-tertiary font-label-lg text-label-lg flex items-center gap-space-xs shadow-md transition-all active:scale-[0.98]" onclick="triggerBroadcastSync()">
+<span class="material-symbols-outlined text-[18px]">cell_tower</span>
+<span>Sync to Student Portals</span>
+</button>
+</div>
+</div>
+<!-- Layout: Primary Issue Form & Live Verification Visualizer -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+<!-- Issue Official Directive Form -->
+<section class="lg:col-span-8 bg-surface-container-lowest rounded-xl p-space-lg shadow-sm space-y-space-lg" id="directiveFormCard">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between pb-space-sm gap-space-xs">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-lg bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed">
+<span class="material-symbols-outlined text-[20px]">gavel</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface tracking-tight">Issue Official Directive</h2>
+<p class="font-body-sm text-body-sm text-outline">Enforceable under University Hostel Charter Regulation Sec 4.B</p>
+</div>
+</div>
+<span class="self-start sm:self-auto px-space-sm py-1 rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm tracking-wide font-semibold shadow-xs">
+            AUTHORITY MANDATE • DIRECT ENFORCEMENT
+          </span>
+</div>
+<form class="space-y-space-base" id="directiveForm" onsubmit="event.preventDefault(); handlePublishDirective();">
+<!-- Directive Title -->
+<div class="space-y-space-xxs">
+<label class="font-label-lg text-label-lg text-on-surface font-medium flex items-center justify-between" for="directiveTitle">
+<span>Directive Title &amp; Core Subject</span>
+<span class="font-body-sm text-body-sm text-outline">Max 120 chars</span>
+</label>
+<input class="w-full px-space-md py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest focus:shadow-[0_0_0_2px] focus:shadow-tertiary transition-all" id="directiveTitle" placeholder="e.g. Mandatory Re-testing of Water Chiller Membrane Filters Across North Messes" required="" type="text" value="Mandatory Re-testing of Water Chiller Membrane Filters Across All North Messes"/>
+</div>
+<!-- Scope & Target Audience -->
+<div class="space-y-space-xs">
+<label class="font-label-lg text-label-lg text-on-surface font-medium block">Target Audience &amp; Jurisdiction Scope</label>
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-space-xs">
+<label class="flex items-center gap-space-xs p-space-sm rounded-lg bg-surface-container-low hover:bg-surface-container cursor-pointer transition-colors">
+<input checked="" class="w-4 h-4 rounded text-tertiary accent-tertiary" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface font-medium">All 14 Messes</span>
+</label>
+<label class="flex items-center gap-space-xs p-space-sm rounded-lg bg-surface-container-low hover:bg-surface-container cursor-pointer transition-colors">
+<input checked="" class="w-4 h-4 rounded text-tertiary accent-tertiary" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface">North Block A &amp; B</span>
+</label>
+<label class="flex items-center gap-space-xs p-space-sm rounded-lg bg-surface-container-low hover:bg-surface-container cursor-pointer transition-colors">
+<input class="w-4 h-4 rounded text-tertiary accent-tertiary" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface">South Quadrant</span>
+</label>
+<label class="flex items-center gap-space-xs p-space-sm rounded-lg bg-surface-container-low hover:bg-surface-container cursor-pointer transition-colors">
+<input checked="" class="w-4 h-4 rounded text-tertiary accent-tertiary" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface">Caterer Directors</span>
+</label>
+<label class="flex items-center gap-space-xs p-space-sm rounded-lg bg-surface-container-low hover:bg-surface-container cursor-pointer transition-colors">
+<input checked="" class="w-4 h-4 rounded text-tertiary accent-tertiary" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface">Head Kitchen Stewards</span>
+</label>
+<label class="flex items-center gap-space-xs p-space-sm rounded-lg bg-surface-container-low hover:bg-surface-container cursor-pointer transition-colors">
+<input class="w-4 h-4 rounded text-tertiary accent-tertiary" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface">Mess Secretaries</span>
+</label>
+</div>
+</div>
+<!-- Severity / Enforcement SLA & Timeline -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-base">
+<div class="space-y-space-xxs">
+<label class="font-label-lg text-label-lg text-on-surface font-medium block" for="severityLevel">Enforcement Level &amp; Penalty Tier</label>
+<div class="relative">
+<select class="w-full px-space-md py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md appearance-none focus:outline-none focus:bg-surface-container-lowest focus:shadow-[0_0_0_2px] focus:shadow-tertiary cursor-pointer" id="severityLevel">
+<option value="critical">Mandatory Compliance (Strict 24h SLA)</option>
+<option value="advisory">Advisory Notice &amp; Operational Guideline (7 Days)</option>
+<option value="emergency">Emergency Operational Suspension Notice (Immediate)</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none text-[18px]">expand_more</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-space-xs">
+<div class="space-y-space-xxs">
+<label class="font-label-lg text-label-lg text-on-surface font-medium block" for="effectiveDate">Effective Immediate</label>
+<input class="w-full px-space-sm py-2 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none focus:bg-surface-container-lowest" id="effectiveDate" type="date" value="2026-10-24"/>
+</div>
+<div class="space-y-space-xxs">
+<label class="font-label-lg text-label-lg text-on-surface font-medium block" for="expiryDate">Compliance Due</label>
+<input class="w-full px-space-sm py-2 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none focus:bg-surface-container-lowest" id="expiryDate" type="date" value="2026-10-25"/>
+</div>
+</div>
+</div>
+<!-- Directive Body Text Area -->
+<div class="space-y-space-xxs">
+<div class="flex items-center justify-between">
+<label class="font-label-lg text-label-lg text-on-surface font-medium" for="directiveBody">Statutory Mandate Order Text</label>
+<span class="font-label-sm text-label-sm text-tertiary font-semibold uppercase">Legal Notice Template Active</span>
+</div>
+<textarea class="w-full p-space-md rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest focus:shadow-[0_0_0_2px] focus:shadow-tertiary transition-all" id="directiveBody" rows="5">Pursuant to water quality findings during the unannounced health audit on Oct 23, all caterers operating in North Wing Messes (Halls 1, 2, 5 &amp; 6) are hereby directed to replace primary sediment filters and submit an ISO-certified microbiological potability test by 18:00 hrs tomorrow.
+
+Failure to upload verified lab certificates shall invoke penalty Clause 11.2 (₹25,000 fine per calendar day of non-compliance) and temporary sealing of central storage reserves.</textarea>
+</div>
+<!-- Attachment Drag & Drop Area -->
+<div class="space-y-space-xxs">
+<label class="font-label-lg text-label-lg text-on-surface font-medium block">Official Dean / Warden Signed Instrument (PDF or TIFF)</label>
+<div class="p-space-base rounded-xl bg-surface-container-low hover:bg-surface-container flex flex-col sm:flex-row items-center justify-between gap-space-base cursor-pointer transition-colors group">
+<div class="flex items-center gap-space-md">
+<div class="w-12 h-12 rounded-lg bg-tertiary/10 text-tertiary flex items-center justify-center group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[24px]">cloud_upload</span>
+</div>
+<div>
+<p class="font-label-lg text-label-lg text-on-surface font-semibold">Upload signed Dean memo • 2.4 MB max</p>
+<p class="font-body-sm text-body-sm text-outline">Supported formats: Digitally Signed PDF, Authenticated JPG scan</p>
+</div>
+</div>
+<span class="px-space-md py-1.5 rounded-lg bg-surface-container-lowest font-label-md text-label-md text-on-surface shadow-xs">Browse Document</span>
+</div>
+</div>
+<!-- Actions & Immutability Notice -->
+<div class="pt-space-sm flex flex-col md:flex-row md:items-center justify-between gap-space-base">
+<div class="flex items-center gap-space-xs text-outline max-w-md">
+<span class="material-symbols-outlined text-[16px] text-tertiary shrink-0">verified</span>
+<p class="font-body-sm text-body-sm">
+                Enforced orders are recorded immutably in University Senate archives with Warden cryptographic hash signatures.
+              </p>
+</div>
+<div class="flex items-center gap-space-sm shrink-0">
+<button class="px-space-md py-2.5 rounded-lg bg-surface-container text-on-surface font-label-lg text-label-lg hover:bg-surface-container-high transition-colors" onclick="saveDraftNotification()" type="button">
+                Save Draft
+              </button>
+<button class="px-space-lg py-2.5 rounded-lg bg-tertiary hover:bg-tertiary-container text-on-tertiary font-label-lg text-label-lg shadow-md hover:shadow-lg transition-all flex items-center gap-space-xs active:scale-[0.98]" type="submit">
+<span>Issue Authority Directive</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</form>
+</section>
+<!-- Right Column: Institutional Oversight Metric & Rapid Inspection Radar -->
+<div class="lg:col-span-4 flex flex-col gap-space-lg">
+<!-- Live Compliance Metric Card -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col space-y-space-base relative overflow-hidden">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Enforcement Health Index</span>
+<span class="px-space-xs py-space-xxs rounded bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm font-semibold">98.2% SLA</span>
+</div>
+<div class="flex items-baseline gap-space-sm">
+<span class="font-metric-number text-metric-number text-on-surface">8</span>
+<span class="font-body-md text-body-md text-on-surface-variant">Directives Active Statewide</span>
+</div>
+<!-- Inline Progress Chart / Micro Metric Rings -->
+<div class="space-y-space-xs pt-space-xs">
+<div class="flex justify-between font-body-sm text-body-sm">
+<span class="text-on-surface-variant font-medium">Contractor Formal Sign-Offs</span>
+<span class="text-on-surface font-semibold">41 / 44 Kitchens</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 93%;"></div>
+</div>
+<div class="flex justify-between font-body-sm text-body-sm pt-space-xs">
+<span class="text-on-surface-variant font-medium">24h SLA Timers Remaining</span>
+<span class="text-tertiary font-semibold">3 Approaching Breach</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-tertiary rounded-full" style="width: 25%;"></div>
+</div>
+</div>
+<!-- Mini Inspection Dispatch Snapshot -->
+<div class="pt-space-sm mt-space-sm bg-surface-container-low p-space-md rounded-lg flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-full bg-surface-container-lowest flex items-center justify-center text-tertiary shadow-xs shrink-0">
+<span class="material-symbols-outlined text-[20px]">person_check</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-label-sm text-on-surface font-semibold truncate">Surprise Flying Squad Deployed</span>
+<span class="font-body-sm text-body-sm text-outline truncate">Hostels 4, 8 &amp; Annexe Central</span>
+</div>
+</div>
+</div>
+<!-- Kitchen Inspection Protocol Context Card -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm space-y-space-md">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-tertiary text-[22px]">policy</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Warden Prerogative Powers</h3>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+            Issued circulars supersede routine caterer menu schedules. Failure to register digital contractor receipt within 4 hours triggers an immediate physical spot-audit summons.
+          </p>
+<div class="space-y-space-xxs pt-space-xxs">
+<div class="flex items-center gap-space-xs text-on-surface font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px] text-primary">check_circle</span>
+<span>Automated Push to Student Feed</span>
+</div>
+<div class="flex items-center gap-space-xs text-on-surface font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px] text-primary">check_circle</span>
+<span>Direct SMS Dispatch to Caterer Leads</span>
+</div>
+<div class="flex items-center gap-space-xs text-on-surface font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px] text-primary">check_circle</span>
+<span>Registrar Audit Log Verification</span>
+</div>
+</div>
+<div class="pt-space-xs">
+<a class="font-label-md text-label-md text-secondary hover:underline flex items-center gap-1" href="#">
+<span>Review Statutory Clause Book</span>
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</a>
+</div>
+</div>
+<!-- Field Evidence Photo Preview -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex items-center gap-space-md">
+<img class="w-16 h-16 rounded-lg object-cover shrink-0" data-alt="Close up photograph of modern commercial water purification filtration cylinders in an institutional university mess kitchen, stainless steel piping, soft overhead industrial illumination, warm amber inspection tag." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7jKLRmEMXu1qKrWI0dZSa2uslVm2MZdVU6BvdQhSsbFj2MyKJtXSv5x2k-S-m15F92vT9KhdFcDb9CzSerIK0P9d33yM-_1uIz2dYl8Pt3TWzuImkiOjNNc1MLx1HSUxmjKlMXMT-gLE1jJwMcOdKLDavFu0thIiZkZlcZHEJHpzUtWhpBmbDYvAT72f2Xo1hqopkKSDo4g1XFgKuCm6v9P8ljU_TRUR9XUEh8VJFHRB5zlO0C9a1"/>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-label-sm text-outline uppercase font-semibold">Evidence In-File</span>
+<span class="font-body-md text-body-md text-on-surface font-medium truncate">Chiller Membrane Unit #3</span>
+<span class="font-body-sm text-body-sm text-tertiary font-medium">Logged today 08:32 AM</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Section: Enforced Directives & Circulars Registry Table -->
+<section class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex flex-col space-y-space-md p-space-lg">
+<!-- Table Header & Controls -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-base pb-space-sm">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center text-on-surface">
+<span class="material-symbols-outlined text-[20px]">archive</span>
+</div>
+<div>
+<div class="flex items-center gap-space-sm">
+<h2 class="font-headline-md text-headline-md text-on-surface tracking-tight">Enforced Directives &amp; Circulars Registry</h2>
+<span class="px-space-xs py-space-xxs rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm font-semibold">8 Active Directives</span>
+</div>
+<p class="font-body-sm text-body-sm text-outline">Complete repository of issued statutory orders and compliance fulfillment rates.</p>
+</div>
+</div>
+<!-- Table Filters & Search -->
+<div class="flex flex-wrap items-center gap-space-sm">
+<div class="relative w-full sm:w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
+<input class="w-full pl-9 pr-3 py-1.5 rounded-lg bg-surface-container-low text-on-surface font-body-sm text-body-sm placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest" id="directiveSearch" onkeyup="filterDirectiveTable()" placeholder="Search orders or Hall..." type="text"/>
+</div>
+<div class="flex items-center gap-space-xs bg-surface-container-low p-1 rounded-lg">
+<button class="status-pill px-space-sm py-1 rounded font-label-md text-label-md bg-surface-container-lowest text-on-surface font-semibold shadow-xs" onclick="filterStatus('all')">All (12)</button>
+<button class="status-pill px-space-sm py-1 rounded font-label-md text-label-md text-on-surface-variant hover:text-on-surface" onclick="filterStatus('active')">Active (8)</button>
+<button class="status-pill px-space-sm py-1 rounded font-label-md text-label-md text-on-surface-variant hover:text-on-surface" onclick="filterStatus('enforced')">Enforced (3)</button>
+<button class="status-pill px-space-sm py-1 rounded font-label-md text-label-md text-on-surface-variant hover:text-on-surface" onclick="filterStatus('expired')">Archived (1)</button>
+</div>
+</div>
+</div>
+<!-- High Density Table Container -->
+<div class="overflow-x-auto -mx-space-lg px-space-lg">
+<table class="w-full text-left font-body-md text-body-md">
+<thead>
+<tr class="bg-surface-container-low text-outline font-label-sm text-label-sm uppercase tracking-wider">
+<th class="py-space-sm px-space-md rounded-l-lg">Directive ID</th>
+<th class="py-space-sm px-space-md">Subject &amp; Statutory Summary</th>
+<th class="py-space-sm px-space-md">Target Jurisdiction</th>
+<th class="py-space-sm px-space-md">Enforced Timeline</th>
+<th class="py-space-sm px-space-md">Contractor Acknowledgment</th>
+<th class="py-space-sm px-space-md text-right rounded-r-lg">Compliance Actions</th>
+</tr>
+</thead>
+<tbody class="text-on-surface divide-y-0" id="directivesTableBody">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low/50 transition-colors group">
+<td class="py-space-md px-space-md font-mono font-semibold text-on-surface">
+<div class="flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-error animate-pulse"></span>
+<span>DIR-2026-089</span>
+</div>
+</td>
+<td class="py-space-md px-space-md max-w-sm">
+<div class="flex flex-col space-y-space-xxs">
+<div class="flex items-center gap-space-xs">
+<span class="font-label-lg text-label-lg font-semibold text-on-surface group-hover:text-tertiary transition-colors">
+                      Water Chiller Membrane Replacement &amp; ISO Testing
+                    </span>
+<span class="px-1.5 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-[10px] uppercase font-bold tracking-wider">Authority</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Mandatory filter sanitization following water hardness anomalies.</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="px-space-xs py-space-xxs rounded bg-surface-container font-label-md text-label-md text-on-surface font-medium">All 14 Campus Messes</span>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-medium text-on-surface">Oct 24, 2026</span>
+<span class="font-body-sm text-body-sm text-outline">Dr. K. Raman (Warden)</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col gap-space-xxs">
+<div class="flex items-center gap-space-xs">
+<span class="px-space-xs py-0.5 rounded bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold">
+                      9/14 Acknowledged
+                    </span>
+</div>
+<span class="font-body-sm text-body-sm text-tertiary font-medium">5 pending (12h SLA)</span>
+</div>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="flex items-center justify-end gap-space-xs">
+<button class="p-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors" onclick="viewMemo('DIR-2026-089')" title="View Memo PDF">
+<span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+</button>
+<button class="p-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors" onclick="openRevokeModal('DIR-2026-089')" title="Update or Enforce">
+<span class="material-symbols-outlined text-[18px]">update</span>
+</button>
+<button class="px-space-sm py-1.5 rounded-lg bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold hover:bg-tertiary hover:text-on-tertiary transition-colors flex items-center gap-1" title="Live Audit Dossier">
+<span>Audit Dossier</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low/50 transition-colors group">
+<td class="py-space-md px-space-md font-mono font-semibold text-on-surface">
+<div class="flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span>DIR-2026-088</span>
+</div>
+</td>
+<td class="py-space-md px-space-md max-w-sm">
+<div class="flex flex-col space-y-space-xxs">
+<div class="flex items-center gap-space-xs">
+<span class="font-label-lg text-label-lg font-semibold text-on-surface group-hover:text-tertiary transition-colors">
+                      Standard Cold Storage Temp Logging Protocol (≤ 4°C)
+                    </span>
+<span class="px-1.5 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-[10px] uppercase font-bold tracking-wider">Authority</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Mandatory calibrated daily IoT thermal data uplink.</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="px-space-xs py-space-xxs rounded bg-surface-container font-label-md text-label-md text-on-surface font-medium">Halls 3, 4, 7 &amp; 9</span>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-medium text-on-surface">Oct 21, 2026</span>
+<span class="font-body-sm text-body-sm text-outline">Dr. K. Raman (Warden)</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="px-space-xs py-0.5 rounded bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm font-semibold">
+                  4/4 Fully Verified
+                </span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="flex items-center justify-end gap-space-xs">
+<button class="p-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors" onclick="viewMemo('DIR-2026-088')" title="View Memo PDF">
+<span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+</button>
+<button class="p-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors" onclick="openRevokeModal('DIR-2026-088')" title="Update or Enforce">
+<span class="material-symbols-outlined text-[18px]">update</span>
+</button>
+<button class="px-space-sm py-1.5 rounded-lg bg-surface-container-high text-on-surface font-label-sm text-label-sm font-semibold hover:bg-tertiary hover:text-on-tertiary transition-colors flex items-center gap-1" title="Live Audit Dossier">
+<span>Audit Dossier</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low/50 transition-colors group">
+<td class="py-space-md px-space-md font-mono font-semibold text-on-surface">
+<div class="flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span>DIR-2026-085</span>
+</div>
+</td>
+<td class="py-space-md px-space-md max-w-sm">
+<div class="flex flex-col space-y-space-xxs">
+<div class="flex items-center gap-space-xs">
+<span class="font-label-lg text-label-lg font-semibold text-on-surface group-hover:text-tertiary transition-colors">
+                      Non-Branded Raw Spices &amp; Oil Supply Embargo
+                    </span>
+<span class="px-1.5 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-[10px] uppercase font-bold tracking-wider">Authority</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Strict adherence to FSSAI certified grade-A edible mustard/sunflower oil.</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="px-space-xs py-space-xxs rounded bg-surface-container font-label-md text-label-md text-on-surface font-medium">South Quadrant Messes</span>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-medium text-on-surface">Oct 16, 2026</span>
+<span class="font-body-sm text-body-sm text-outline">Prof. S. Nayak (Dean)</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="px-space-xs py-0.5 rounded bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm font-semibold">
+                  6/6 Fully Verified
+                </span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="flex items-center justify-end gap-space-xs">
+<button class="p-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors" onclick="viewMemo('DIR-2026-085')" title="View Memo PDF">
+<span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+</button>
+<button class="p-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors" onclick="openRevokeModal('DIR-2026-085')" title="Update or Enforce">
+<span class="material-symbols-outlined text-[18px]">update</span>
+</button>
+<button class="px-space-sm py-1.5 rounded-lg bg-surface-container-high text-on-surface font-label-sm text-label-sm font-semibold hover:bg-tertiary hover:text-on-tertiary transition-colors flex items-center gap-1" title="Live Audit Dossier">
+<span>Audit Dossier</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low/50 transition-colors group">
+<td class="py-space-md px-space-md font-mono font-semibold text-on-surface">
+<div class="flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+<span>DIR-2026-079</span>
+</div>
+</td>
+<td class="py-space-md px-space-md max-w-sm">
+<div class="flex flex-col space-y-space-xxs">
+<div class="flex items-center gap-space-xs">
+<span class="font-label-lg text-label-lg font-semibold text-on-surface group-hover:text-tertiary transition-colors">
+                      Biometric Staff Hygiene Compliance Certifications
+                    </span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-[10px] uppercase font-bold tracking-wider">Archived</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Semi-annual medical clearance cards for all 310 kitchen line operators.</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="px-space-xs py-space-xxs rounded bg-surface-container font-label-md text-label-md text-on-surface font-medium">All 14 Campus Messes</span>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-medium text-on-surface">Oct 02, 2026</span>
+<span class="font-body-sm text-body-sm text-outline">Dr. K. Raman (Warden)</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="px-space-xs py-0.5 rounded bg-surface-container font-label-sm text-label-sm text-outline font-medium">
+                  Closed • Cycle Concluded
+                </span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="flex items-center justify-end gap-space-xs">
+<button class="p-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors" onclick="viewMemo('DIR-2026-079')" title="View Memo PDF">
+<span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+</button>
+<button class="px-space-sm py-1.5 rounded-lg bg-surface-container text-on-surface-variant font-label-sm text-label-sm font-semibold hover:bg-surface-container-high transition-colors" title="View Archive Copy">
+                    Archive Copy
+                  </button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination & Ledger Summary Footer -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between pt-space-md gap-space-sm font-body-sm text-body-sm text-outline">
+<div class="flex items-center gap-space-xs">
+<span>Showing 1-4 of 12 statutory entries</span>
+<span>•</span>
+<span class="text-tertiary font-medium">Registry Synced with Office of Dean (Student Affairs)</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<button class="px-3 py-1 rounded bg-surface-container text-on-surface font-label-md text-label-md cursor-not-allowed opacity-60">Prev</button>
+<button class="px-3 py-1 rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-md text-label-md font-bold">1</button>
+<button class="px-3 py-1 rounded bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md">2</button>
+<button class="px-3 py-1 rounded bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md">Next</button>
+</div>
+</div>
+</section>
+</div>
+<!-- Notification Toast Container -->
+<div class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none" id="toastNotification">
+<div class="bg-inverse-surface text-inverse-on-surface px-space-base py-space-sm rounded-lg shadow-xl flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary-fixed text-[20px]" id="toastIcon">check_circle</span>
+<span class="font-body-md text-body-md font-medium" id="toastMessage">Directive successfully synchronized.</span>
+</div>
+</div>
+</div>
+<script>
+  function showToast(message, icon = 'check_circle') {
+    const toast = document.getElementById('toastNotification');
+    const toastMessage = document.getElementById('toastMessage');
+    const toastIcon = document.getElementById('toastIcon');
+    if (!toast) return;
+
+    toastMessage.textContent = message;
+    toastIcon.textContent = icon;
+    toast.classList.remove('translate-y-24', 'opacity-0', 'pointer-events-none');
+    toast.classList.add('translate-y-0', 'opacity-100');
+
+    setTimeout(() => {
+      toast.classList.remove('translate-y-0', 'opacity-100');
+      toast.classList.add('translate-y-24', 'opacity-0', 'pointer-events-none');
+    }, 3800);
+  }
+
+  function handlePublishDirective() {
+    const title = document.getElementById('directiveTitle').value;
+    if (!title) return;
+    showToast(`Order "${title.substring(0, 36)}..." published to Senate Registrar!`, 'gavel');
+    
+    // Add row to top of table dynamically for instant feedback
+    const tbody = document.getElementById('directivesTableBody');
+    if (tbody) {
+      const newId = `DIR-2026-09${Math.floor(Math.random() * 9 + 1)}`;
+      const newRow = document.createElement('tr');
+      newRow.className = "hover:bg-surface-container-low/50 transition-colors group bg-tertiary-fixed/10";
+      newRow.innerHTML = `
+        <td class="py-space-md px-space-md font-mono font-semibold text-on-surface">
+          <div class="flex items-center gap-space-xs">
+            <span class="w-2 h-2 rounded-full bg-error animate-pulse"></span>
+            <span>${newId}</span>
+          </div>
+        </td>
+        <td class="py-space-md px-space-md max-w-sm">
+          <div class="flex flex-col space-y-space-xxs">
+            <div class="flex items-center gap-space-xs">
+              <span class="font-label-lg text-label-lg font-semibold text-on-surface">${title}</span>
+              <span class="px-1.5 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-[10px] uppercase font-bold tracking-wider">Authority</span>
+            </div>
+            <span class="font-body-sm text-body-sm text-on-surface-variant truncate">Just enacted by Dr. K. Raman.</span>
+          </div>
+        </td>
+        <td class="py-space-md px-space-md">
+          <span class="px-space-xs py-space-xxs rounded bg-surface-container font-label-md text-label-md text-on-surface font-medium">Campus Wide</span>
+        </td>
+        <td class="py-space-md px-space-md">
+          <div class="flex flex-col">
+            <span class="font-label-md text-label-md font-medium text-on-surface">Just Now</span>
+            <span class="font-body-sm text-body-sm text-outline">Dr. K. Raman</span>
+          </div>
+        </td>
+        <td class="py-space-md px-space-md">
+          <span class="px-space-xs py-0.5 rounded bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold">
+            0/14 Dispatched
+          </span>
+        </td>
+        <td class="py-space-md px-space-md text-right">
+          <button class="px-space-sm py-1.5 rounded-lg bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold">
+            Audit Dossier
+          </button>
+        </td>
+      `;
+      tbody.insertBefore(newRow, tbody.firstChild);
+    }
+  }
+
+  function triggerBroadcastSync() {
+    showToast("Broadcast synchronization queued: Pushing notices to 4,200 active student feeds & 14 mess noticeboards.", "cell_tower");
+  }
+
+  function saveDraftNotification() {
+    showToast("Draft directive saved to supervisory local store.", "save");
+  }
+
+  function viewMemo(id) {
+    showToast(`Accessing authenticated PDF for order: ${id}`, "picture_as_pdf");
+  }
+
+  function openRevokeModal(id) {
+    showToast(`Authority console opened for modification of order: ${id}`, "edit_note");
+  }
+
+  function filterStatus(status) {
+    document.querySelectorAll('.status-pill').forEach(btn => {
+      btn.className = "status-pill px-space-sm py-1 rounded font-label-md text-label-md text-on-surface-variant hover:text-on-surface";
+    });
+    event.currentTarget.className = "status-pill px-space-sm py-1 rounded font-label-md text-label-md bg-surface-container-lowest text-on-surface font-semibold shadow-xs";
+    showToast(`Registry filtered to: ${status.toUpperCase()} records.`, "filter_list");
+  }
+
+  function filterDirectiveTable() {
+    const input = document.getElementById('directiveSearch');
+    const filter = input.value.toLowerCase();
+    const rows = document.querySelectorAll('#directivesTableBody tr');
+
+    rows.forEach(row => {
+      const text = row.textContent.toLowerCase();
+      row.style.display = text.includes(filter) ? '' : 'none';
+    });
+  }
+
+  document.getElementById('quickJumpFormBtn')?.addEventListener('click', () => {
+    document.getElementById('directiveFormCard')?.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('directiveTitle')?.focus();
+  });
+</script></main></div></body></html>

@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>Track Complaints — Food Buddy</title>
+  <link rel="stylesheet" href="/css/main.css"/>
+  <script src="/js/vendor/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    /* Stats strip */
+    .kpi-mini-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .kpi-mini-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: var(--shadow-xs);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Filter & Search Toolbar */
+    .toolbar-container {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 14px 18px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      box-shadow: var(--shadow-xs);
+    }
+    .filter-chips-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+    .filter-chip {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      background: var(--bg-surface-secondary);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .filter-chip:hover {
+      color: var(--text-main);
+      background: #E2E8F0;
+    }
+    .filter-chip.active {
+      background: #D1FAE5;
+      color: #065F46;
+      border-color: #A7F3D0;
+      font-weight: 700;
+    }
+
+    /* Table */
+    .complaint-table-wrap {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow-xs);
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 14px;
+    }
+    .data-table th {
+      background: var(--bg-surface-secondary);
+      color: var(--text-muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .data-table td {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-main);
+    }
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+    .data-table tr.clickable-row {
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .data-table tr.clickable-row:hover {
+      background: #F8FAFC;
+    }
+    .data-table tr.active-row {
+      background: #F0FDF4;
+    }
+
+    /* Side Drawer Overlay & Scrim */
+    .drawer-scrim {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(2px);
+      z-index: 99;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .drawer-scrim.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .side-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      max-width: 500px;
+      background: var(--bg-surface);
+      box-shadow: -4px 0 24px rgba(0,0,0,0.15);
+      z-index: 100;
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+    }
+    .side-drawer.open {
+      transform: translateX(0);
+    }
+    .drawer-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .drawer-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .drawer-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border-color);
+      background: var(--bg-surface-secondary);
+      display: flex;
+      gap: 12px;
+    }
+
+    /* 4-Step Timeline in Drawer */
+    .timeline-container {
+      position: relative;
+      padding-left: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .timeline-container::before {
+      content: '';
+      position: absolute;
+      left: 11px;
+      top: 10px;
+      bottom: 10px;
+      width: 2px;
+      background: #E2E8F0;
+    }
+    .timeline-step {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .timeline-dot {
+      position: absolute;
+      left: -28px;
+      top: 2px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #E2E8F0;
+      color: #94A3B8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      border: 3px solid var(--bg-surface);
+      z-index: 1;
+    }
+    .timeline-step.completed .timeline-dot {
+      background: #059669;
+      color: #ffffff;
+    }
+    .timeline-step.current .timeline-dot {
+      background: #2563EB;
+      color: #ffffff;
+      box-shadow: 0 0 0 4px #DBEAFE;
+    }
+    .timeline-step.escalated-step .timeline-dot {
+      background: #DC2626;
+      color: #ffffff;
+      box-shadow: 0 0 0 4px #FEE2E2;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="app-sidebar"></aside>
+
+    <div class="app-main">
+      <header class="app-topbar"></header>
+
+      <main class="content-container">
+        <!-- Top Stats Strip -->
+        <div class="kpi-mini-grid">
+          <div class="kpi-mini-card">
+            <div>
+              <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--text-muted);">Total Logged</div>
+              <div style="font-size: 26px; font-weight: 700; color: var(--text-main); margin-top: 2px;" id="statTotalLogged">0</div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">This Academic Term</div>
+            </div>
+            <div style="width: 44px; height: 44px; border-radius: 10px; background: #F1F5F9; color: #64748B; display: flex; align-items: center; justify-content: center;">
+              <span class="material-symbols-outlined" style="font-size: 24px;">inbox</span>
+            </div>
+          </div>
+
+          <div class="kpi-mini-card">
+            <div>
+              <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--text-muted);">In Review / Active</div>
+              <div style="font-size: 26px; font-weight: 700; color: #2563EB; margin-top: 2px;" id="statInReview">0</div>
+              <div style="font-size: 12px; color: #2563EB; font-weight: 600; margin-top: 2px;" id="statActiveTicketTag">Active tracking</div>
+            </div>
+            <div style="width: 44px; height: 44px; border-radius: 10px; background: #DBEAFE; color: #1E40AF; display: flex; align-items: center; justify-content: center;">
+              <span class="material-symbols-outlined" style="font-size: 24px;">pending_actions</span>
+            </div>
+          </div>
+
+          <div class="kpi-mini-card">
+            <div>
+              <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--text-muted);">Resolved</div>
+              <div style="font-size: 26px; font-weight: 700; color: #059669; margin-top: 2px;" id="statResolved">0</div>
+              <div style="font-size: 12px; color: #059669; font-weight: 600; margin-top: 2px;">Avg SLA 3.4 hrs</div>
+            </div>
+            <div style="width: 44px; height: 44px; border-radius: 10px; background: #D1FAE5; color: #065F46; display: flex; align-items: center; justify-content: center;">
+              <span class="material-symbols-outlined" style="font-size: 24px;">check_circle</span>
+            </div>
+          </div>
+
+          <div class="kpi-mini-card">
+            <div>
+              <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--text-muted);">Escalations</div>
+              <div style="font-size: 26px; font-weight: 700; color: #DC2626; margin-top: 2px;" id="statEscalated">0</div>
+              <div style="font-size: 12px; color: #DC2626; font-weight: 600; margin-top: 2px;">Warden Desk Triggered</div>
+            </div>
+            <div style="width: 44px; height: 44px; border-radius: 10px; background: #FEE2E2; color: #991B1B; display: flex; align-items: center; justify-content: center;">
+              <span class="material-symbols-outlined" style="font-size: 24px;">campaign</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Page Header & New Button -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px;">
+              <span>Mess Committee Audit</span>
+              <span>•</span>
+              <span style="color: var(--color-primary);">Student Ledger</span>
+            </div>
+            <h1 style="font-size: 26px; font-weight: 700; color: var(--text-main); margin: 0;">Track Complaints & Grievances</h1>
+            <p style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">
+              Real-time audit log of your submitted issues with automated escalation tracking.
+            </p>
+          </div>
+
+          <div style="display: flex; gap: 10px;">
+            <a href="/student/complaints/new.html" class="btn btn-primary" style="display: flex; align-items: center; gap: 6px;">
+              <span class="material-symbols-outlined" style="font-size: 18px;">add_circle</span>
+              <span>File New Grievance</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="toolbar-container">
+          <div class="filter-chips-wrap">
+            <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-right: 4px;">Filter:</span>
+            <button class="filter-chip active" id="filter-all" onclick="setFilter('all')">All (<span id="countAll">0</span>)</button>
+            <button class="filter-chip" id="filter-submitted" onclick="setFilter('submitted')">Submitted</button>
+            <button class="filter-chip" id="filter-in_progress" onclick="setFilter('in_progress')">In Progress</button>
+            <button class="filter-chip" id="filter-resolved" onclick="setFilter('resolved')">Resolved</button>
+            <button class="filter-chip" id="filter-escalated" onclick="setFilter('escalated')">Escalated</button>
+          </div>
+
+          <div style="position: relative; width: 100%; max-width: 280px;">
+            <span class="material-symbols-outlined" style="position: absolute; left: 10px; top: 10px; font-size: 18px; color: var(--text-muted);">search</span>
+            <input type="text" id="searchInput" class="input-field" placeholder="Search Tracking ID or keyword..." style="padding-left: 34px; height: 38px; font-size: 13px;" oninput="applyFilters()"/>
+          </div>
+        </div>
+
+        <!-- Complaints Table -->
+        <div class="complaint-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Tracking ID</th>
+                <th>Category</th>
+                <th>Subject & Details</th>
+                <th>Submitted Date</th>
+                <th>Status</th>
+                <th style="text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="complaintsTableBody">
+              <tr>
+                <td colspan="6" style="text-align: center; padding: 36px; color: var(--text-muted);">
+                  Loading your complaints history...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Side Drawer Scrim -->
+  <div class="drawer-scrim" id="drawerScrim" onclick="closeDrawer()"></div>
+
+  <!-- Side Drawer -->
+  <aside class="side-drawer" id="complaintDrawer">
+    <div class="drawer-header">
+      <div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 18px; font-weight: 700; color: var(--text-main);" id="drawerTrackingId">FB-2026-00000</span>
+          <span id="drawerCategoryBadge" class="badge">Category</span>
+        </div>
+        <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Automated SLA Tracking Active</div>
+      </div>
+      <button onclick="closeDrawer()" style="background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 4px; border-radius: 6px;">
+        <span class="material-symbols-outlined" style="font-size: 22px;">close</span>
+      </button>
+    </div>
+
+    <div class="drawer-body">
+      <!-- Incident Card -->
+      <div style="background: var(--bg-surface-secondary); padding: 16px; border-radius: 12px; border: 1px solid var(--border-color);">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">
+          <h2 style="font-size: 16px; font-weight: 700; color: var(--text-main); margin: 0;" id="drawerSubject">Grievance Subject</h2>
+          <span id="drawerStatusBadge" class="badge">In Progress</span>
+        </div>
+        <div style="font-size: 13px; color: var(--text-muted); margin-top: 8px; line-height: 1.5; white-space: pre-wrap;" id="drawerDescription">
+          Description content...
+        </div>
+        <div style="font-size: 11px; color: var(--text-muted); margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 8px;" id="drawerTimestamp">
+          Submitted on ...
+        </div>
+      </div>
+
+      <!-- Attached Photographic Evidence -->
+      <div id="drawerMediaSection" style="display:none; flex-direction: column; gap: 8px;">
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted);">Attached Photographic Evidence</div>
+        <div id="drawerMediaThumbnails" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px;"></div>
+      </div>
+
+      <!-- 4-Step SLA Timeline -->
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted);">Resolution Workflow SLA Audit</div>
+        <div class="timeline-container" id="drawerTimeline">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- Manager's Resolution Note -->
+      <div id="drawerResolutionCard" style="display:none; background: #ECFDF5; border: 1px solid #A7F3D0; padding: 16px; border-radius: 12px;">
+        <div style="display: flex; align-items: center; gap: 8px; color: #065F46; font-weight: 700; font-size: 13px; margin-bottom: 6px;">
+          <span class="material-symbols-outlined" style="font-size: 18px;">rate_review</span>
+          <span>Mess Manager Resolution Note</span>
+        </div>
+        <p style="font-size: 13px; color: #047857; line-height: 1.5; margin: 0;" id="drawerResolutionNote">
+          Resolution note content...
+        </p>
+        <div style="font-size: 11px; color: #059669; margin-top: 8px; font-weight: 600;" id="drawerResolvedAt">
+          Resolved at ...
+        </div>
+      </div>
+    </div>
+
+    <div class="drawer-footer">
+      <button class="btn btn-secondary" onclick="closeDrawer()" style="width: 100%;">Close</button>
+    </div>
+  </aside>
+
+  <script type="module">
+    import { requireAuth } from '/js/auth.js';
+    import { initAppShell, showToast } from '/js/app-shell.js';
+    import { getSupabase } from '/js/supabase.js';
+
+    const foodBuddySupabase = getSupabase();
+    let complaintsList = [];
+    let currentFilter = 'all';
+    let currentUser = null;
+
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      currentUser = await requireAuth('student');
+      if (!currentUser) return;
+
+      initAppShell({
+        activeNav: 'complaints',
+        user: {
+          name: currentUser.profile?.full_name || 'Student Resident',
+          roll_number: currentUser.profile?.roll_number || '2025CSB1001',
+          room_number: currentUser.profile?.room_number || 'B-314',
+          hostel_block: currentUser.profile?.hostel_block || 'North Hostel'
+        }
+      });
+
+      await loadComplaints();
+
+      // Check if a specific tracking ID is requested in the URL
+      const params = new URLSearchParams(window.location.search);
+      const targetId = params.get('tracking_id');
+      if (targetId) {
+        const match = complaintsList.find(c => c.tracking_id === targetId);
+        if (match) {
+          openDrawer(match);
+        }
+      }
+    });
+
+    async function loadComplaints() {
+      try {
+        const { data, error } = await foodBuddySupabase
+          .from('complaints')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        complaintsList = data || [];
+
+        updateStats();
+        applyFilters();
+      } catch (err) {
+        console.error('Error loading complaints:', err);
+        showToast('Error loading complaints list.', 'error');
+      }
+    }
+
+    function updateStats() {
+      const total = complaintsList.length;
+      const inReview = complaintsList.filter(c => c.status === 'submitted' || c.status === 'under_review' || c.status === 'in_progress').length;
+      const resolved = complaintsList.filter(c => c.status === 'resolved').length;
+      const escalated = complaintsList.filter(c => c.escalated || c.status === 'escalated').length;
+
+      document.getElementById('statTotalLogged').textContent = total;
+      document.getElementById('statInReview').textContent = inReview;
+      document.getElementById('statResolved').textContent = resolved;
+      document.getElementById('statEscalated').textContent = escalated;
+      document.getElementById('countAll').textContent = total;
+    }
+
+    function setFilter(status) {
+      currentFilter = status;
+      ['all', 'submitted', 'in_progress', 'resolved', 'escalated'].forEach(s => {
+        const btn = document.getElementById(`filter-${s}`);
+        if (!btn) return;
+        if (s === status) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const q = document.getElementById('searchInput').value.trim().toLowerCase();
+      const filtered = complaintsList.filter(c => {
+        const matchStatus = (currentFilter === 'all')
+          ? true
+          : (currentFilter === 'escalated' ? (c.escalated || c.status === 'escalated') : c.status === currentFilter);
+
+        const matchSearch = !q ||
+          (c.tracking_id && c.tracking_id.toLowerCase().includes(q)) ||
+          (c.category && c.category.toLowerCase().includes(q)) ||
+          (c.description && c.description.toLowerCase().includes(q));
+
+        return matchStatus && matchSearch;
+      });
+
+      renderTable(filtered);
+    }
+
+    function renderTable(list) {
+      const tbody = document.getElementById('complaintsTableBody');
+      if (!list.length) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" style="text-align: center; padding: 40px; color: var(--text-muted);">
+              <span class="material-symbols-outlined" style="font-size: 32px; color: #94A3B8; margin-bottom: 6px;">find_in_page</span>
+              <p style="font-size: 14px; font-weight: 600; color: var(--text-main); margin: 0;">No matching complaints found</p>
+              <span style="font-size: 12px;">Adjust your filters or submit a new grievance above.</span>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      const statusMap = {
+        submitted: { label: 'Submitted', badgeClass: 'badge-gray', icon: 'send' },
+        under_review: { label: 'Under Review', badgeClass: 'badge-yellow', icon: 'search' },
+        in_progress: { label: 'In Progress', badgeClass: 'badge-blue', icon: 'pending_actions' },
+        resolved: { label: 'Resolved', badgeClass: 'badge-green', icon: 'check_circle' },
+        escalated: { label: 'Escalated', badgeClass: 'badge-red', icon: 'warning' }
+      };
+
+      tbody.innerHTML = list.map(c => {
+        const statusMeta = statusMap[c.status] || { label: c.status, badgeClass: 'badge-gray', icon: 'info' };
+        const dateStr = new Date(c.created_at).toLocaleString('en-US', {
+          month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
+
+        // Parse subject from description if formatted
+        let subject = c.category;
+        if (c.description && c.description.startsWith('Subject:')) {
+          subject = c.description.split('\n')[0].replace('Subject:', '').trim();
+        }
+
+        const hasMedia = c.media_paths && c.media_paths.length > 0;
+
+        return `
+          <tr class="clickable-row" onclick="openDrawerByTrackingId('${c.tracking_id}')">
+            <td>
+              <strong style="color: var(--color-primary); font-family: monospace; font-size: 13px;">${c.tracking_id}</strong>
+            </td>
+            <td>
+              <span class="badge badge-gray" style="text-transform: capitalize;">${c.category.replace('_', ' ')}</span>
+            </td>
+            <td>
+              <div style="font-weight: 600; color: var(--text-main); max-width: 320px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                ${subject}
+              </div>
+              ${hasMedia ? `<span style="font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 3px; margin-top: 2px;"><span class="material-symbols-outlined" style="font-size: 13px;">attachment</span> ${c.media_paths.length} file(s) attached</span>` : ''}
+            </td>
+            <td style="color: var(--text-muted); font-size: 13px;">${dateStr}</td>
+            <td>
+              <span class="badge ${statusMeta.badgeClass}">
+                <span class="material-symbols-outlined" style="font-size: 13px;">${statusMeta.icon}</span>
+                ${statusMeta.label}
+              </span>
+            </td>
+            <td style="text-align: right;">
+              <span style="font-size: 13px; font-weight: 600; color: var(--color-primary);">View Timeline →</span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function openDrawerByTrackingId(tid) {
+      const match = complaintsList.find(c => c.tracking_id === tid);
+      if (match) openDrawer(match);
+    }
+
+    async function openDrawer(complaint) {
+      document.getElementById('drawerTrackingId').textContent = complaint.tracking_id;
+      document.getElementById('drawerCategoryBadge').textContent = complaint.category.replace('_', ' ').toUpperCase();
+
+      let subject = complaint.category.replace('_', ' ').toUpperCase() + ' Grievance';
+      let details = complaint.description;
+      if (complaint.description && complaint.description.startsWith('Subject:')) {
+        const parts = complaint.description.split('\n\nIncident Details:\n');
+        subject = complaint.description.split('\n')[0].replace('Subject:', '').trim();
+        details = parts[1] || complaint.description;
+      }
+
+      document.getElementById('drawerSubject').textContent = subject;
+      document.getElementById('drawerDescription').textContent = details;
+      document.getElementById('drawerTimestamp').textContent = `Submitted on ${new Date(complaint.created_at).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}`;
+
+      // Status badge in drawer
+      const statusBadge = document.getElementById('drawerStatusBadge');
+      statusBadge.textContent = (complaint.status || 'submitted').replace('_', ' ').toUpperCase();
+      statusBadge.className = complaint.status === 'resolved' ? 'badge badge-green' : (complaint.status === 'in_progress' ? 'badge badge-blue' : 'badge badge-yellow');
+
+      // Media section
+      const mediaSection = document.getElementById('drawerMediaSection');
+      const mediaThumbs = document.getElementById('drawerMediaThumbnails');
+      if (complaint.media_paths && complaint.media_paths.length) {
+        mediaSection.style.display = 'flex';
+        mediaThumbs.innerHTML = '<span style="font-size: 12px; color: var(--text-muted);">Generating secure signed links...</span>';
+
+        const thumbPromises = complaint.media_paths.map(async (path) => {
+          const { data, error } = await foodBuddySupabase.storage
+            .from('complaint-media')
+            .createSignedUrl(path, 3600);
+          if (error || !data?.signedUrl) return '';
+          return `
+            <a href="${data.signedUrl}" target="_blank" rel="noopener noreferrer" style="display: block; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color); text-decoration: none;">
+              <img src="${data.signedUrl}" style="width: 100%; height: 90px; object-fit: cover;" onerror="this.onerror=null; this.src='https://via.placeholder.com/140x90?text=Evidence';"/>
+              <span style="display: block; font-size: 10px; padding: 4px 6px; background: #fff; color: var(--color-primary); font-weight: 600; text-align: center;">View Full Evidence ↗</span>
+            </a>
+          `;
+        });
+        const thumbs = await Promise.all(thumbPromises);
+        mediaThumbs.innerHTML = thumbs.join('');
+      } else {
+        mediaSection.style.display = 'none';
+      }
+
+      // 4-Step Timeline
+      renderDrawerTimeline(complaint);
+
+      // Resolution Card
+      const resCard = document.getElementById('drawerResolutionCard');
+      const resNote = document.getElementById('drawerResolutionNote');
+      const resAt = document.getElementById('drawerResolvedAt');
+      if (complaint.status === 'resolved' || complaint.resolution_note) {
+        resCard.style.display = 'block';
+        resNote.textContent = complaint.resolution_note || 'The issue has been investigated and resolved in accordance with hostel catering guidelines.';
+        resAt.textContent = complaint.resolved_at ? `Resolved on ${new Date(complaint.resolved_at).toLocaleString()}` : 'Resolved by Mess Management';
+      } else {
+        resCard.style.display = 'none';
+      }
+
+      document.getElementById('drawerScrim').classList.add('open');
+      document.getElementById('complaintDrawer').classList.add('open');
+    }
+
+    function renderDrawerTimeline(c) {
+      const container = document.getElementById('drawerTimeline');
+      const s = c.status || 'submitted';
+
+      const isSubDone = true;
+      const isReviewDone = s === 'under_review' || s === 'in_progress' || s === 'resolved';
+      const isInProgDone = s === 'in_progress' || s === 'resolved';
+      const isResolvedDone = s === 'resolved';
+      const isEscalated = c.escalated || s === 'escalated';
+
+      const dateStr = new Date(c.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+      container.innerHTML = `
+        <!-- Step 1: Submitted -->
+        <div class="timeline-step ${isSubDone ? 'completed' : ''}">
+          <div class="timeline-dot"><span class="material-symbols-outlined" style="font-size: 14px;">check</span></div>
+          <div style="font-weight: 700; font-size: 13px; color: var(--text-main);">1. Submitted</div>
+          <div style="font-size: 12px; color: var(--text-muted);">${dateStr} • Authenticated with Student UID</div>
+        </div>
+
+        <!-- Step 2: Under Review -->
+        <div class="timeline-step ${isReviewDone ? 'completed' : (s === 'under_review' ? 'current' : '')}">
+          <div class="timeline-dot"><span class="material-symbols-outlined" style="font-size: 14px;">${isReviewDone ? 'check' : 'search'}</span></div>
+          <div style="font-weight: 700; font-size: 13px; color: var(--text-main);">2. Under Review</div>
+          <div style="font-size: 12px; color: var(--text-muted);">${isReviewDone ? 'Shift supervisor dispatched for kitchen verification' : 'Awaiting mess supervisor queue'}</div>
+        </div>
+
+        <!-- Step 3: In Progress -->
+        <div class="timeline-step ${isInProgDone ? 'completed' : (s === 'in_progress' ? 'current' : '')}">
+          <div class="timeline-dot"><span class="material-symbols-outlined" style="font-size: 14px;">${isInProgDone ? 'check' : 'pending_actions'}</span></div>
+          <div style="font-weight: 700; font-size: 13px; color: var(--text-main);">3. In Progress</div>
+          <div style="font-size: 12px; color: var(--text-muted);">${isInProgDone ? 'Kitchen team taking remedial actions & replacing batch' : 'Pending inspection outcome'}</div>
+        </div>
+
+        <!-- Step 4: Resolved / Escalated -->
+        ${isEscalated ? `
+          <div class="timeline-step escalated-step">
+            <div class="timeline-dot"><span class="material-symbols-outlined" style="font-size: 14px;">warning</span></div>
+            <div style="font-weight: 700; font-size: 13px; color: #DC2626;">4. Escalated to Warden</div>
+            <div style="font-size: 12px; color: var(--text-muted);">SLA threshold exceeded; escalated to Higher Administration.</div>
+          </div>
+        ` : `
+          <div class="timeline-step ${isResolvedDone ? 'completed' : ''}">
+            <div class="timeline-dot"><span class="material-symbols-outlined" style="font-size: 14px;">${isResolvedDone ? 'check' : 'task_alt'}</span></div>
+            <div style="font-weight: 700; font-size: 13px; color: var(--text-main);">4. Resolved</div>
+            <div style="font-size: 12px; color: var(--text-muted);">${isResolvedDone ? 'Official resolution note logged by Mess Management' : 'Pending final closure signoff'}</div>
+          </div>
+        `}
+      `;
+    }
+
+    function closeDrawer() {
+      document.getElementById('drawerScrim').classList.remove('open');
+      document.getElementById('complaintDrawer').classList.remove('open');
+    }
+
+    window.setFilter = setFilter;
+    window.applyFilters = applyFilters;
+    window.openDrawerByTrackingId = openDrawerByTrackingId;
+    window.openDrawer = openDrawer;
+    window.closeDrawer = closeDrawer;
+  </script>
+</body>
+</html>
+

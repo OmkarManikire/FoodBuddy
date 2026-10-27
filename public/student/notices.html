@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>Notices & Circulars — Food Buddy</title>
+  <link rel="stylesheet" href="/css/main.css"/>
+  <script src="/js/vendor/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    .notice-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: var(--shadow-xs);
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .notice-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-1px);
+    }
+    .notice-card.unread {
+      border-left: 5px solid var(--color-primary);
+      background: #FAFCFF;
+    }
+    .notice-card.authority-card {
+      border-left: 5px solid #D97706;
+    }
+    .authority-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: #FEF3C7;
+      color: #92400E;
+      border: 1px solid #FDE68A;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .manager-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: #DBEAFE;
+      color: #1E40AF;
+      border: 1px solid #BFDBFE;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .filter-tab {
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      border: none;
+      background: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .filter-tab.active {
+      background: var(--bg-surface);
+      color: var(--text-main);
+      font-weight: 700;
+      box-shadow: var(--shadow-xs);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="app-sidebar"></aside>
+
+    <div class="app-main">
+      <header class="app-topbar"></header>
+
+      <main class="content-container">
+        <!-- Header -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--color-primary); margin-bottom: 4px;">
+              <span class="material-symbols-outlined" style="font-size: 16px;">campaign</span>
+              <span>Official Mess Bulletin</span>
+            </div>
+            <h1 style="font-size: 26px; font-weight: 700; color: var(--text-main); margin: 0;">Notices & Circulars</h1>
+            <p style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">
+              Direct notifications from the Mess Manager and Campus Hostel Administration.
+            </p>
+          </div>
+
+          <div style="display: flex; background: var(--bg-surface-secondary); padding: 4px; border-radius: 10px; border: 1px solid var(--border-color); gap: 4px;">
+            <button class="filter-tab active" id="filter-all" onclick="setNoticeFilter('all')">All Notices</button>
+            <button class="filter-tab" id="filter-authority" onclick="setNoticeFilter('authority')">Authority Alerts</button>
+            <button class="filter-tab" id="filter-manager" onclick="setNoticeFilter('manager')">Mess Manager</button>
+          </div>
+        </div>
+
+        <!-- 2 Column Layout -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; align-items: start;">
+          <!-- Notices Feed -->
+          <div style="display: flex; flex-direction: column; gap: 16px;" id="noticesListContainer">
+            <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+              Loading notices...
+            </div>
+          </div>
+
+          <!-- Right Sidebar: Contacts & Rules -->
+          <div style="display: flex; flex-direction: column; gap: 20px;">
+            <!-- Key Officers Card -->
+            <div style="background: var(--bg-surface); border: 1px solid var(--border-card); border-radius: 12px; padding: 20px; box-shadow: var(--shadow-xs);">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 14px;">
+                <span class="material-symbols-outlined" style="color: var(--color-primary);">verified_user</span>
+                <h3 style="font-size: 15px; font-weight: 700; color: var(--text-main); margin: 0;">Mess Administrative Staff</h3>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 12px; font-size: 13px;">
+                <div style="display: flex; align-items: flex-start; gap: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color);">
+                  <div style="width: 32px; height: 32px; border-radius: 50%; background: #FEF3C7; color: #92400E; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">W</div>
+                  <div>
+                    <strong style="color: var(--text-main);">Dr. K. Raman</strong>
+                    <div style="color: var(--text-muted); font-size: 11px;">Hostel Chief Warden • Ext. 101</div>
+                    <div style="color: var(--color-primary); font-size: 11px; margin-top: 2px;">warden@campus.edu</div>
+                  </div>
+                </div>
+
+                <div style="display: flex; align-items: flex-start; gap: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color);">
+                  <div style="width: 32px; height: 32px; border-radius: 50%; background: #DBEAFE; color: #1E40AF; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">M</div>
+                  <div>
+                    <strong style="color: var(--text-main);">Mr. R. Sharma</strong>
+                    <div style="color: var(--text-muted); font-size: 11px;">Central Mess Manager • Ext. 402</div>
+                    <div style="color: var(--color-primary); font-size: 11px; margin-top: 2px;">mess.manager@foodbuddy.campus</div>
+                  </div>
+                </div>
+
+                <div style="display: flex; align-items: flex-start; gap: 10px;">
+                  <div style="width: 32px; height: 32px; border-radius: 50%; background: #D1FAE5; color: #065F46; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">S</div>
+                  <div>
+                    <strong style="color: var(--text-main);">Student Dining Council</strong>
+                    <div style="color: var(--text-muted); font-size: 11px;">Elected Mess Representatives</div>
+                    <div style="color: var(--color-primary); font-size: 11px; margin-top: 2px;">student.council@campus.edu</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dining Guidelines & Etiquette -->
+            <div style="background: var(--bg-surface); border: 1px solid var(--border-card); border-radius: 12px; padding: 20px; box-shadow: var(--shadow-xs);">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                <span class="material-symbols-outlined" style="color: #D97706;">rule</span>
+                <h3 style="font-size: 15px; font-weight: 700; color: var(--text-main); margin: 0;">Dining Hall Etiquette</h3>
+              </div>
+
+              <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: var(--text-muted); line-height: 1.6; display: flex; flex-direction: column; gap: 6px;">
+                <li>Scan QR attendance at the turnstile before approaching counters.</li>
+                <li>Avoid food wastage: Take only portions you can finish.</li>
+                <li>Return trays and cutlery cleanly to the conveyor belt station.</li>
+                <li>Do not take mess utensils or glassware outside dining halls.</li>
+                <li>For acute concerns, use the <em>File a Complaint</em> form with photos.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { requireAuth } from '/js/auth.js';
+    import { initAppShell, showToast } from '/js/app-shell.js';
+    import { getSupabase } from '/js/supabase.js';
+
+    const foodBuddySupabase = getSupabase();
+    let notices = [];
+    let readNoticeIds = new Set();
+    let currentFilter = 'all';
+    let currentUser = null;
+
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      currentUser = await requireAuth('student');
+      if (!currentUser) return;
+
+      initAppShell({
+        activeNav: 'notices',
+        user: {
+          name: currentUser.profile?.full_name || 'Student Resident',
+          roll_number: currentUser.profile?.roll_number || '2025CSB1001',
+          room_number: currentUser.profile?.room_number || 'B-314',
+          hostel_block: currentUser.profile?.hostel_block || 'North Hostel'
+        }
+      });
+
+      await loadNotices();
+    });
+
+    function setNoticeFilter(type) {
+      currentFilter = type;
+      ['all', 'authority', 'manager'].forEach(t => {
+        const btn = document.getElementById(`filter-${t}`);
+        if (!btn) return;
+        if (t === type) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+      renderNotices();
+    }
+
+    async function loadNotices() {
+      try {
+        // Fetch active notices (not archived and not expired)
+        const now = new Date().toISOString();
+        const { data: noticeData, error: noticeErr } = await foodBuddySupabase
+          .from('notices')
+          .select('*')
+          .eq('is_archived', false)
+          .order('created_at', { ascending: false });
+
+        if (noticeErr) throw noticeErr;
+
+        const studentId = currentUser.user?.id || currentUser.id || currentUser.profile?.id;
+        const { data: readData, error: readErr } = await foodBuddySupabase
+          .from('notice_reads')
+          .select('notice_id')
+          .eq('student_id', studentId);
+
+        if (!readErr && readData) {
+          readNoticeIds = new Set(readData.map(r => r.notice_id));
+        }
+
+        notices = noticeData || [];
+        renderNotices();
+      } catch (err) {
+        console.error('Error loading notices:', err);
+      }
+    }
+
+    function renderNotices() {
+      const container = document.getElementById('noticesListContainer');
+      const filtered = notices.filter(n => {
+        if (currentFilter === 'all') return true;
+        const isAuth = n.posted_by === 'authority' || n.posted_by === 'Authority' || n.posted_by === 'Higher Authority';
+        if (currentFilter === 'authority') return isAuth;
+        if (currentFilter === 'manager') return !isAuth;
+        return n.posted_by === currentFilter;
+      });
+
+      if (!filtered.length) {
+        container.innerHTML = `
+          <div style="background: var(--bg-surface); border: 1px dashed var(--border-color); border-radius: 12px; padding: 40px; text-align: center; color: var(--text-muted);">
+            <span class="material-symbols-outlined" style="font-size: 36px; color: #94A3B8; margin-bottom: 8px;">notifications_off</span>
+            <p style="font-size: 15px; font-weight: 600; color: var(--text-main); margin: 0;">No notices in this category</p>
+            <span style="font-size: 13px;">Check back later for new hostel circulars.</span>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(n => {
+        const isRead = readNoticeIds.has(n.id);
+        const isAuthority = n.posted_by === 'authority' || n.posted_by === 'Authority' || n.posted_by === 'Higher Authority';
+        const dateStr = new Date(n.created_at).toLocaleString('en-US', {
+          month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
+
+        return `
+          <article class="notice-card ${!isRead ? 'unread' : ''} ${isAuthority ? 'authority-card' : ''}" onclick="onNoticeClicked('${n.id}')">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                ${isAuthority 
+                  ? `<span class="authority-badge"><span class="material-symbols-outlined" style="font-size: 13px;">verified</span> Authority</span>`
+                  : `<span class="manager-badge"><span class="material-symbols-outlined" style="font-size: 13px;">restaurant</span> Posted by Mess Manager</span>`
+                }
+                ${!isRead ? `<span style="font-size: 10px; font-weight: 700; background: #059669; color: #fff; padding: 1px 6px; border-radius: 4px;">NEW</span>` : ''}
+              </div>
+              <span style="font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 4px;">
+                <span class="material-symbols-outlined" style="font-size: 14px;">schedule</span>
+                ${dateStr}
+              </span>
+            </div>
+
+            <div>
+              <h2 style="font-size: 17px; font-weight: 700; color: var(--text-main); margin: 0 0 6px 0; line-height: 1.3;">
+                ${n.title}
+              </h2>
+              <p style="font-size: 14px; color: var(--text-muted); line-height: 1.5; margin: 0; white-space: pre-wrap;">
+                ${n.body}
+              </p>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 10px; font-size: 12px; color: var(--text-muted);">
+              <span>${isAuthority ? 'Verified by Hostel Warden Office' : 'Official Dining Counter Circular'}</span>
+              <span style="color: ${isRead ? 'var(--text-muted)' : 'var(--color-primary)'}; font-weight: 600; display: flex; align-items: center; gap: 4px;">
+                <span class="material-symbols-outlined" style="font-size: 15px;">${isRead ? 'done_all' : 'mark_chat_read'}</span>
+                ${isRead ? 'Read' : 'Mark as read'}
+              </span>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    async function onNoticeClicked(noticeId) {
+      if (readNoticeIds.has(noticeId)) return;
+
+      try {
+        const { data, error } = await foodBuddySupabase.rpc('mark_notice_as_read', {
+          p_notice_id: noticeId
+        });
+
+        if (!error && data?.success) {
+          readNoticeIds.add(noticeId);
+          renderNotices();
+          // Also update topbar badge
+          const badge = document.getElementById('notifBadge');
+          if (badge) {
+            const current = parseInt(badge.textContent || '1', 10);
+            if (current <= 1) {
+              badge.style.display = 'none';
+            } else {
+              badge.textContent = current - 1;
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Error marking notice as read:', err);
+      }
+    }
+
+    window.setNoticeFilter = setNoticeFilter;
+    window.onNoticeClicked = onNoticeClicked;
+  </script>
+</body>
+</html>
+

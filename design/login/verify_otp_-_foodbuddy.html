@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_blank" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "on-primary-container": "#f5fff7",
+          "on-tertiary-container": "#fffbff",
+          "on-primary-fixed": "#002114",
+          "surface": "#faf8ff",
+          "on-surface": "#131b2e",
+          "tertiary-container": "#b15f00",
+          "on-primary-fixed-variant": "#005137",
+          "on-error": "#ffffff",
+          "on-tertiary-fixed-variant": "#6e3900",
+          "on-surface-variant": "#3d4a42",
+          "surface-tint": "#006c4a",
+          "primary-container": "#00855d",
+          "tertiary-fixed": "#ffdcc3",
+          "surface-container-low": "#f2f3ff",
+          "inverse-primary": "#68dba9",
+          "on-secondary-fixed-variant": "#003ea8",
+          "primary-fixed-dim": "#68dba9",
+          "on-secondary-fixed": "#00174b",
+          "primary": "#006948",
+          "on-tertiary": "#ffffff",
+          "on-primary": "#ffffff",
+          "outline": "#6d7a72",
+          "error": "#ba1a1a",
+          "secondary": "#0051d5",
+          "surface-container": "#eaedff",
+          "outline-variant": "#bccac0",
+          "primary-fixed": "#85f8c4",
+          "surface-container-highest": "#dae2fd",
+          "surface-dim": "#d2d9f4",
+          "secondary-container": "#316bf3",
+          "on-tertiary-fixed": "#2f1500",
+          "surface-container-lowest": "#ffffff",
+          "inverse-on-surface": "#eef0ff",
+          "surface-bright": "#faf8ff",
+          "surface-variant": "#dae2fd",
+          "on-secondary-container": "#fefcff",
+          "background": "#faf8ff",
+          "on-background": "#131b2e",
+          "inverse-surface": "#283044",
+          "error-container": "#ffdad6",
+          "on-secondary": "#ffffff",
+          "secondary-fixed-dim": "#b4c5ff",
+          "secondary-fixed": "#dbe1ff",
+          "on-error-container": "#93000a",
+          "surface-container-high": "#e2e7ff",
+          "tertiary": "#8d4b00",
+          "tertiary-fixed-dim": "#ffb77d"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.25rem",
+          "lg": "0.5rem",
+          "xl": "0.75rem",
+          "full": "9999px"
+        },
+        "spacing": {
+          "gutter": "1rem",
+          "space-xl": "2rem",
+          "space-xxs": "0.125rem",
+          "space-sm": "0.5rem",
+          "space-md": "0.75rem",
+          "space-2xl": "3rem",
+          "margin-desktop": "2rem",
+          "gutter-desktop": "1.5rem",
+          "space-lg": "1.5rem",
+          "margin-tablet": "1.5rem",
+          "margin": "1rem",
+          "space-base": "1rem",
+          "space-xs": "0.25rem"
+        },
+        "fontFamily": {
+          "label-md": ["Inter"],
+          "label-sm": ["Inter"],
+          "headline-md": ["Inter"],
+          "display-lg": ["Inter"],
+          "headline-lg": ["Inter"],
+          "body-sm": ["Inter"],
+          "body-md": ["Inter"],
+          "display-lg-mobile": ["Inter"],
+          "headline-sm": ["Inter"],
+          "metric-number": ["Inter"],
+          "body-lg": ["Inter"],
+          "label-lg": ["Inter"]
+        },
+        "fontSize": {
+          "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+          "label-sm": ["11px", {"lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+          "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+          "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+          "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600"}],
+          "body-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+          "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+          "display-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "700"}],
+          "headline-sm": ["16px", {"lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600"}],
+          "metric-number": ["28px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+          "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+          "label-lg": ["14px", {"lineHeight": "20px", "fontWeight": "500"}]
+        }
+      }
+    }
+  }</script></head><body class="bg-surface font-body-md text-body-md text-on-surface"><main class="w-full min-h-screen bg-surface flex items-center justify-center p-space-md"><div class="flex flex-col w-full">
+<div class="w-full max-w-6xl mx-auto my-auto shadow-xl rounded-xl overflow-hidden bg-surface-container-lowest">
+<div class="grid grid-cols-1 lg:grid-cols-12 min-h-[640px]">
+<!-- Left Column: Form & Interaction -->
+<div class="lg:col-span-7 p-6 sm:p-10 md:p-14 flex flex-col justify-between bg-surface-container-lowest">
+<!-- Top Nav & Logo Section -->
+<div>
+<div class="flex items-center justify-between mb-8">
+<a class="inline-flex items-center gap-1.5 font-label-md text-label-md text-outline hover:text-primary transition-colors group" href="#">
+<span class="material-symbols-outlined text-[18px] transition-transform group-hover:-translate-x-1">arrow_back</span>
+<span>Back to login</span>
+</a>
+<!-- Campus Institutional Session Badge -->
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span>Hostel Block 4 • Mess Node</span>
+</div>
+</div>
+<!-- Brand Logo Header -->
+<div class="flex items-center gap-3 mb-8">
+<div class="w-11 h-11 rounded-xl bg-primary flex items-center justify-center text-on-primary shadow-sm">
+<!-- Replicating the warm bowl + steam monogram identity from user prompt -->
+<svg aria-hidden="true" class="w-7 h-7 fill-current" viewbox="0 0 48 48">
+<path d="M19 12c.3 1.8-.7 3.6-2.2 4.4-1.2.6-1.8 1.8-1.5 3.1.2.8.8 1.4 1.6 1.7 1.8.6 3.8-.4 4.5-2.2 1.1-2.9 0-6.1-2.4-7zM24.8 9c.4 2.2-.8 4.4-2.7 5.4-1.4.7-2.2 2.2-1.9 3.8.3 1 1 1.7 2 2.1 2.2.7 4.6-.5 5.5-2.7 1.3-3.6 0-7.5-2.9-8.6zM30.6 12c.3 1.8-.7 3.6-2.2 4.4-1.2.6-1.8 1.8-1.5 3.1.2.8.8 1.4 1.6 1.7 1.8.6 3.8-.4 4.5-2.2 1.1-2.9 0-6.1-2.4-7z"></path>
+<path d="M10 24c0 7.7 6.3 14 14 14s14-6.3 14-14H10zm14 9a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"></path>
+</svg>
+</div>
+<div>
+<span class="font-headline-md text-headline-md tracking-tight text-on-surface font-bold">FoodBuddy</span>
+<span class="block font-label-sm text-label-sm text-outline tracking-wider uppercase">Dining Verification</span>
+</div>
+</div>
+<!-- Form Header -->
+<div class="space-y-2 mb-8">
+<h1 class="font-display-lg text-display-lg text-on-surface">Two-Step Verification</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-md">
+              Enter the 6-digit access code sent to your campus credentials:
+              <span class="block mt-1 font-label-lg text-label-lg text-on-surface font-semibold bg-surface-container-low px-2.5 py-1 rounded-md inline-block">aarav.patel@campus.edu</span>
+</p>
+</div>
+<!-- OTP Input Form -->
+<form class="space-y-6" id="otp-form" onsubmit="event.preventDefault(); handleVerification();">
+<div>
+<div class="flex items-center justify-between mb-3">
+<label class="font-label-md text-label-md uppercase tracking-wider text-outline font-semibold">Security Passcode</label>
+<button class="font-label-sm text-label-sm text-primary hover:text-primary-container transition-colors font-semibold inline-flex items-center gap-1" onclick="pasteClipboard()" type="button">
+<span class="material-symbols-outlined text-[14px]">content_paste</span>
+<span>Paste code</span>
+</button>
+</div>
+<!-- 6 Square Input Slots -->
+<div class="grid grid-cols-6 gap-2 sm:gap-3.5" id="otp-inputs-container">
+<input autofocus="" class="otp-box h-14 sm:h-16 text-center font-metric-number text-metric-number rounded-lg bg-surface-container-low text-on-surface transition-all outline-none focus:bg-surface-container-lowest focus:shadow-md" data-index="0" inputmode="numeric" maxlength="1" pattern="[0-9]*" placeholder="•" type="text"/>
+<input class="otp-box h-14 sm:h-16 text-center font-metric-number text-metric-number rounded-lg bg-surface-container-low text-on-surface transition-all outline-none focus:bg-surface-container-lowest focus:shadow-md" data-index="1" inputmode="numeric" maxlength="1" pattern="[0-9]*" placeholder="•" type="text"/>
+<input class="otp-box h-14 sm:h-16 text-center font-metric-number text-metric-number rounded-lg bg-surface-container-low text-on-surface transition-all outline-none focus:bg-surface-container-lowest focus:shadow-md" data-index="2" inputmode="numeric" maxlength="1" pattern="[0-9]*" placeholder="•" type="text"/>
+<input class="otp-box h-14 sm:h-16 text-center font-metric-number text-metric-number rounded-lg bg-surface-container-low text-on-surface transition-all outline-none focus:bg-surface-container-lowest focus:shadow-md" data-index="3" inputmode="numeric" maxlength="1" pattern="[0-9]*" placeholder="•" type="text"/>
+<input class="otp-box h-14 sm:h-16 text-center font-metric-number text-metric-number rounded-lg bg-surface-container-low text-on-surface transition-all outline-none focus:bg-surface-container-lowest focus:shadow-md" data-index="4" inputmode="numeric" maxlength="1" pattern="[0-9]*" placeholder="•" type="text"/>
+<input class="otp-box h-14 sm:h-16 text-center font-metric-number text-metric-number rounded-lg bg-surface-container-low text-on-surface transition-all outline-none focus:bg-surface-container-lowest focus:shadow-md" data-index="5" inputmode="numeric" maxlength="1" pattern="[0-9]*" placeholder="•" type="text"/>
+</div>
+</div>
+<!-- Timer and Resend Row -->
+<div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+<div class="inline-flex items-center gap-1.5 text-on-surface-variant font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px] text-tertiary">schedule</span>
+<span>Code expires in <strong class="text-on-surface font-semibold font-mono" id="countdown-timer">04:58</strong></span>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-2">
+<span>Didn't receive the code?</span>
+<button class="font-label-md text-label-md font-semibold text-outline cursor-not-allowed opacity-70 transition-all" disabled="" id="resend-btn" type="button">
+                  Resend in <span id="resend-timer">28s</span>
+</button>
+</div>
+</div>
+<!-- Primary Action Button -->
+<div class="pt-2">
+<button class="w-full h-12 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg font-semibold flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all active:scale-[0.99]" id="submit-btn" type="submit">
+<span>Verify &amp; Login</span>
+<span class="material-symbols-outlined text-[18px]">verified_user</span>
+</button>
+</div>
+</form>
+</div>
+<!-- Helpdesk & Auxiliary Footer -->
+<div class="pt-8 mt-6">
+<div class="p-4 rounded-xl bg-surface-container-low flex items-start gap-3">
+<span class="material-symbols-outlined text-outline text-[20px] mt-0.5">info</span>
+<div class="font-body-sm text-body-sm text-on-surface-variant">
+<span>Please check your university spam or quarantine folder if not delivered immediately.</span>
+<span class="block mt-0.5 font-label-sm text-label-sm text-on-surface">
+                Need immediate access? <a class="text-secondary font-semibold hover:underline" href="#">Contact Campus IT Helpdesk</a>
+</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Visual Brand Elevation Panel -->
+<div class="lg:col-span-5 bg-gradient-to-br from-primary via-primary-container to-surface-tint p-8 sm:p-12 text-on-primary flex flex-col justify-between relative overflow-hidden">
+<!-- Ambient Decorative Radial Glows (Containment compliant) -->
+<div class="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-primary-fixed opacity-15 blur-3xl pointer-events-none"></div>
+<div class="absolute -bottom-24 -left-24 w-80 h-80 rounded-full bg-secondary-fixed opacity-15 blur-3xl pointer-events-none"></div>
+<!-- Top Monogram & Branding -->
+<div class="relative z-10">
+<div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-on-primary/10 backdrop-blur-md mb-8">
+<span class="material-symbols-outlined text-primary-fixed text-[18px]">security</span>
+<span class="font-label-sm text-label-sm tracking-wide text-on-primary font-medium uppercase">Campus Guard 2.4</span>
+</div>
+<div class="w-16 h-16 rounded-2xl bg-on-primary/15 backdrop-blur-md flex items-center justify-center text-primary-fixed mb-6 shadow-inner">
+<svg aria-hidden="true" class="w-10 h-10 fill-current" viewbox="0 0 48 48">
+<path d="M19 12c.3 1.8-.7 3.6-2.2 4.4-1.2.6-1.8 1.8-1.5 3.1.2.8.8 1.4 1.6 1.7 1.8.6 3.8-.4 4.5-2.2 1.1-2.9 0-6.1-2.4-7zM24.8 9c.4 2.2-.8 4.4-2.7 5.4-1.4.7-2.2 2.2-1.9 3.8.3 1 1 1.7 2 2.1 2.2.7 4.6-.5 5.5-2.7 1.3-3.6 0-7.5-2.9-8.6zM30.6 12c.3 1.8-.7 3.6-2.2 4.4-1.2.6-1.8 1.8-1.5 3.1.2.8.8 1.4 1.6 1.7 1.8.6 3.8-.4 4.5-2.2 1.1-2.9 0-6.1-2.4-7z"></path>
+<path d="M10 24c0 7.7 6.3 14 14 14s14-6.3 14-14H10zm14 9a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"></path>
+</svg>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-primary mb-3">
+            Better Food • Better Hygiene • Better Experience
+          </h2>
+<p class="font-body-md text-body-md text-on-primary/80">
+            Real-time digital meal check-in, transparent nutrient logs, and student-powered kitchen accountability across all residence dining halls.
+          </p>
+</div>
+<!-- Trust & Security Highlights -->
+<div class="relative z-10 space-y-4 my-8">
+<!-- Card 1: Session Security -->
+<div class="p-4 rounded-xl bg-on-primary/10 backdrop-blur-md transition-all hover:bg-on-primary/15">
+<div class="flex items-center gap-3.5">
+<div class="w-10 h-10 rounded-lg bg-on-primary/20 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[20px] text-primary-fixed">key</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-primary">Cryptographic Session Token</h3>
+<p class="font-body-sm text-body-sm text-on-primary/75">End-to-end encrypted single-use tokens prevent turnstile and meal pass duplicates.</p>
+</div>
+</div>
+</div>
+<!-- Card 2: Instant Dining Hall Clearance -->
+<div class="p-4 rounded-xl bg-on-primary/10 backdrop-blur-md transition-all hover:bg-on-primary/15">
+<div class="flex items-center gap-3.5">
+<div class="w-10 h-10 rounded-lg bg-on-primary/20 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[20px] text-primary-fixed">fastfood</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-primary">Instant Dining Hall Clearance</h3>
+<p class="font-body-sm text-body-sm text-on-primary/75">Bypasses manual line register sign-offs with dynamic QR token handshakes.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Session Signature -->
+<div class="relative z-10 pt-4 flex items-center justify-between text-on-primary/60 font-label-sm text-label-sm">
+<span>Campus SSO v3.19</span>
+<span class="inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">lock</span>
+            Encrypted TLS 1.3
+          </span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+  // OTP Interaction Logic
+  const inputs = document.querySelectorAll('.otp-box');
+  const resendBtn = document.getElementById('resend-btn');
+  const resendTimer = document.getElementById('resend-timer');
+  const countdownTimer = document.getElementById('countdown-timer');
+
+  inputs.forEach((input, index) => {
+    input.addEventListener('input', (e) => {
+      const val = e.target.value.replace(/[^0-9]/g, '');
+      e.target.value = val;
+      
+      if (val) {
+        e.target.classList.add('bg-surface-container-lowest', 'text-primary');
+        if (index < inputs.length - 1) {
+          inputs[index + 1].focus();
+        }
+      } else {
+        e.target.classList.remove('text-primary');
+      }
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Backspace' && !e.target.value && index > 0) {
+        inputs[index - 1].focus();
+      }
+    });
+
+    input.addEventListener('paste', (e) => {
+      e.preventDefault();
+      const pasteData = (e.clipboardData || window.clipboardData).getData('text').trim();
+      const numbers = pasteData.replace(/[^0-9]/g, '').slice(0, 6);
+      fillOtp(numbers);
+    });
+  });
+
+  function fillOtp(text) {
+    text.split('').forEach((char, idx) => {
+      if (inputs[idx]) {
+        inputs[idx].value = char;
+        inputs[idx].classList.add('bg-surface-container-lowest', 'text-primary');
+      }
+    });
+    const nextIdx = Math.min(text.length, inputs.length - 1);
+    inputs[nextIdx].focus();
+  }
+
+  function pasteClipboard() {
+    navigator.clipboard.readText().then(text => {
+      const digits = text.replace(/[^0-9]/g, '').slice(0, 6);
+      if (digits) {
+        fillOtp(digits);
+      }
+    }).catch(() => {
+      inputs[0].focus();
+    });
+  }
+
+  // Resend Countdown
+  let resendSeconds = 28;
+  const resendInterval = setInterval(() => {
+    resendSeconds--;
+    if (resendSeconds > 0) {
+      resendTimer.textContent = resendSeconds + 's';
+    } else {
+      clearInterval(resendInterval);
+      resendBtn.removeAttribute('disabled');
+      resendBtn.classList.remove('text-outline', 'cursor-not-allowed', 'opacity-70');
+      resendBtn.classList.add('text-primary', 'hover:text-primary-container', 'cursor-pointer');
+      resendBtn.innerHTML = 'Resend OTP';
+      resendBtn.onclick = () => {
+        alert('A fresh 6-digit access OTP has been sent to aarav.patel@campus.edu');
+        resendBtn.setAttribute('disabled', 'true');
+        resendBtn.classList.add('text-outline', 'cursor-not-allowed', 'opacity-70');
+        resendBtn.innerHTML = 'Resend in 30s';
+      };
+    }
+  }, 1000);
+
+  // Expiration countdown
+  let totalExpirationSeconds = 298; // 04:58
+  setInterval(() => {
+    if (totalExpirationSeconds > 0) {
+      totalExpirationSeconds--;
+      const minutes = String(Math.floor(totalExpirationSeconds / 60)).padStart(2, '0');
+      const seconds = String(totalExpirationSeconds % 60).padStart(2, '0');
+      countdownTimer.textContent = `${minutes}:${seconds}`;
+    } else {
+      countdownTimer.textContent = 'Expired';
+      countdownTimer.classList.add('text-error');
+    }
+  }, 1000);
+
+  function handleVerification() {
+    const code = Array.from(inputs).map(i => i.value).join('');
+    if (code.length < 6) {
+      alert('Please enter all 6 digits of the OTP.');
+      return;
+    }
+    const submitBtn = document.getElementById('submit-btn');
+    submitBtn.innerHTML = `
+      <span class="inline-block animate-spin mr-2">◌</span>
+      <span>Authenticating Token...</span>
+    `;
+    setTimeout(() => {
+      alert('Verification successful! Forwarding to FoodBuddy Student Dashboard.');
+      submitBtn.innerHTML = `<span>Verified ✓</span>`;
+      submitBtn.classList.add('bg-primary-container');
+    }, 900);
+  }
+</script></main></body></html>

@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>FoodBuddy — Campus Mess Management System</title>
+  <meta name="description" content="Empowering students, mess managers, and hostel authorities with real-time feedback, transparent menus, QR attendance, and automated resolution tracking across campus dining halls." />
+  <meta content="web_standard" name="shell-type">
+  
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+  
+  <!-- Supabase Vendor & Client -->
+  <script src="/js/vendor/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    @layer base {
+      html, body { margin: 0; padding: 0; background-color: #020617; color: #f8fafc; }
+      body { overscroll-behavior: none; }
+      main > :first-child { margin-top: 0 !important; }
+      main > :last-child { margin-bottom: 0 !important; }
+    }
+    ::-webkit-scrollbar { display: none; }
+  </style>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#006948",
+            "primary-container": "#00855d",
+            "on-primary": "#ffffff",
+            "on-primary-container": "#f5fff7",
+            "primary-fixed": "#85f8c4",
+            "primary-fixed-dim": "#68dba9",
+            "secondary": "#0051d5",
+            "secondary-container": "#316bf3",
+            "on-secondary": "#ffffff",
+            "tertiary": "#8d4b00",
+            "tertiary-container": "#b15f00",
+            "tertiary-fixed": "#ffdcc3",
+            "surface": "#020617",
+            "surface-dim": "#0b1226",
+            "surface-bright": "#1e293b",
+            "on-surface": "#f8fafc",
+            "on-surface-variant": "#94a3b8",
+            "outline": "#6d7a72",
+            "outline-variant": "#bccac0",
+            "error": "#ba1a1a"
+          },
+          fontFamily: {
+            "display-lg": ["Inter", "sans-serif"],
+            "headline-lg": ["Inter", "sans-serif"],
+            "headline-md": ["Inter", "sans-serif"],
+            "headline-sm": ["Inter", "sans-serif"],
+            "body-lg": ["Inter", "sans-serif"],
+            "body-md": ["Inter", "sans-serif"],
+            "body-sm": ["Inter", "sans-serif"],
+            "label-lg": ["Inter", "sans-serif"],
+            "label-md": ["Inter", "sans-serif"],
+            "label-sm": ["Inter", "sans-serif"],
+            "metric-number": ["Inter", "sans-serif"]
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-950 font-body-md text-body-md text-slate-100 antialiased selection:bg-primary/30 selection:text-emerald-300">
+
+<!-- Header Navigation -->
+<header class="fixed top-0 w-full z-50 bg-slate-950/80 backdrop-blur-xl border-b border-white/10 transition-all duration-300">
+  <div class="h-16 max-w-7xl mx-auto px-6 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <a href="/" class="flex items-center gap-2.5 text-decoration-none">
+        <img alt="FoodBuddy Brand Logo" class="h-9 w-9 rounded-xl object-contain shadow-lg" src="/images/stitch/brand_logo.svg">
+        <span class="font-headline-sm text-base text-white font-bold tracking-tight">FoodBuddy <span class="text-primary-fixed font-normal text-xs uppercase px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 ml-1">Campus</span></span>
+      </a>
+    </div>
+    <nav class="hidden md:flex items-center gap-8 text-sm">
+      <a aria-current="page" class="text-emerald-400 font-semibold transition-colors flex items-center gap-1.5" href="#roles">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+        Role Portals
+      </a>
+      <a class="text-slate-300 hover:text-white transition-colors" href="#architecture">Core System</a>
+      <a class="text-slate-300 hover:text-white transition-colors" href="#interactive-preview">Live Demo</a>
+      <a class="text-slate-300 hover:text-white transition-colors" href="/register.html">Registration</a>
+      <a class="text-slate-300 hover:text-white transition-colors" href="#trust">Compliance</a>
+    </nav>
+    <div class="flex items-center gap-2.5">
+      <a class="text-xs font-semibold px-3.5 py-1.5 rounded-full bg-white/10 text-white hover:bg-white/20 border border-white/15 transition-all text-decoration-none" href="/login.html">Sign In</a>
+      <a class="text-xs font-semibold px-3.5 py-1.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-400/30 transition-all flex items-center gap-1.5 shadow-md shadow-emerald-950/40 text-decoration-none" href="/register.html">
+        <span class="material-symbols-outlined text-[16px]">person_add</span>
+        <span>Register</span>
+      </a>
+      <div class="w-8 h-8 rounded-full bg-emerald-600/80 border border-emerald-400/40 flex items-center justify-center">
+        <span class="material-symbols-outlined text-white text-[18px]">person</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="w-full pt-16">
+  <!-- Top System Notification Pill -->
+  <div class="w-full bg-slate-900 border-b border-emerald-500/20 py-2.5 px-6 text-center text-xs">
+    <div class="max-w-7xl mx-auto flex items-center justify-center gap-2 text-slate-300 flex-wrap">
+      <span class="inline-flex w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+      <span class="font-semibold text-white">Spring 2025 Semester Deployment:</span>
+      <span class="hidden sm:inline">Automated SLA Escalation Matrix v3.2 active across 18 Campus Hostels</span>
+      <a class="ml-1 font-semibold text-emerald-400 underline underline-offset-2 hover:opacity-80 transition-opacity" href="#roles">Select Portal →</a>
+      <span class="text-slate-600 mx-1">•</span>
+      <a class="font-semibold text-emerald-300 underline underline-offset-2 hover:text-white transition-colors inline-flex items-center gap-1" href="/register.html">
+        <span class="material-symbols-outlined text-[14px]">how_to_reg</span>
+        <span>Register New User / Student →</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- IMMERSIVE COMBINED HERO & ROLE PORTALS STAGE WITH BACKGROUND PHOTO -->
+  <section class="relative w-full overflow-hidden min-h-[92vh] flex flex-col justify-between" id="hero-portal-section">
+    <!-- Atmospheric Dining Hall Photographic Background -->
+    <div class="absolute inset-0 z-0">
+      <img alt="Modern university campus dining hall" class="w-full h-full object-cover object-center" src="/images/stitch/hero_bg.jpg">
+      <div class="absolute inset-0" style="background: linear-gradient(180deg, rgba(8, 14, 28, 0.40) 0%, rgba(8, 14, 28, 0.65) 55%, rgba(2, 6, 23, 0.95) 100%);"></div>
+      <div class="absolute inset-0 bg-radial from-transparent to-slate-950/70 pointer-events-none"></div>
+    </div>
+
+    <!-- Hero Content -->
+    <div class="relative z-10 max-w-7xl mx-auto px-6 pt-12 pb-8 w-full">
+      <div class="w-full flex flex-col items-center justify-center">
+        <div class="flex flex-col items-center text-center gap-6 text-white max-w-4xl mx-auto py-6">
+          <div class="inline-flex items-center gap-2 bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 px-4 py-1.5 rounded-full w-fit shadow-xl shadow-black/40 backdrop-blur-md">
+            <span class="material-symbols-outlined text-[18px] text-emerald-400">verified</span>
+            <span class="text-xs font-semibold tracking-wider uppercase">Institutional Dining Intelligence</span>
+          </div>
+          
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.14] text-balance" style="text-shadow: 0 4px 20px rgba(0,0,0,0.95);">
+            Better Food <span class="text-emerald-400">•</span> Better Hygiene <span class="text-sky-400">•</span> Better Experience
+          </h1>
+          
+          <p class="text-slate-200 text-base sm:text-xl max-w-3xl leading-relaxed mx-auto font-medium" style="text-shadow: 0 2px 10px rgba(0,0,0,0.9);">
+            Empowering students, mess managers, and hostel authorities with real-time feedback, transparent menus, QR attendance, and automated resolution tracking across campus dining halls.
+          </p>
+          
+          <div class="flex flex-wrap items-center justify-center gap-4 pt-2">
+            <a class="inline-flex items-center justify-center gap-2 bg-emerald-600 text-white font-semibold text-sm sm:text-base px-8 py-3.5 rounded-xl shadow-xl shadow-emerald-950/60 hover:bg-emerald-500 transition-all transform hover:-translate-y-0.5 border border-emerald-400/30 text-decoration-none" href="#roles">
+              <span>Access Your Portal</span>
+              <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+            </a>
+            <a class="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white font-medium text-sm sm:text-base px-8 py-3.5 rounded-xl backdrop-blur-md border border-white/20 transition-all shadow-md text-decoration-none" href="#interactive-preview">
+              <span class="material-symbols-outlined text-[20px] text-emerald-400">play_circle</span>
+              <span>Try Live Interactive Demo</span>
+            </a>
+          </div>
+
+          <!-- Direct Link to Registration for New Users -->
+          <div class="pt-0.5">
+            <a href="/register.html" class="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-300 hover:text-white bg-slate-900/70 border border-emerald-500/30 hover:border-emerald-400/50 px-4 py-2 rounded-full transition-all text-decoration-none backdrop-blur-md shadow-lg shadow-black/40">
+              <span class="material-symbols-outlined text-[16px] text-emerald-400">person_add</span>
+              <span>New to FoodBuddy? Register new student or campus account here →</span>
+            </a>
+          </div>
+
+          <!-- 3 Metric Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 w-full max-w-2xl mx-auto">
+            <div class="p-4 rounded-xl bg-slate-900/60 border border-white/15 backdrop-blur-md flex flex-col items-center justify-center shadow-xl">
+              <span class="text-3xl font-bold text-emerald-400 tracking-tight">99.2%</span>
+              <span class="text-[11px] font-semibold text-slate-300 uppercase mt-0.5">SLA Resolution</span>
+              <span class="text-[11px] text-slate-400">Closed &lt;12 hrs</span>
+            </div>
+            <div class="p-4 rounded-xl bg-slate-900/60 border border-white/15 backdrop-blur-md flex flex-col items-center justify-center shadow-xl">
+              <span class="text-3xl font-bold text-sky-400 tracking-tight">45k+</span>
+              <span class="text-[11px] font-semibold text-slate-300 uppercase mt-0.5">Daily Meals</span>
+              <span class="text-[11px] text-slate-400">QR scanned</span>
+            </div>
+            <div class="p-4 rounded-xl bg-slate-900/60 border border-white/15 backdrop-blur-md flex flex-col items-center justify-center shadow-xl">
+              <div class="flex items-center gap-1">
+                <span class="text-3xl font-bold text-amber-400 tracking-tight">4.8</span>
+                <span class="material-symbols-outlined text-amber-400 text-[22px]" style="font-variation-settings: 'FILL' 1;">star</span>
+              </div>
+              <span class="text-[11px] font-semibold text-slate-300 uppercase mt-0.5">Satisfaction</span>
+              <span class="text-[11px] text-slate-400">120k+ ratings</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3 GLASSMORPHIC ROLE LOGIN & REGISTRATION PORTALS (Inside atmospheric hero background) -->
+      <div class="mt-8 pt-8 border-t border-white/15" id="roles">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-6">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Direct Role Authentication &amp; Onboarding</span>
+            <h2 class="text-xl sm:text-2xl font-bold text-white tracking-tight">Select your campus workspace to login or register</h2>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-300 max-w-md">Role-governed authentication ensures students, mess supervisors, and wardens access encrypted workspaces.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- 1. Hostel Student Portal Card -->
+          <div class="group relative flex flex-col justify-between rounded-2xl p-6 bg-slate-900/85 hover:bg-slate-900/95 backdrop-blur-xl border border-emerald-500/30 hover:border-emerald-400 shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+            <div class="absolute inset-x-0 top-0 h-28 bg-gradient-to-t from-transparent to-emerald-500/10 pointer-events-none rounded-t-2xl"></div>
+            <div class="relative z-10 flex flex-col">
+              <div class="flex items-center justify-between gap-2 mb-4">
+                <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 text-[11px] font-extrabold uppercase tracking-wider px-3 py-1 rounded-full shadow-md backdrop-blur-md flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[14px] text-emerald-300">school</span> Student Portal
+                </span>
+                <span class="text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full text-xs font-mono font-medium">ID: @student</span>
+              </div>
+              <div class="flex items-center gap-3.5 mb-4">
+                <div class="w-12 h-12 rounded-xl overflow-hidden shadow-lg shadow-emerald-950/40 group-hover:scale-105 transition-transform border border-emerald-400/30 flex items-center justify-center bg-slate-950/60 p-1 shrink-0">
+                  <img src="/images/stitch/student_logo.svg" alt="Hostel Student Portal Emblem" class="w-full h-full object-contain">
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold text-white tracking-tight leading-tight">Hostel Student</h3>
+                  <span class="text-xs text-emerald-400 font-medium">Daily Dining &amp; Passes</span>
+                </div>
+              </div>
+              <p class="text-sm text-slate-300 mb-5 leading-relaxed">
+                Real-time daily menu, instant QR meal token, transparent complaint filing with photo evidence, and meal feedback.
+              </p>
+              <ul class="space-y-2.5 mb-6 text-xs text-slate-200">
+                <li class="flex items-center gap-2.5">
+                  <span class="material-symbols-outlined text-emerald-400 text-[18px]">check_circle</span>
+                  <span class="font-medium">Flash-pass dynamic QR Meal Token</span>
+                </li>
+                <li class="flex items-center gap-2.5">
+                  <span class="material-symbols-outlined text-emerald-400 text-[18px]">check_circle</span>
+                  <span class="font-medium">5-Star taste &amp; nutrition rating per meal</span>
+                </li>
+                <li class="flex items-center gap-2.5">
+                  <span class="material-symbols-outlined text-emerald-400 text-[18px]">check_circle</span>
+                  <span class="font-medium">Photo-backed hygiene grievance tracking</span>
+                </li>
+                <li class="flex items-center gap-2.5">
+                  <span class="material-symbols-outlined text-emerald-400 text-[18px]">check_circle</span>
+                  <span class="font-medium">Weekly menu advance polling &amp; requests</span>
+                </li>
+              </ul>
+            </div>
+            <div class="relative z-10 flex flex-col gap-2.5">
+              <a class="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm py-3 rounded-xl shadow-lg shadow-emerald-950/50 transition-all border border-emerald-400/30 text-decoration-none" href="/login.html?role=student">
+                <span>Enter Student Portal</span>
+                <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">login</span>
+              </a>
+              <div class="pt-2 text-center border-t border-white/10">
+                <a href="/register.html?role=student" class="text-xs text-emerald-400 hover:text-emerald-300 font-semibold inline-flex items-center gap-1.5 transition-colors text-decoration-none">
+                  <span class="material-symbols-outlined text-[15px]">person_add</span>
+                  <span>New Student? Register for Mess Pass →</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Mess Manager Portal Card -->
+          <div class="group relative flex flex-col justify-between rounded-2xl p-6 bg-slate-900/85 hover:bg-slate-900/95 backdrop-blur-xl border border-sky-500/30 hover:border-sky-400 shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+            <div class="absolute inset-x-0 top-0 h-28 bg-gradient-to-t from-transparent to-sky-500/10 pointer-events-none rounded-t-2xl"></div>
+            <div class="relative z-10 flex flex-col">
+              <div class="flex items-center justify-between gap-2 mb-4">
+                <span class="bg-sky-500/20 text-sky-300 border border-sky-400/40 text-[11px] font-extrabold uppercase tracking-wider px-3 py-1 rounded-full shadow-md backdrop-blur-md flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[14px] text-sky-300">skillet</span> Kitchen &amp; Ops
+                </span>
+                <span class="text-sky-300 bg-sky-500/10 border border-sky-500/20 px-2.5 py-0.5 rounded-full text-xs font-mono font-medium">ID: @manager</span>
+              </div>
+              <div class="flex items-center gap-3.5 mb-4">
+                <div class="w-12 h-12 rounded-xl overflow-hidden shadow-lg shadow-sky-950/40 group-hover:scale-105 transition-transform border border-sky-400/30 flex items-center justify-center bg-slate-950/60 p-1 shrink-0">
+                  <img src="/images/stitch/manager_logo.svg" alt="Mess Manager Portal Emblem" class="w-full h-full object-contain">
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold text-white tracking-tight leading-tight">Mess Manager</h3>
+                  <span class="text-xs text-sky-400 font-medium">Operations &amp; Attendance</span>
+                </div>
+              </div>
+              <p class="text-sm text-slate-300 mb-5 leading-relaxed">
+                Real-time kitchen attendance forecasts, inventory demand tracking, recipe logs, and instant issue response console.
+              </p>
+              <ul class="space-y-2.5 mb-6 text-xs text-slate-200">
+                <li class="flex items-center gap-2.5">
+                  <span class="material-symbols-outlined text-sky-400 text-[18px]">check_circle</span>
+                  <span class="font-medium">Predictive head-count from token claims</span>
+                </li>
+                <li class="flex items-center gap-2.5">
+                  <span class="material-symbols-outlined text-sky-400 text-[18px]">check_circle</span>
+                  <span class="font-medium">Instant grievance triage with photo reply</span>
+                </li>
+                <li class="flex items-center gap-2.5">
+                  <span class="material-symbols-outlined text-sky-400 text-[18px]">check_circle</span>
+                  <span class="font-medium">Procurement logs &amp; cold storage audit</span>
+                </li>
+                <li class="flex items-center gap-2.5">
+                  <span class="material-symbols-outlined text-sky-400 text-[18px]">check_circle</span>
+                  <span class="font-medium">Staff biometric shift &amp; sanitation sign-off</span>
+                </li>
+              </ul>
+            </div>
+            <div class="relative z-10 flex flex-col gap-2.5">
+              <a class="w-full flex items-center justify-center gap-2 bg-sky-600 hover:bg-sky-500 text-white font-semibold text-sm py-3 rounded-xl shadow-lg shadow-sky-950/50 transition-all border border-sky-400/30 text-decoration-none" href="/login.html?role=mess_manager">
+                <span>Enter Manager Console</span>
+                <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">login</span>
+              </a>
+              <div class="pt-2 text-center border-t border-white/10">
+                <a href="/register.html?role=mess_manager" class="text-xs text-sky-400 hover:text-sky-300 font-semibold inline-flex items-center gap-1.5 transition-colors text-decoration-none">
+                  <span class="material-symbols-outlined text-[15px]">badge</span>
+                  <span>New Operator? Register Manager Account →</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Higher Authority / Warden Portal Card -->
+          <div class="group relative flex flex-col justify-between rounded-2xl p-6 bg-slate-900/85 hover:bg-slate-900/95 backdrop-blur-xl border border-amber-500/30 hover:border-amber-400 shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+            <div class="absolute inset-x-0 top-0 h-28 bg-gradient-to-t from-transparent to-amber-500/10 pointer-events-none rounded-t-2xl"></div>
+            <div class="relative z-10 flex flex-col">
+              <div class="flex items-center justify-between gap-2 mb-4">
+                <span class="bg-amber-500/20 text-amber-300 border border-amber-400/40 text-[11px] font-extrabold uppercase tracking-wider px-3 py-1 rounded-full shadow-md backdrop-blur-md flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[14px] text-amber-300">shield_person</span> Hostel Warden / Dean
+                </span>
+                <span class="text-amber-300 bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 rounded-full text-xs font-mono font-medium">ID: @authority</span>
+              </div>
+              <div class="flex items-center gap-3.5 mb-4">
+                <div class="w-12 h-12 rounded-xl overflow-hidden shadow-lg shadow-amber-950/40 group-hover:scale-105 transition-transform border border-amber-400/30 flex items-center justify-center bg-slate-950/60 p-1 shrink-0">
+                  <img src="/images/stitch/authority_logo.svg" alt="Higher Authority Supervisory Shield Emblem" class="w-full h-full object-contain">
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold text-white tracking-tight leading-tight">Higher Authority</h3>
+                  <span class="text-xs text-amber-400 font-medium">Governance &amp; Escalation</span>
+                </div>
+              </div>
+              <p class="text-sm text-slate-300 mb-5 leading-relaxed">
+                Supervisory analytics, audit logs, unaddressed complaint escalation matrix, and contractor compliance scores.
+              </p>
+              <ul class="space-y-2.5 mb-6 text-xs text-slate-200">
+                <li class="flex items-center gap-2.5">
+                  <span class="material-symbols-outlined text-amber-400 text-[18px]">check_circle</span>
+                  <span class="font-medium">Automatic 12-hour ticket escalation alerts</span>
+                </li>
+                <li class="flex items-center gap-2.5">
+                  <span class="material-symbols-outlined text-amber-400 text-[18px]">check_circle</span>
+                  <span class="font-medium">Contractor monthly food quality index</span>
+                </li>
+                <li class="flex items-center gap-2.5">
+                  <span class="material-symbols-outlined text-amber-400 text-[18px]">check_circle</span>
+                  <span class="font-medium">Campus-wide hygiene surprise audit log</span>
+                </li>
+                <li class="flex items-center gap-2.5">
+                  <span class="material-symbols-outlined text-amber-400 text-[18px]">check_circle</span>
+                  <span class="font-medium">Financial penalty calculator for SLA slips</span>
+                </li>
+              </ul>
+            </div>
+            <div class="relative z-10 flex flex-col gap-2.5">
+              <a class="w-full flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-500 text-white font-semibold text-sm py-3 rounded-xl shadow-lg shadow-amber-950/50 transition-all border border-amber-400/30 text-decoration-none" href="/login.html?role=authority">
+                <span>Enter Authority Console</span>
+                <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">login</span>
+              </a>
+              <div class="pt-2 text-center border-t border-white/10">
+                <a href="/register.html?role=authority" class="text-xs text-amber-400 hover:text-amber-300 font-semibold inline-flex items-center gap-1.5 transition-colors text-decoration-none">
+                  <span class="material-symbols-outlined text-[15px]">verified_user</span>
+                  <span>New Authority? Register Warden / Dean →</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Photo Showcase Strip: Realistic Campus Kitchen & Dining -->
+  <section class="w-full py-12 bg-slate-950 border-y border-white/10">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="relative group overflow-hidden rounded-2xl bg-slate-900 shadow-xl h-48 border border-white/10">
+          <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Modern high-volume university dining hall in daylight, clean stainless steel service counters" src="/images/stitch/strip_1.jpg">
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent flex items-end p-5">
+            <span class="font-semibold text-sm text-white flex items-center gap-2">
+              <span class="material-symbols-outlined text-emerald-400 text-[18px]">verified</span>
+              ISO-Certified Hygiene Protocols
+            </span>
+          </div>
+        </div>
+
+        <div class="relative group overflow-hidden rounded-2xl bg-slate-900 shadow-xl h-48 border border-white/10">
+          <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Campus head chef inspecting fresh ingredients" src="/images/stitch/strip_2.jpg">
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent flex items-end p-5">
+            <span class="font-semibold text-sm text-white flex items-center gap-2">
+              <span class="material-symbols-outlined text-amber-400 text-[18px]">local_dining</span>
+              Traceable Ingredient Logs
+            </span>
+          </div>
+        </div>
+
+        <div class="relative group overflow-hidden rounded-2xl bg-slate-900 shadow-xl h-48 border border-white/10">
+          <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Student scanning QR code at digital turnstile" src="/images/stitch/strip_3.jpg">
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent flex items-end p-5">
+            <span class="font-semibold text-sm text-white flex items-center gap-2">
+              <span class="material-symbols-outlined text-sky-400 text-[18px]">bolt</span>
+              Sub-Second QR Verification
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Architecture & Features Showcase -->
+  <section class="w-full py-16 bg-slate-950 text-white" id="architecture">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col gap-10">
+      <div class="max-w-3xl">
+        <div class="inline-flex items-center gap-2 text-emerald-400 font-bold text-xs uppercase tracking-wider mb-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 w-fit">
+          <span class="material-symbols-outlined text-[16px]">hub</span>
+          <span>Mission-Critical Architecture</span>
+        </div>
+        <h2 class="text-3xl font-extrabold text-white tracking-tight">Built to eliminate food wastage &amp; dining friction</h2>
+        <p class="text-base text-slate-300 mt-2 leading-relaxed">From the dining hall entrance to executive review boards, every touchpoint is logged with cryptographic timestamps and verifiable photographic evidence.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-slate-900/80 p-6 rounded-2xl shadow-xl border border-white/10 hover:border-emerald-500/40 transition-all flex flex-col justify-between backdrop-blur-md">
+          <div class="flex flex-col gap-3">
+            <div class="w-11 h-11 rounded-xl bg-emerald-500/15 border border-emerald-400/20 flex items-center justify-center text-emerald-400">
+              <span class="material-symbols-outlined text-[26px]">qr_code_scanner</span>
+            </div>
+            <h3 class="text-lg font-bold text-white">QR Attendance &amp; Meal Pass</h3>
+            <p class="text-sm text-slate-300 leading-relaxed">Dynamic time-sensitive QR tokens refreshed every 60 seconds prevent token sharing and duplicate dining. Validates student meal subscription status in under 200 milliseconds.</p>
+          </div>
+          <div class="mt-5 p-3.5 bg-slate-950/75 rounded-xl flex items-center justify-between border border-white/5">
+            <span class="text-xs text-slate-400 font-medium">Token Fraud Shield:</span>
+            <span class="text-xs text-emerald-400 font-bold">100% Zero-Replay Nonce</span>
+          </div>
+        </div>
+
+        <div class="bg-slate-900/80 p-6 rounded-2xl shadow-xl border border-white/10 hover:border-rose-500/40 transition-all flex flex-col justify-between backdrop-blur-md">
+          <div class="flex flex-col gap-3">
+            <div class="w-11 h-11 rounded-xl bg-rose-500/15 border border-rose-500/20 flex items-center justify-center text-rose-400">
+              <span class="material-symbols-outlined text-[26px]">add_a_photo</span>
+            </div>
+            <h3 class="text-lg font-bold text-white">Complaint Tracking with Evidence</h3>
+            <p class="text-sm text-slate-300 leading-relaxed">Students capture and tag photos of hygiene issues or unpalatable items. Each ticket generates a time-stamped SLA countdown visible to both kitchen supervisors and wardens.</p>
+          </div>
+          <div class="mt-5 p-3.5 bg-slate-950/75 rounded-xl flex items-center justify-between border border-white/5">
+            <span class="text-xs text-slate-400 font-medium">Resolution SLA:</span>
+            <span class="text-xs text-rose-400 font-bold">Guaranteed Response Under 2 Hours</span>
+          </div>
+        </div>
+
+        <div class="bg-slate-900/80 p-6 rounded-2xl shadow-xl border border-white/10 hover:border-sky-500/40 transition-all flex flex-col justify-between backdrop-blur-md">
+          <div class="flex flex-col gap-3">
+            <div class="w-11 h-11 rounded-xl bg-sky-500/15 border border-sky-400/20 flex items-center justify-center text-sky-400">
+              <span class="material-symbols-outlined text-[26px]">insights</span>
+            </div>
+            <h3 class="text-lg font-bold text-white">Daily Ratings &amp; Taste Insights</h3>
+            <p class="text-sm text-slate-300 leading-relaxed">Meal-by-meal sentiment analytics. Automatically flags repetitive kitchen shortcomings (e.g., cold bread, oversalted dal) so chefs can recalibrate prep before the next slot.</p>
+          </div>
+          <div class="mt-5 p-3.5 bg-slate-950/75 rounded-xl flex items-center justify-between border border-white/5">
+            <span class="text-xs text-slate-400 font-medium">Analytics Depth:</span>
+            <span class="text-xs text-sky-400 font-bold">Real-time Taste Heatmaps</span>
+          </div>
+        </div>
+
+        <div class="bg-slate-900/80 p-6 rounded-2xl shadow-xl border border-white/10 hover:border-amber-500/40 transition-all flex flex-col justify-between backdrop-blur-md">
+          <div class="flex flex-col gap-3">
+            <div class="w-11 h-11 rounded-xl bg-amber-500/15 border border-amber-400/20 flex items-center justify-center text-amber-400">
+              <span class="material-symbols-outlined text-[26px]">notification_important</span>
+            </div>
+            <h3 class="text-lg font-bold text-white">Escalation Matrix &amp; Audit</h3>
+            <p class="text-sm text-slate-300 leading-relaxed">Unaddressed issues trigger automatic escalation to Chief Wardens and University Dining Committees after 12 hours, complete with audit penalty calculations for caterers.</p>
+          </div>
+          <div class="mt-5 p-3.5 bg-slate-950/75 rounded-xl flex items-center justify-between border border-white/5">
+            <span class="text-xs text-slate-400 font-medium">Accountability:</span>
+            <span class="text-xs text-amber-400 font-bold">Automated Warden SMS &amp; Email Dispatch</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Demo: Interactive Student Feedback Flow -->
+      <div class="bg-slate-900/90 p-8 rounded-3xl shadow-2xl border border-white/15 backdrop-blur-xl" id="interactive-preview">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-white/10">
+          <div>
+            <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Try The Student Feedback Flow</span>
+            <h3 class="text-xl font-bold text-white mt-0.5">Rate Today's Lunch: Steamed Rice, Rajma &amp; Raita</h3>
+          </div>
+          <span class="bg-white/10 border border-white/10 px-3 py-1 rounded-full text-xs font-semibold text-slate-300 w-fit">Mess Dining Session: Hall 01</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pt-6">
+          <div class="flex flex-col gap-4">
+            <label class="text-sm text-slate-300 font-medium">How was the taste &amp; hygiene?</label>
+            <div class="flex items-center gap-2" id="rating-stars">
+              <button class="star-btn p-2.5 rounded-xl bg-white/5 hover:bg-white/15 text-slate-400 border border-white/10 transition-colors" data-val="1" onclick="setRating(1)" type="button"><span class="material-symbols-outlined text-[28px]">star</span></button>
+              <button class="star-btn p-2.5 rounded-xl bg-white/5 hover:bg-white/15 text-slate-400 border border-white/10 transition-colors" data-val="2" onclick="setRating(2)" type="button"><span class="material-symbols-outlined text-[28px]">star</span></button>
+              <button class="star-btn p-2.5 rounded-xl bg-white/5 hover:bg-white/15 text-slate-400 border border-white/10 transition-colors" data-val="3" onclick="setRating(3)" type="button"><span class="material-symbols-outlined text-[28px]">star</span></button>
+              <button class="star-btn p-2.5 rounded-xl bg-white/5 hover:bg-white/15 text-slate-400 border border-white/10 transition-colors" data-val="4" onclick="setRating(4)" type="button"><span class="material-symbols-outlined text-[28px]">star</span></button>
+              <button class="star-btn p-2.5 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-400/40 shadow-sm transition-colors" data-val="5" onclick="setRating(5)" type="button"><span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">star</span></button>
+            </div>
+            <div class="flex flex-wrap gap-2 pt-1" id="quick-tags">
+              <span class="px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-medium text-slate-300 cursor-pointer hover:bg-white/15 transition-colors select-none" onclick="toggleTag(this)">Fresh &amp; Hot</span>
+              <span class="px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-medium text-slate-300 cursor-pointer hover:bg-white/15 transition-colors select-none" onclick="toggleTag(this)">Great Seasoning</span>
+              <span class="px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-medium text-slate-300 cursor-pointer hover:bg-white/15 transition-colors select-none" onclick="toggleTag(this)">Needs More Salt</span>
+              <span class="px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-medium text-slate-300 cursor-pointer hover:bg-white/15 transition-colors select-none" onclick="toggleTag(this)">Short Quantity</span>
+            </div>
+          </div>
+
+          <div class="bg-slate-950/80 p-6 rounded-2xl flex flex-col justify-between h-full border border-white/10">
+            <div class="flex items-center justify-between pb-3">
+              <span class="text-xs font-bold text-white">Telemetry Broadcast</span>
+              <span class="text-xs text-emerald-400 font-semibold flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                Connected to Mess Kitchen Console
+              </span>
+            </div>
+            <p class="text-sm text-slate-300 py-3" id="live-feedback-status">Ready to submit. Ratings automatically aggregate into the contractor's daily performance index.</p>
+            <button class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm py-3 rounded-xl shadow-lg shadow-emerald-950/50 border border-emerald-400/30 transition-all cursor-pointer" id="submit-demo-btn" onclick="submitDemoFeedback()" type="button">
+              Simulate Instant Submission
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Institutional Governance & Trust Section -->
+  <section class="w-full py-16 bg-slate-950 border-t border-white/10" id="trust">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="bg-slate-900/70 rounded-3xl p-8 sm:p-10 shadow-2xl border border-white/15 flex flex-col lg:flex-row items-center justify-between gap-10 backdrop-blur-xl">
+        <div class="flex flex-col gap-3 max-w-xl">
+          <div class="inline-flex items-center gap-1.5 text-emerald-400 text-xs font-bold uppercase tracking-wider">
+            <span class="material-symbols-outlined text-[18px]">verified_user</span>
+            <span>Campus Security &amp; Compliance Standards</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Standardized Across 40+ University Hostels</h2>
+          <p class="text-sm text-slate-300 leading-relaxed">FoodBuddy enforces end-to-end auditability. Caterers can no longer obscure sanitation lapses, while students experience verifiable accountability within hours.</p>
+          <div class="flex items-center gap-6 pt-2">
+            <div class="flex items-center gap-2 text-white">
+              <span class="material-symbols-outlined text-emerald-400 text-[22px]">gavel</span>
+              <span class="text-xs font-semibold text-slate-200">Contractor SLA Binding</span>
+            </div>
+            <div class="flex items-center gap-2 text-white">
+              <span class="material-symbols-outlined text-emerald-400 text-[22px]">lock</span>
+              <span class="text-xs font-semibold text-slate-200">SSO University Login</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-slate-950/80 text-white p-6 rounded-2xl flex flex-col gap-4 w-full lg:w-96 shadow-xl border border-white/10">
+          <span class="text-lg font-bold text-white">Deploy in your campus</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Zero hardware cost. Integrates seamlessly with existing hostel turnstiles and student ERP accounts.</p>
+          <a class="w-full text-center bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm py-3 rounded-xl shadow-lg shadow-emerald-950/50 border border-emerald-400/30 transition-all text-decoration-none" href="#roles">
+            Schedule Warden Briefing
+          </a>
+          <span class="text-[11px] text-slate-400 text-center">Typically deployed in under 48 hours</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Demo JavaScript -->
+  <script>
+    let currentRating = 5;
+    function setRating(val) {
+      currentRating = val;
+      const stars = document.querySelectorAll('#rating-stars .star-btn');
+      stars.forEach((btn) => {
+        const starVal = parseInt(btn.getAttribute('data-val'));
+        const icon = btn.querySelector('.material-symbols-outlined');
+        if (starVal <= val) {
+          btn.classList.add('bg-amber-500/20', 'text-amber-400', 'border-amber-400/40');
+          btn.classList.remove('bg-white/5', 'text-slate-400', 'border-white/10');
+          icon.style.fontVariationSettings = "'FILL' 1";
+        } else {
+          btn.classList.remove('bg-amber-500/20', 'text-amber-400', 'border-amber-400/40');
+          btn.classList.add('bg-white/5', 'text-slate-400', 'border-white/10');
+          icon.style.fontVariationSettings = "'FILL' 0";
+        }
+      });
+      document.getElementById('live-feedback-status').innerText = 'Rating score ' + val + '/5 selected. Click below to verify real-time kitchen feed dispatch.';
+    }
+
+    function toggleTag(el) {
+      el.classList.toggle('bg-emerald-600');
+      el.classList.toggle('text-white');
+      el.classList.toggle('border-emerald-400/40');
+      el.classList.toggle('bg-white/5');
+      el.classList.toggle('text-slate-300');
+    }
+
+    function submitDemoFeedback() {
+      const btn = document.getElementById('submit-demo-btn');
+      const status = document.getElementById('live-feedback-status');
+      btn.innerText = 'Transmitting Token Hash...';
+      btn.classList.add('opacity-75');
+      setTimeout(() => {
+        btn.innerText = 'Submitted Successfully!';
+        btn.classList.remove('opacity-75');
+        btn.classList.add('bg-emerald-500');
+        status.innerHTML = '<span class="text-emerald-400 font-bold">Feedback verified on ledger!</span> Caterer rating updated. Issue ticket automatically flagged: None.';
+        setTimeout(() => {
+          btn.innerText = 'Simulate Instant Submission';
+          btn.classList.remove('bg-emerald-500');
+        }, 4000);
+      }, 750);
+    }
+  </script>
+
+  <!-- Direct Navigation to Role Portal Helper -->
+  <script>
+    window.launchPortal = function(role) {
+      const normalizedRole = (role === 'manager') ? 'mess_manager' : (role || 'student');
+      window.location.href = `/login.html?role=${normalizedRole}`;
+    };
+  </script>
+</main>
+
+<!-- Footer -->
+<footer class="w-full bg-slate-950 text-slate-400 py-8 border-t border-white/10">
+  <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+    <span>© 2025 FoodBuddy Institutional Dining Management Systems.</span>
+    <div class="flex items-center gap-6">
+      <a href="/register.html" class="hover:text-emerald-400 cursor-pointer transition-colors text-slate-300 font-semibold text-decoration-none flex items-center gap-1">
+        <span class="material-symbols-outlined text-[15px] text-emerald-400">how_to_reg</span>
+        <span>Register New User</span>
+      </a>
+      <a href="#" class="hover:text-white cursor-pointer transition-colors text-slate-400 text-decoration-none">Hostel Code of Conduct</a>
+      <a href="/student/menu.html" class="hover:text-white cursor-pointer transition-colors text-slate-400 text-decoration-none">Nutrition Standards</a>
+      <a href="/login.html" class="hover:text-white cursor-pointer transition-colors text-slate-400 text-decoration-none">Help Desk</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

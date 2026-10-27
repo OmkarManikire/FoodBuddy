@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none">
+  <defs>
+    <linearGradient id="mgrGrad" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1d4ed8"/>
+      <stop offset="100%" stop-color="#1e3a8a"/>
+    </linearGradient>
+  </defs>
+  <!-- Card background -->
+  <rect x="6" y="6" width="52" height="52" rx="16" fill="url(#mgrGrad)" stroke="#60a5fa" stroke-width="2"/>
+  
+  <!-- Chef Toque Hat (Kitchen Executive) -->
+  <path d="M23 35H41V44C41 45.1 40.1 46 39 46H25C23.9 46 23 45.1 23 44V35Z" fill="#2563eb" fill-opacity="0.5" stroke="#93c5fd" stroke-width="2.2" stroke-linejoin="round"/>
+  <path d="M23 35C20.5 35 18 32.5 18 29.5C18 26.5 20.5 24 23.5 24.2C24.5 20.5 28 17.5 32 17.5C36 17.5 39.5 20.5 40.5 24.2C43.5 24 46 26.5 46 29.5C46 32.5 43.5 35 41 35" fill="#3b82f6" fill-opacity="0.3" stroke="#bfdbfe" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Toque pleats / details -->
+  <path d="M27.5 39H36.5M27.5 42H33" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M28 25V35M32 23V35M36 25V35" stroke="#93c5fd" stroke-width="1.6" stroke-linecap="round" opacity="0.6"/>
+  
+  <!-- Crossed Spatula & Whisk behind or accent badge -->
+  <circle cx="45" cy="20" r="5" fill="#1e40af" stroke="#60a5fa" stroke-width="1.5"/>
+  <path d="M43 20H47M45 18V22" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/>
+</svg>

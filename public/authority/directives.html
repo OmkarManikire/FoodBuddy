@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-authority">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Official Directives & Orders — Food Buddy</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/main.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/js/vendor/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    .accent-amber {
+      accent-color: #D97706;
+    }
+  </style>
+</head>
+<body class="theme-authority bg-[#F8FAFC] text-[#0F172A] font-sans antialiased">
+
+  <div class="app-layout">
+    <aside class="app-sidebar"></aside>
+
+    <div class="app-main">
+      <header class="app-topbar"></header>
+
+      <main class="app-content p-4 sm:p-6 lg:p-8 space-y-6 max-w-7xl mx-auto">
+        
+        <!-- Header Banner -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-[#E2E8F0] shadow-sm relative overflow-hidden">
+          <div class="absolute -right-8 -top-8 w-44 h-44 rounded-full bg-amber-500/10 blur-2xl pointer-events-none"></div>
+          <div class="relative z-10 flex flex-col space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider bg-amber-100 text-amber-900 border border-amber-200">
+                Statutory Registry • Supervisory Oversight
+              </span>
+              <span class="text-xs text-[#64748B]">• Ref: SEN-DIR-2026</span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#0F172A] font-['Outfit']">
+              Executive Directives & Statutory Orders
+            </h1>
+            <p class="text-sm text-[#64748B] max-w-2xl">
+              Issue priority statutory notices and mandatory kitchen compliance circulars with institutional authority, displayed with the "Authority" badge across student and manager portals.
+            </p>
+          </div>
+          <div class="flex items-center gap-3 shrink-0 z-10">
+            <button onclick="document.getElementById('directiveTitle').focus();" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#0F172A] text-xs font-bold flex items-center gap-2 transition-all shadow-sm">
+              <span class="material-symbols-outlined text-[18px] text-amber-700">edit_document</span>
+              <span>Draft New Order</span>
+            </button>
+            <button onclick="refreshDirectives()" class="px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-sm">
+              <span class="material-symbols-outlined text-[18px]">sync</span>
+              <span>Refresh Feed</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Layout: Primary Issue Form & Information Panel -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          
+          <!-- Issue Official Directive Form -->
+          <section class="lg:col-span-8 bg-white rounded-2xl p-6 border border-[#E2E8F0] shadow-sm space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#E2E8F0] gap-2">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center text-amber-800">
+                  <span class="material-symbols-outlined text-[20px]">gavel</span>
+                </div>
+                <div>
+                  <h2 class="text-lg font-bold text-[#0F172A] font-['Outfit']">Issue Official Directive</h2>
+                  <p class="text-xs text-[#64748B]">Enforceable under University Hostel Mess Governance Regulations</p>
+                </div>
+              </div>
+              <span class="px-2.5 py-1 rounded-md bg-amber-100 text-amber-900 text-[11px] font-bold tracking-wide border border-amber-200 self-start sm:self-auto">
+                AUTHORITY MANDATE • DIRECT ENFORCEMENT
+              </span>
+            </div>
+
+            <form class="space-y-4" id="directiveForm">
+              <!-- Directive Title -->
+              <div class="space-y-1">
+                <label class="text-xs font-bold text-[#0F172A] uppercase tracking-wider flex items-center justify-between" for="directiveTitle">
+                  <span>Directive Title & Core Subject</span>
+                  <span class="text-[11px] text-[#64748B] font-normal">Required</span>
+                </label>
+                <input 
+                  type="text" 
+                  id="directiveTitle" 
+                  class="w-full px-4 py-2.5 rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] text-[#0F172A] text-sm focus:outline-none focus:bg-white focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20 transition-all"
+                  placeholder="e.g. Mandatory Sanitization and Water Filter Replacement Across North Dining Halls"
+                  required
+                />
+              </div>
+
+              <!-- Scope & Target Selection -->
+              <div class="space-y-1.5">
+                <label class="text-xs font-bold text-[#0F172A] uppercase tracking-wider block">Target Dining Scope</label>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  <label class="flex items-center gap-2 p-2.5 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] hover:bg-slate-100 cursor-pointer transition-colors text-xs font-medium text-[#0F172A]">
+                    <input type="checkbox" name="targetScope" value="All Messes" checked class="accent-amber w-4 h-4 rounded" />
+                    <span>All Campus Messes</span>
+                  </label>
+                  <label class="flex items-center gap-2 p-2.5 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] hover:bg-slate-100 cursor-pointer transition-colors text-xs font-medium text-[#0F172A]">
+                    <input type="checkbox" name="targetScope" value="Vikramshila Mess" class="accent-amber w-4 h-4 rounded" />
+                    <span>Vikramshila Hall</span>
+                  </label>
+                  <label class="flex items-center gap-2 p-2.5 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] hover:bg-slate-100 cursor-pointer transition-colors text-xs font-medium text-[#0F172A]">
+                    <input type="checkbox" name="targetScope" value="Mithila Mess" class="accent-amber w-4 h-4 rounded" />
+                    <span>Mithila Hall</span>
+                  </label>
+                  <label class="flex items-center gap-2 p-2.5 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] hover:bg-slate-100 cursor-pointer transition-colors text-xs font-medium text-[#0F172A]">
+                    <input type="checkbox" name="targetScope" value="Caterers" checked class="accent-amber w-4 h-4 rounded" />
+                    <span>Contractor Leads</span>
+                  </label>
+                  <label class="flex items-center gap-2 p-2.5 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] hover:bg-slate-100 cursor-pointer transition-colors text-xs font-medium text-[#0F172A]">
+                    <input type="checkbox" name="targetScope" value="Managers" checked class="accent-amber w-4 h-4 rounded" />
+                    <span>Mess Managers</span>
+                  </label>
+                  <label class="flex items-center gap-2 p-2.5 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] hover:bg-slate-100 cursor-pointer transition-colors text-xs font-medium text-[#0F172A]">
+                    <input type="checkbox" name="targetScope" value="Students" checked class="accent-amber w-4 h-4 rounded" />
+                    <span>Student Body</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Severity & Timeline -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-1">
+                  <label class="text-xs font-bold text-[#0F172A] uppercase tracking-wider block" for="directivePriority">
+                    Enforcement Priority Tier
+                  </label>
+                  <select 
+                    id="directivePriority" 
+                    class="w-full px-4 py-2.5 rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] text-[#0F172A] text-sm focus:outline-none focus:bg-white focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20 cursor-pointer"
+                  >
+                    <option value="critical">Critical Mandate (Immediate &amp; Strict 24h SLA)</option>
+                    <option value="urgent" selected>Urgent Circular (Priority 48h Compliance)</option>
+                    <option value="normal">Standard Operational Directive</option>
+                    <option value="special">Special Protocol / Executive Decree</option>
+                  </select>
+                </div>
+                <div class="space-y-1">
+                  <label class="text-xs font-bold text-[#0F172A] uppercase tracking-wider block" for="directiveExpiry">
+                    Compliance Expiry / Review Date
+                  </label>
+                  <input 
+                    type="date" 
+                    id="directiveExpiry" 
+                    class="w-full px-4 py-2.5 rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] text-[#0F172A] text-sm focus:outline-none focus:bg-white focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20"
+                  />
+                </div>
+              </div>
+
+              <!-- Directive Body -->
+              <div class="space-y-1">
+                <div class="flex items-center justify-between">
+                  <label class="text-xs font-bold text-[#0F172A] uppercase tracking-wider" for="directiveBody">
+                    Statutory Mandate Order Text
+                  </label>
+                  <span class="text-[11px] text-amber-700 font-semibold uppercase">Official Warden Seal Included</span>
+                </div>
+                <textarea 
+                  id="directiveBody" 
+                  rows="5"
+                  class="w-full px-4 py-3 rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] text-[#0F172A] text-sm placeholder:text-[#94A3B8] focus:outline-none focus:bg-white focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20 transition-all leading-relaxed"
+                  placeholder="Detail the mandatory operational instructions, health standards, penalties for non-compliance, and expected reporting timeline..."
+                  required
+                ></textarea>
+              </div>
+
+              <!-- Footer Actions -->
+              <div class="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-t border-[#E2E8F0]">
+                <div class="flex items-center gap-2 text-xs text-[#64748B]">
+                  <span class="material-symbols-outlined text-[16px] text-amber-600">verified</span>
+                  <span>Directives are instantly synced to student and manager notice feeds with the "Authority" badge.</span>
+                </div>
+                <div class="flex items-center gap-3 shrink-0">
+                  <button 
+                    type="button" 
+                    onclick="document.getElementById('directiveForm').reset();"
+                    class="px-4 py-2.5 rounded-xl border border-[#CBD5E1] text-[#475569] hover:bg-slate-100 text-xs font-bold transition-colors"
+                  >
+                    Clear
+                  </button>
+                  <button 
+                    type="submit" 
+                    id="submitDirectiveBtn"
+                    class="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2 active:scale-[0.98]"
+                  >
+                    <span>Issue Authority Directive</span>
+                    <span class="material-symbols-outlined text-[16px]">campaign</span>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </section>
+
+          <!-- Right Column: Institutional Oversight Metric -->
+          <div class="lg:col-span-4 flex flex-col gap-6">
+            
+            <!-- Live Enforcement Metric Card -->
+            <div class="bg-white p-6 rounded-2xl border border-[#E2E8F0] shadow-sm space-y-4">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-[#64748B]">Active Directives</span>
+                <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-amber-100 text-amber-900" id="badgeActiveCount">--</span>
+              </div>
+              <div class="flex items-baseline gap-2">
+                <span class="text-4xl font-extrabold text-[#0F172A] font-['Outfit']" id="statActiveDirectives">0</span>
+                <span class="text-xs text-[#64748B]">Currently enforced</span>
+              </div>
+              
+              <div class="pt-2 border-t border-[#E2E8F0] space-y-3">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="text-[#64748B]">Total Issued Directives:</span>
+                  <span class="font-bold text-[#0F172A]" id="statTotalDirectives">0</span>
+                </div>
+                <div class="flex items-center justify-between text-xs">
+                  <span class="text-[#64748B]">Critical Escalations:</span>
+                  <span class="font-bold text-red-600" id="statCriticalDirectives">0</span>
+                </div>
+                <div class="flex items-center justify-between text-xs">
+                  <span class="text-[#64748B]">Audited &amp; Archived:</span>
+                  <span class="font-bold text-emerald-600" id="statArchivedDirectives">0</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Warden Prerogative Powers Card -->
+            <div class="bg-white p-6 rounded-2xl border border-[#E2E8F0] shadow-sm space-y-3">
+              <div class="flex items-center gap-2 text-amber-700">
+                <span class="material-symbols-outlined text-[22px]">policy</span>
+                <h3 class="font-bold text-sm text-[#0F172A] font-['Outfit']">Warden Prerogative Powers</h3>
+              </div>
+              <p class="text-xs text-[#64748B] leading-relaxed">
+                Directives issued under the Authority role carry legal binding status across university dining contracts. Notices published here immediately reflect in student notice boards with a dedicated amber "Authority" badge.
+              </p>
+              <div class="pt-2 space-y-2 text-xs">
+                <div class="flex items-center gap-2 text-[#0F172A]">
+                  <span class="material-symbols-outlined text-[16px] text-emerald-600">check_circle</span>
+                  <span>Instant Student Portal Broadcast</span>
+                </div>
+                <div class="flex items-center gap-2 text-[#0F172A]">
+                  <span class="material-symbols-outlined text-[16px] text-emerald-600">check_circle</span>
+                  <span>Manager Operations Lead Alert</span>
+                </div>
+                <div class="flex items-center gap-2 text-[#0F172A]">
+                  <span class="material-symbols-outlined text-[16px] text-emerald-600">check_circle</span>
+                  <span>Immutable Audit Trail Logging</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Enforced Directives Registry Table -->
+        <section class="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm p-6 space-y-4">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-[#E2E8F0]">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-[#0F172A]">
+                <span class="material-symbols-outlined text-[20px]">assignment</span>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h2 class="text-lg font-bold text-[#0F172A] font-['Outfit']">Directives &amp; Circulars Registry</h2>
+                  <span class="px-2 py-0.5 rounded-full bg-slate-100 text-[#475569] text-xs font-bold" id="badgeRegistryCount">0 Total</span>
+                </div>
+                <p class="text-xs text-[#64748B]">Complete history of institutional notices, priority circulars and audit directives.</p>
+              </div>
+            </div>
+
+            <!-- Filters & Search -->
+            <div class="flex flex-wrap items-center gap-3">
+              <div class="relative w-full sm:w-64">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8] text-[18px]">search</span>
+                <input 
+                  type="text" 
+                  id="searchDirective"
+                  oninput="filterDirectives()"
+                  class="w-full pl-9 pr-3 py-2 rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] text-xs focus:outline-none focus:bg-white focus:border-amber-600"
+                  placeholder="Search directives, title, keyword..."
+                />
+              </div>
+              <div class="flex items-center gap-1 bg-[#F1F5F9] p-1 rounded-xl">
+                <button class="filter-tab px-3 py-1 rounded-lg text-xs font-bold bg-white text-[#0F172A] shadow-xs" data-filter="all" onclick="setFilter('all')">All</button>
+                <button class="filter-tab px-3 py-1 rounded-lg text-xs font-bold text-[#64748B] hover:text-[#0F172A]" data-filter="active" onclick="setFilter('active')">Active</button>
+                <button class="filter-tab px-3 py-1 rounded-lg text-xs font-bold text-[#64748B] hover:text-[#0F172A]" data-filter="archived" onclick="setFilter('archived')">Archived</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table Container -->
+          <div class="overflow-x-auto -mx-6 px-6">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="bg-[#F8FAFC] text-[#64748B] font-bold uppercase tracking-wider text-[11px] border-b border-[#E2E8F0]">
+                  <th class="py-3 px-4">Subject &amp; Statutory Decree</th>
+                  <th class="py-3 px-4">Origin / Issuer</th>
+                  <th class="py-3 px-4">Priority Tier</th>
+                  <th class="py-3 px-4">Issued Date</th>
+                  <th class="py-3 px-4">Status</th>
+                  <th class="py-3 px-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="directivesTableBody" class="divide-y divide-[#E2E8F0]">
+                <tr>
+                  <td colspan="6" class="py-8 text-center text-muted">
+                    <span class="material-symbols-outlined text-[28px] animate-spin text-amber-600">sync</span>
+                    <div class="mt-2 text-xs">Loading official directives...</div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Detail Memo Modal -->
+  <div id="memoModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm hidden">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-[#E2E8F0] space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-[#E2E8F0]">
+        <div class="flex items-center gap-2">
+          <span class="w-8 h-8 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center font-bold">
+            <span class="material-symbols-outlined text-[18px]">verified</span>
+          </span>
+          <div>
+            <h3 class="font-bold text-sm text-[#0F172A] font-['Outfit']" id="memoModalTitle">Executive Directive Memo</h3>
+            <span class="text-[10px] text-amber-800 font-bold px-2 py-0.5 rounded bg-amber-100">Authority Endorsement</span>
+          </div>
+        </div>
+        <button onclick="closeMemoModal()" class="text-[#94A3B8] hover:text-[#0F172A]">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs text-[#0F172A]">
+        <div>
+          <span class="text-[#64748B] font-semibold block mb-0.5">Title:</span>
+          <p id="memoTitle" class="font-bold text-sm"></p>
+        </div>
+        <div class="grid grid-cols-2 gap-2 bg-[#F8FAFC] p-3 rounded-xl border border-[#E2E8F0]">
+          <div>
+            <span class="text-[#64748B] block">Issuer:</span>
+            <span id="memoAuthor" class="font-semibold text-[#0F172A]"></span>
+          </div>
+          <div>
+            <span class="text-[#64748B] block">Priority:</span>
+            <span id="memoPriority" class="font-bold uppercase"></span>
+          </div>
+          <div>
+            <span class="text-[#64748B] block">Issued:</span>
+            <span id="memoDate" class="font-medium"></span>
+          </div>
+          <div>
+            <span class="text-[#64748B] block">Status:</span>
+            <span id="memoStatus" class="font-semibold"></span>
+          </div>
+        </div>
+        <div>
+          <span class="text-[#64748B] font-semibold block mb-1">Mandate Decreed Text:</span>
+          <div id="memoBody" class="p-3 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] whitespace-pre-wrap leading-relaxed"></div>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-[#E2E8F0] flex justify-end gap-2">
+        <button onclick="closeMemoModal()" class="px-4 py-2 rounded-xl border border-[#CBD5E1] text-xs font-bold text-[#475569] hover:bg-slate-100">
+          Close Memo
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/supabase-client.js"></script>
+  <script type="module" src="/js/auth.js"></script>
+  <script type="module" src="/js/app-shell.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', async () => {
+      const user = await window.requireAuth?.('authority');
+      if (!user) return;
+      await window.initAppShell?.({
+        activeNav: 'directives',
+        user: {
+          name: user.profile?.name || user.profile?.full_name || 'Prof. R. Sengupta',
+          role: 'authority',
+          hostel_block: 'Hostel Warden & Dean Office'
+        }
+      });
+      loadDirectives();
+    });
+
+    let allDirectives = [];
+    let currentFilter = 'all';
+
+    // Set default expiry date to 7 days in future
+    const nextWeek = new Date();
+    nextWeek.setDate(nextWeek.getDate() + 7);
+    document.getElementById('directiveExpiry').value = nextWeek.toISOString().split('T')[0];
+
+    async function loadDirectives() {
+      try {
+        const { data, error } = await supabaseClient
+          .from('notices')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        allDirectives = data || [];
+        updateMetrics();
+        filterDirectives();
+      } catch (err) {
+        console.error('Failed to load directives:', err);
+        showAppNotification('Error loading notices: ' + err.message, 'error');
+      }
+    }
+
+    function updateMetrics() {
+      const active = allDirectives.filter(d => !d.is_archived);
+      const critical = allDirectives.filter(d => d.priority === 'critical' || d.priority === 'urgent');
+      const archived = allDirectives.filter(d => d.is_archived);
+
+      document.getElementById('statActiveDirectives').textContent = active.length;
+      document.getElementById('badgeActiveCount').textContent = `${active.length} Enforced`;
+      document.getElementById('statTotalDirectives').textContent = allDirectives.length;
+      document.getElementById('statCriticalDirectives').textContent = critical.length;
+      document.getElementById('statArchivedDirectives').textContent = archived.length;
+      document.getElementById('badgeRegistryCount').textContent = `${allDirectives.length} Total`;
+    }
+
+    function setFilter(filter) {
+      currentFilter = filter;
+      document.querySelectorAll('.filter-tab').forEach(tab => {
+        if (tab.getAttribute('data-filter') === filter) {
+          tab.classList.add('bg-white', 'text-[#0F172A]', 'shadow-xs');
+          tab.classList.remove('text-[#64748B]');
+        } else {
+          tab.classList.remove('bg-white', 'text-[#0F172A]', 'shadow-xs');
+          tab.classList.add('text-[#64748B]');
+        }
+      });
+      filterDirectives();
+    }
+
+    function filterDirectives() {
+      const search = (document.getElementById('searchDirective').value || '').toLowerCase().trim();
+      let filtered = allDirectives;
+
+      if (currentFilter === 'active') {
+        filtered = filtered.filter(d => !d.is_archived);
+      } else if (currentFilter === 'archived') {
+        filtered = filtered.filter(d => d.is_archived);
+      }
+
+      if (search) {
+        filtered = filtered.filter(d => 
+          (d.title || '').toLowerCase().includes(search) ||
+          (d.body || '').toLowerCase().includes(search) ||
+          (d.author_name || '').toLowerCase().includes(search)
+        );
+      }
+
+      renderTable(filtered);
+    }
+
+    function renderTable(list) {
+      const tbody = document.getElementById('directivesTableBody');
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="py-8 text-center text-[#64748B]">
+              <span class="material-symbols-outlined text-[32px] text-[#94A3B8]">search_off</span>
+              <div class="mt-2 text-xs">No official directives found matching the selected filter.</div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = list.map(item => {
+        const isAuth = item.posted_by === 'Authority' || item.posted_by === 'authority' || item.posted_by === 'Higher Authority';
+        const isArchived = item.is_archived;
+        const createdDate = new Date(item.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        
+        let priorityBadge = '';
+        if (item.priority === 'critical') {
+          priorityBadge = '<span class="px-2 py-0.5 rounded font-black text-[10px] bg-red-100 text-red-700">CRITICAL</span>';
+        } else if (item.priority === 'urgent' || item.priority === 'high') {
+          priorityBadge = '<span class="px-2 py-0.5 rounded font-bold text-[10px] bg-amber-100 text-amber-800">URGENT</span>';
+        } else {
+          priorityBadge = '<span class="px-2 py-0.5 rounded font-medium text-[10px] bg-slate-100 text-slate-700">STANDARD</span>';
+        }
+
+        return `
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="py-3 px-4 max-w-sm">
+              <div class="flex items-center gap-1.5 mb-1">
+                <span class="font-bold text-[#0F172A] text-xs hover:text-amber-700 cursor-pointer" onclick='openMemoModal(${JSON.stringify(item).replace(/'/g, "&#39;")})'>
+                  ${escapeHtml(item.title)}
+                </span>
+                ${isAuth ? '<span class="px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 text-[10px] font-black tracking-wider uppercase border border-amber-200">Authority</span>' : ''}
+              </div>
+              <p class="text-[11px] text-[#64748B] line-clamp-1">${escapeHtml(item.body)}</p>
+            </td>
+            <td class="py-3 px-4">
+              <div class="font-semibold text-[#0F172A]">${escapeHtml(item.author_name || 'Authority')}</div>
+              <div class="text-[10px] text-[#64748B] capitalize">${item.posted_by ? item.posted_by.replace('_', ' ') : 'Warden'}</div>
+            </td>
+            <td class="py-3 px-4">
+              ${priorityBadge}
+            </td>
+            <td class="py-3 px-4 text-[#64748B]">
+              ${createdDate}
+            </td>
+            <td class="py-3 px-4">
+              ${isArchived 
+                ? '<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-gray-100 text-gray-600">Archived</span>'
+                : '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">Active</span>'
+              }
+            </td>
+            <td class="py-3 px-4 text-right">
+              <div class="flex items-center justify-end gap-1.5">
+                <button 
+                  onclick='openMemoModal(${JSON.stringify(item).replace(/'/g, "&#39;")})'
+                  class="p-1.5 rounded-lg border border-[#CBD5E1] text-[#475569] hover:bg-slate-100 hover:text-[#0F172A] transition-colors"
+                  title="View Memo Details"
+                >
+                  <span class="material-symbols-outlined text-[16px]">visibility</span>
+                </button>
+                <button 
+                  onclick="toggleArchiveNotice('${item.id}', ${!isArchived})"
+                  class="px-2 py-1 rounded-lg text-[11px] font-semibold ${isArchived ? 'bg-slate-100 text-slate-700 hover:bg-slate-200' : 'bg-amber-100 text-amber-800 hover:bg-amber-200'} transition-colors"
+                  title="${isArchived ? 'Restore directive' : 'Archive directive'}"
+                >
+                  ${isArchived ? 'Restore' : 'Archive'}
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Modal details
+    function openMemoModal(item) {
+      document.getElementById('memoTitle').textContent = item.title;
+      document.getElementById('memoAuthor').textContent = item.author_name || 'Hostel Warden / Dean';
+      document.getElementById('memoPriority').textContent = item.priority;
+      document.getElementById('memoDate').textContent = new Date(item.created_at).toLocaleDateString();
+      document.getElementById('memoStatus').textContent = item.is_archived ? 'Archived' : 'Active Enforced';
+      document.getElementById('memoBody').textContent = item.body;
+      document.getElementById('memoModal').classList.remove('hidden');
+    }
+
+    function closeMemoModal() {
+      document.getElementById('memoModal').classList.add('hidden');
+    }
+
+    // Form Submission: Issue Authority Directive
+    document.getElementById('directiveForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const title = document.getElementById('directiveTitle').value.trim();
+      const body = document.getElementById('directiveBody').value.trim();
+      const priority = document.getElementById('directivePriority').value;
+      const expiry = document.getElementById('directiveExpiry').value;
+
+      if (!title || !body) {
+        showAppNotification('Title and Order Text are required.', 'error');
+        return;
+      }
+
+      const submitBtn = document.getElementById('submitDirectiveBtn');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<span class="material-symbols-outlined text-[16px] animate-spin">sync</span><span>Broadcasting...</span>`;
+
+      try {
+        const user = (await supabaseClient.auth.getUser())?.data?.user;
+        const authorName = user?.user_metadata?.name || 'Dr. K. Raman (Warden & Dean)';
+
+        const { data, error } = await supabaseClient
+          .from('notices')
+          .insert({
+            title,
+            body,
+            posted_by: 'Authority',
+            author_name: authorName,
+            priority: priority,
+            expires_at: expiry ? new Date(expiry).toISOString() : null,
+            is_archived: false
+          })
+          .select()
+          .single();
+
+        if (error) throw error;
+
+        showAppNotification('Official Authority Directive broadcasted successfully!', 'success');
+        document.getElementById('directiveForm').reset();
+        await loadDirectives();
+      } catch (err) {
+        console.error('Error posting directive:', err);
+        showAppNotification('Failed to post directive: ' + err.message, 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `<span>Issue Authority Directive</span><span class="material-symbols-outlined text-[16px]">campaign</span>`;
+      }
+    });
+
+    async function toggleArchiveNotice(id, setArchived) {
+      try {
+        const { error } = await supabaseClient
+          .from('notices')
+          .update({ is_archived: setArchived })
+          .eq('id', id);
+
+        if (error) throw error;
+
+        showAppNotification(`Directive ${setArchived ? 'archived' : 'restored'} successfully.`, 'success');
+        await loadDirectives();
+      } catch (err) {
+        showAppNotification('Failed to update directive: ' + err.message, 'error');
+      }
+    }
+
+    function refreshDirectives() {
+      loadDirectives();
+      showAppNotification('Directives synchronized.', 'info');
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // Realtime subscriptions
+    supabaseClient
+      .channel('authority-notices-feed')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'notices' }, () => {
+        loadDirectives();
+      })
+      .subscribe();
+
+    loadDirectives();
+  </script>
+</body>
+</html>

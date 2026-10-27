@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verifying Authentication — Food Buddy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/main.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/js/vendor/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-[#faf8ff] text-[#0f172a] font-sans antialiased min-h-screen flex items-center justify-center p-4">
+
+  <main class="w-full max-w-md bg-white rounded-2xl shadow-xl border border-[#e2e8f0] p-8 text-center">
+    <!-- Brand Monogram -->
+    <div class="flex justify-center mb-6">
+      <div class="w-14 h-14 rounded-2xl bg-[#059669] text-white flex items-center justify-center font-bold text-2xl shadow-md">
+        FB
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div id="loading-state" class="space-y-4">
+      <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#ecfdf5] text-[#059669] mb-2 animate-spin">
+        <span class="material-symbols-outlined text-2xl">sync</span>
+      </div>
+      <h1 class="text-xl font-extrabold text-[#0f172a]">Verifying Google Account</h1>
+      <p id="loading-status-text" class="text-xs text-[#64748b] leading-relaxed">
+        Completing secure two-factor institutional verification with Food Buddy...
+      </p>
+    </div>
+
+    <!-- Error State -->
+    <div id="error-state" class="hidden space-y-5">
+      <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#fef2f2] text-[#ef4444] mb-1">
+        <span class="material-symbols-outlined text-3xl">error</span>
+      </div>
+      <div>
+        <h1 id="error-title" class="text-xl font-extrabold text-[#0f172a] mb-1.5">Authentication Failed</h1>
+        <p id="error-message" class="text-sm text-[#64748b] leading-relaxed">
+          Unable to complete sign-in.
+        </p>
+      </div>
+      <div class="pt-2">
+        <a id="back-to-login-link" href="/login.html" class="inline-flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl bg-[#059669] hover:bg-[#047857] text-white font-semibold text-sm transition-all shadow-sm">
+          <span class="material-symbols-outlined text-base">arrow_back</span>
+          <span>Back to Sign In</span>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { getSupabase } from '/js/supabase.js';
+    import { completeGoogleLogin, signOut } from '/js/auth.js';
+
+    async function handleAuthCallback() {
+      const url = new URL(window.location.href);
+      const errorParam = url.searchParams.get('error');
+      const errorDesc = url.searchParams.get('error_description');
+      const intendedRole = sessionStorage.getItem('fb_auth_role') || 'student';
+      const redirectUrl = sessionStorage.getItem('fb_auth_redirect');
+      const loginHref = `/login.html?role=${intendedRole}`;
+
+      const backBtn = document.getElementById('back-to-login-link');
+      if (backBtn) backBtn.href = loginHref;
+
+      // Handle OAuth cancellation or provider-level errors
+      if (errorParam) {
+        let msg = 'Google authentication was not completed.';
+        if (errorParam === 'access_denied') {
+          msg = 'Google sign-in was cancelled by user.';
+        } else if (errorDesc) {
+          msg = decodeURIComponent(errorDesc.replace(/\+/g, ' '));
+        }
+        showError('Sign In Cancelled', msg);
+        return;
+      }
+
+      try {
+        const supabase = getSupabase();
+        if (!supabase) throw new Error('Database client initialization failed.');
+
+        // 1. Exchange PKCE code or read session
+        const code = url.searchParams.get('code');
+        if (code) {
+          const { error: exchangeErr } = await supabase.auth.exchangeCodeForSession(code);
+          if (exchangeErr) {
+            console.warn('[Callback] Code exchange note:', exchangeErr);
+          }
+        }
+
+        // Fetch verified session
+        const { data: { session }, error: sessionErr } = await supabase.auth.getSession();
+        if (sessionErr || !session) {
+          showError('Session Error', 'No active session found after Google sign-in. Please try again.');
+          return;
+        }
+
+        document.getElementById('loading-status-text').textContent = 'Validating institutional roles & access privileges...';
+
+        // 2. Call Edge Function: complete-google-login
+        const verifyRes = await completeGoogleLogin(intendedRole);
+
+        if (!verifyRes.success) {
+          // If unauthorized role / unknown manager / authority
+          if (verifyRes.not_authorized || verifyRes.status === 403) {
+            await signOut();
+            showError('Access Denied', 'This Google account is not authorised for this portal');
+            return;
+          }
+
+          showError('Verification Error', verifyRes.error || 'Server rejected verification code.');
+          return;
+        }
+
+        // 3. Routing
+        if (verifyRes.needs_onboarding) {
+          // Student needs onboarding
+          window.location.replace('/onboarding.html');
+          return;
+        }
+
+        // If completed profile
+        let destination = verifyRes.redirect || '/';
+        if (redirectUrl && redirectUrl.startsWith('/')) {
+          destination = redirectUrl;
+        }
+        window.location.replace(destination);
+      } catch (err) {
+        console.error('[Callback] Processing error:', err);
+        showError('Network / System Error', err.message || 'An unexpected error occurred during Google sign-in.');
+      }
+    }
+
+    function showError(title, message) {
+      document.getElementById('loading-state').classList.add('hidden');
+      document.getElementById('error-title').textContent = title;
+      document.getElementById('error-message').textContent = message;
+      document.getElementById('error-state').classList.remove('hidden');
+    }
+
+    handleAuthCallback();
+  </script>
+</body>
+</html>

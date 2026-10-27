@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"on-primary-container":"#f5fff7","secondary-fixed":"#dbe1ff","inverse-surface":"#283044","primary-fixed":"#85f8c4","surface":"#faf8ff","on-secondary-container":"#fefcff","on-secondary":"#ffffff","surface-tint":"#006c4a","primary":"#006948","surface-container-low":"#f2f3ff","on-tertiary":"#ffffff","on-primary-fixed-variant":"#005137","error-container":"#ffdad6","outline-variant":"#bccac0","surface-bright":"#faf8ff","primary-fixed-dim":"#68dba9","outline":"#6d7a72","surface-container-high":"#e2e7ff","on-secondary-fixed-variant":"#003ea8","tertiary":"#8d4b00","on-tertiary-container":"#fffbff","primary-container":"#00855d","on-error":"#ffffff","background":"#faf8ff","secondary":"#0051d5","surface-container-lowest":"#ffffff","surface-container":"#eaedff","tertiary-container":"#b15f00","surface-dim":"#d2d9f4","on-tertiary-fixed":"#2f1500","on-surface-variant":"#3d4a42","surface-variant":"#dae2fd","on-error-container":"#93000a","secondary-container":"#316bf3","tertiary-fixed":"#ffdcc3","on-tertiary-fixed-variant":"#6e3900","on-secondary-fixed":"#00174b","error":"#ba1a1a","on-background":"#131b2e","secondary-fixed-dim":"#b4c5ff","inverse-primary":"#68dba9","surface-container-highest":"#dae2fd","on-surface":"#131b2e","on-primary-fixed":"#002114","on-primary":"#ffffff","inverse-on-surface":"#eef0ff","tertiary-fixed-dim":"#ffb77d"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"space-xl":"2rem","space-base":"1rem","gutter-desktop":"1.5rem","margin-tablet":"1.5rem","space-lg":"1.5rem","space-sm":"0.5rem","margin-desktop":"2rem","gutter":"1rem","space-2xl":"3rem","space-xxs":"0.125rem","space-xs":"0.25rem","margin":"1rem","space-md":"0.75rem"},"fontFamily":{"body-md":["Inter"],"headline-sm":["Inter"],"headline-md":["Inter"],"body-sm":["Inter"],"display-lg-mobile":["Inter"],"body-lg":["Inter"],"display-lg":["Inter"],"headline-lg":["Inter"],"label-sm":["Inter"],"label-lg":["Inter"],"metric-number":["Inter"],"label-md":["Inter"]},"fontSize":{"body-md":["14px",{"lineHeight":"20px","fontWeight":"400"}],"headline-sm":["16px",{"lineHeight":"24px","letterSpacing":"-0.005em","fontWeight":"600"}],"headline-md":["20px",{"lineHeight":"28px","letterSpacing":"-0.01em","fontWeight":"600"}],"body-sm":["12px",{"lineHeight":"16px","fontWeight":"400"}],"display-lg-mobile":["24px",{"lineHeight":"32px","letterSpacing":"-0.015em","fontWeight":"700"}],"body-lg":["16px",{"lineHeight":"24px","fontWeight":"400"}],"display-lg":["32px",{"lineHeight":"40px","letterSpacing":"-0.02em","fontWeight":"700"}],"headline-lg":["24px",{"lineHeight":"32px","letterSpacing":"-0.015em","fontWeight":"600"}],"label-sm":["11px",{"lineHeight":"14px","letterSpacing":"0.02em","fontWeight":"600"}],"label-lg":["14px",{"lineHeight":"20px","fontWeight":"500"}],"metric-number":["28px",{"lineHeight":"32px","letterSpacing":"-0.02em","fontWeight":"600"}],"label-md":["12px",{"lineHeight":"16px","fontWeight":"500"}]}}}};</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-[260px] bg-surface-container-lowest z-50 flex flex-col justify-between border-r border-outline-variant/30 shadow-[0_1px_8px_rgba(0,0,0,0.03)]"><div class="flex flex-col"><div class="p-space-base pb-space-sm border-b border-outline-variant/20"><div class="flex items-center gap-space-sm"><div class="w-9 h-9 rounded-lg bg-tertiary flex items-center justify-center text-on-tertiary shadow-sm"><span class="material-symbols-outlined text-[20px]">restaurant</span></div><div class="flex flex-col"><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm text-on-surface tracking-tight">FoodBuddy</span><span class="px-space-xs py-space-xxs rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm uppercase tracking-wider font-semibold">Warden</span></div><span class="font-body-sm text-body-sm text-on-surface-variant truncate">Dining Directorate</span></div></div></div><div class="px-space-base pt-space-md"><span class="font-label-sm text-label-sm uppercase tracking-wider text-outline block mb-space-sm">Supervisory Oversight</span></div><nav class="flex flex-col gap-space-xxs px-space-sm" data-active-classes="bg-tertiary-fixed text-on-tertiary-fixed font-label-lg font-semibold rounded-lg"><div class="px-space-sm pt-space-xs pb-space-xxs"><span class="font-label-sm text-label-sm uppercase tracking-wider text-outline">Overview</span></div><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="overview" href="#"><span class="material-symbols-outlined text-[20px]">grid_view</span><span class="font-label-lg text-label-lg">Overview</span></a><div class="px-space-sm pt-space-sm pb-space-xxs"><span class="font-label-sm text-label-sm uppercase tracking-wider text-outline">Oversight</span></div><a class="flex items-center justify-between px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="escalated-queue" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">warning</span><span class="font-label-lg text-label-lg">Escalated Queue</span></div><span class="px-space-xs py-space-xxs rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold">4</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="audit-trail" href="#"><span class="material-symbols-outlined text-[20px]">verified_user</span><span class="font-label-lg text-label-lg">Audit Trail</span></a><div class="px-space-sm pt-space-sm pb-space-xxs"><span class="font-label-sm text-label-sm uppercase tracking-wider text-outline">Analytics</span></div><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="quality-index" href="#"><span class="material-symbols-outlined text-[20px]">trending_up</span><span class="font-label-lg text-label-lg">Quality Index</span></a><a aria-current="page" class="flex items-center gap-space-sm px-space-md py-space-sm transition-colors bg-tertiary-fixed text-on-tertiary-fixed font-label-lg font-semibold rounded-lg" data-path="caterer-governance" href="#"><span class="material-symbols-outlined text-[20px]">verified</span><span class="font-label-lg text-label-lg">Caterer Governance</span></a><div class="px-space-sm pt-space-sm pb-space-xxs"><span class="font-label-sm text-label-sm uppercase tracking-wider text-outline">Communication</span></div><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="directives-and-orders" href="#"><span class="material-symbols-outlined text-[20px]">campaign</span><span class="font-label-lg text-label-lg">Directives &amp; Orders</span></a></nav></div><div class="p-space-base border-t border-outline-variant/20 bg-surface-container-low/40"><div class="flex items-center gap-space-sm"><div class="w-9 h-9 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-lg flex items-center justify-center font-semibold">RK</div><div class="flex flex-col min-w-0 flex-1"><span class="font-label-lg text-label-lg font-semibold text-on-surface truncate">Dr. K. Raman</span><span class="font-body-sm text-body-sm text-on-surface-variant truncate">Dining Chair &amp; Warden</span><div class="flex items-center gap-space-xs mt-space-xxs"><span class="w-2 h-2 rounded-full bg-tertiary-container"></span><span class="font-label-sm text-label-sm text-tertiary font-medium">Wardenship Active</span></div></div></div></div></aside><div class="pl-[260px]"><header class="fixed top-0 left-[260px] right-0 h-16 bg-surface-container-lowest/90 backdrop-blur-md border-b border-outline-variant/30 z-40 flex items-center justify-between px-space-lg"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-xs font-body-sm text-body-sm text-on-surface-variant"><span class="hover:text-on-surface cursor-pointer">Directorate</span><span class="material-symbols-outlined text-[14px]">chevron_right</span><span class="hover:text-on-surface cursor-pointer">Supervisory Oversight</span><span class="material-symbols-outlined text-[14px]">chevron_right</span><span class="text-on-surface font-semibold">Console</span></div><div class="hidden xl:flex items-center gap-space-xs px-space-sm py-space-xxs rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm"><span class="material-symbols-outlined text-[16px] text-tertiary">apartment</span><span>All 14 Campus Messes • Semester II</span></div></div><div class="flex items-center gap-space-md"><div class="relative hidden md:block w-72"><span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span><input class="w-full pl-9 pr-3 py-1.5 rounded-lg border border-outline-variant/40 bg-surface text-on-surface font-body-sm text-body-sm placeholder:text-outline focus:outline-none focus:border-tertiary transition-colors" placeholder="Search complaints, ticket ID..." type="text"/></div><button class="relative p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-tertiary-container text-on-tertiary font-label-sm text-[10px] flex items-center justify-center font-bold leading-none">4</span></button><button class="p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors"><span class="material-symbols-outlined text-[20px]">swap_horiz</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center cursor-pointer shadow-sm"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><main class="relative pt-16 bg-surface min-h-screen"><div class="flex flex-col w-full">
+<div class="px-space-desktop py-space-xl max-w-[1440px] mx-auto w-full space-y-space-xl">
+<!-- Header / Contextual Title Area -->
+<div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-space-lg">
+<div class="space-y-space-xxs">
+<div class="flex items-center gap-space-xs text-tertiary">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider font-semibold">Institutional Oversight • Statutory Level</span>
+</div>
+<h1 class="font-display-lg text-display-lg text-on-surface tracking-tight">Caterer Governance &amp; Vendor Scorecards</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-3xl">
+          Contractual compliance management, monthly quality index scoring, SLA breach penalties, and tender renewal recommendations.
+        </p>
+</div>
+<!-- Action Group -->
+<div class="flex flex-wrap items-center gap-space-sm self-start xl:self-auto">
+<div class="relative">
+<button class="flex items-center gap-space-sm px-space-md py-2 rounded-lg bg-surface-container-lowest text-on-surface shadow-sm font-label-lg text-label-lg hover:bg-surface-container-high transition-colors" id="monthFilterBtn">
+<span class="material-symbols-outlined text-tertiary text-[18px]">calendar_today</span>
+<span>Month: October 2026</span>
+<span class="material-symbols-outlined text-[16px] text-outline">expand_more</span>
+</button>
+</div>
+<button class="flex items-center gap-space-xs px-space-md py-2 rounded-lg bg-surface-container-lowest text-on-surface font-label-lg text-label-lg hover:bg-surface-container-high shadow-sm transition-colors">
+<span class="material-symbols-outlined text-[18px] text-secondary">download</span>
+<span>Download Statutory Audits</span>
+</button>
+<a class="flex items-center gap-space-xs px-space-md py-2 rounded-lg bg-tertiary text-on-tertiary font-label-lg text-label-lg shadow-sm hover:bg-tertiary-container transition-colors" href="#penalty-ledger-section">
+<span class="material-symbols-outlined text-[18px]">receipt_long</span>
+<span>Penalty Ledger</span>
+</a>
+</div>
+</div>
+<!-- Overview Operational Status Bar -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-space-base">
+<div class="p-space-base rounded-xl bg-surface-container-lowest shadow-sm flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Messes Supervised</span>
+<span class="font-metric-number text-metric-number text-on-surface mt-space-xxs">14 Halls</span>
+<span class="font-body-sm text-body-sm text-primary flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[14px]">check_circle</span> 100% Audited
+          </span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-primary-fixed/30 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[24px]">apartment</span>
+</div>
+</div>
+<div class="p-space-base rounded-xl bg-surface-container-lowest shadow-sm flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Contract Health Avg</span>
+<span class="font-metric-number text-metric-number text-on-surface mt-space-xxs">76.7 / 100</span>
+<span class="font-body-sm text-body-sm text-tertiary flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[14px]">trending_down</span> -2.4 pts vs Sept
+          </span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-tertiary-fixed flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-[24px]">speed</span>
+</div>
+</div>
+<div class="p-space-base rounded-xl bg-surface-container-lowest shadow-sm flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Total SLA Breaches</span>
+<span class="font-metric-number text-metric-number text-error mt-space-xxs">4 Violations</span>
+<span class="font-body-sm text-body-sm text-error-container bg-error px-1.5 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider inline-block mt-0.5 w-fit">
+            1 Under Hearing
+          </span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-error-container flex items-center justify-center text-error">
+<span class="material-symbols-outlined text-[24px]">gavel</span>
+</div>
+</div>
+<div class="p-space-base rounded-xl bg-surface-container-lowest shadow-sm flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Accrued Deductions</span>
+<span class="font-metric-number text-metric-number text-on-surface mt-space-xxs">₹70,000</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[14px]">account_balance_wallet</span> In Escrow Hold
+          </span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[24px]">currency_rupee</span>
+</div>
+</div>
+</div>
+<!-- Active Vendor Performance Cards Grid (Top Contractors) -->
+<div class="space-y-space-md">
+<div class="flex items-center justify-between">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Active Contractor Performance Dossiers</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Statutory scorecards calculated under IIT-DIR/MESS/REG-2024 compliance regulations.</p>
+</div>
+<div class="hidden sm:flex items-center gap-space-xs font-label-sm text-label-sm text-outline">
+<span class="w-2.5 h-2.5 rounded-full bg-primary inline-block"></span> Pass (≥80)
+          <span class="w-2.5 h-2.5 rounded-full bg-secondary inline-block ml-2"></span> Satisfactory (75-79)
+          <span class="w-2.5 h-2.5 rounded-full bg-error inline-block ml-2"></span> Non-Compliant (&lt;75)
+        </div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-space-lg items-stretch">
+<!-- CARD 1: Annapurna Hospitality Services -->
+<div class="rounded-xl bg-surface-container-lowest p-space-lg shadow-sm flex flex-col justify-between relative overflow-hidden transition-all duration-200 hover:shadow-md">
+<div class="absolute top-0 left-0 right-0 h-1.5 bg-primary"></div>
+<div class="space-y-space-base">
+<div class="flex items-start justify-between gap-space-sm">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline block">Contractor #01 • South Campus</span>
+<h3 class="font-headline-md text-headline-md text-on-surface tracking-tight mt-0.5">Annapurna Hospitality Services</h3>
+<span class="font-body-sm text-body-sm text-on-surface-variant">South Mess Halls 1, 2 &amp; 3 (Capacity: 2,150)</span>
+</div>
+<span class="px-space-sm py-1 rounded bg-primary-fixed/40 text-on-primary-fixed font-label-sm text-label-sm font-semibold whitespace-nowrap">
+                Grade A Compliant
+              </span>
+</div>
+<!-- Dial / Score Gauge Graphic Section -->
+<div class="p-space-base rounded-xl bg-surface-container-low flex items-center justify-between">
+<div class="flex items-center gap-space-md">
+<div class="relative w-16 h-16 flex items-center justify-center">
+<svg class="w-16 h-16 transform -rotate-90" viewbox="0 0 36 36">
+<path class="text-surface-container-highest" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3.5"></path>
+<path class="text-primary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="88, 100" stroke-linecap="round" stroke-width="3.5"></path>
+</svg>
+<div class="absolute flex flex-col items-center">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold leading-none">88</span>
+</div>
+</div>
+<div>
+<span class="font-label-lg text-label-lg font-semibold text-on-surface block">88 / 100</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Contract Health Score</span>
+<span class="font-label-sm text-[10px] text-primary block mt-0.5 font-medium">+13 pts above cutoff</span>
+</div>
+</div>
+<div class="text-right">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider block">Financial Penalty</span>
+<span class="font-headline-sm text-headline-sm text-primary font-bold block">₹0</span>
+<span class="font-label-sm text-[10px] text-outline">Zero breaches</span>
+</div>
+</div>
+<!-- Operational Metrics -->
+<div class="grid grid-cols-3 gap-space-xs py-space-xs text-center">
+<div class="p-space-xs rounded-lg bg-surface-container-low/50">
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold flex items-center justify-center gap-0.5">
+                  4.2 <span class="material-symbols-outlined text-[15px] text-tertiary" style="font-variation-settings: 'FILL' 1;">star</span>
+</span>
+<span class="font-label-sm text-[11px] text-on-surface-variant block mt-0.5">Avg Student Rating</span>
+</div>
+<div class="p-space-xs rounded-lg bg-surface-container-low/50">
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">2.1h</span>
+<span class="font-label-sm text-[11px] text-on-surface-variant block mt-0.5">Avg Resolution</span>
+</div>
+<div class="p-space-xs rounded-lg bg-surface-container-low/50">
+<span class="font-headline-sm text-headline-sm text-primary font-semibold">0</span>
+<span class="font-label-sm text-[11px] text-on-surface-variant block mt-0.5">Escalations (&gt;48h)</span>
+</div>
+</div>
+<!-- Image thumbnail of dining premise -->
+<div class="flex items-center gap-space-sm p-space-sm rounded-lg bg-surface-container-low">
+<img class="w-14 h-14 rounded-lg object-cover flex-shrink-0" data-alt="A clean, bright university dining hall with stainless steel serving counters, neatly organized food trays, hygienic glass partitions, and natural overhead lighting highlighting a pristine dining environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDR0d7RI9wRJ0XIe9MIQ3FHNPJuo59xHfWXaUX2F0lhX1WveOX1vqUmjMvCxi6uwYX_2i3Ofp5MFHSQ04VuA9jraqXIuXle4TwFgOV9ZhcPOkWA7dkSUnOwZ_4rZmSvlX-3Gbkt2SdXlEbVqj3KT1aN-_gYaRieAtR9buyyBzUX8K6fUprGMRRE-aKe6Z2br1x2t0l1YqxbgF14ARp_cvJ9y3geqbmjRDL7cGLEDFPEUg3BPdP5Cbfp"/>
+<div class="min-w-0 flex-1">
+<span class="font-label-sm text-label-sm font-semibold text-on-surface block truncate">Hygienic Audit: 96% Cleanliness</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant block truncate">Surprise inspection conducted on Oct 18, 2026</span>
+</div>
+</div>
+</div>
+<!-- Actions -->
+<div class="mt-space-lg pt-space-md flex flex-col gap-space-xs">
+<button class="w-full flex items-center justify-center gap-space-xs py-2.5 px-space-md rounded-lg bg-primary text-on-primary font-label-lg text-label-lg font-semibold hover:bg-primary-container transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">thumb_up</span>
+<span>Recommend Renewal (92% Confidence)</span>
+</button>
+<button class="w-full flex items-center justify-center gap-space-xs py-2 px-space-md rounded-lg bg-surface text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-high hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-[16px]">menu_book</span>
+<span>Audit Kitchen Logs</span>
+</button>
+</div>
+</div>
+<!-- CARD 2: Kisan Canteen Private Ltd. -->
+<div class="rounded-xl bg-surface-container-lowest p-space-lg shadow-sm flex flex-col justify-between relative overflow-hidden transition-all duration-200 hover:shadow-md ring-2 ring-error/20">
+<div class="absolute top-0 left-0 right-0 h-1.5 bg-error"></div>
+<div class="space-y-space-base">
+<div class="flex items-start justify-between gap-space-sm">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-error font-semibold block">Contractor #02 • North Campus</span>
+<h3 class="font-headline-md text-headline-md text-on-surface tracking-tight mt-0.5">Kisan Canteen Private Ltd.</h3>
+<span class="font-body-sm text-body-sm text-on-surface-variant">North Block Dining Complex (Capacity: 1,850)</span>
+</div>
+<span class="px-space-sm py-1 rounded bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold whitespace-nowrap">
+                At-Risk / Hearing
+              </span>
+</div>
+<!-- Dial / Score Gauge Graphic Section -->
+<div class="p-space-base rounded-xl bg-error-container/20 flex items-center justify-between">
+<div class="flex items-center gap-space-md">
+<div class="relative w-16 h-16 flex items-center justify-center">
+<svg class="w-16 h-16 transform -rotate-90" viewbox="0 0 36 36">
+<path class="text-surface-container-highest" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3.5"></path>
+<path class="text-error" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="64, 100" stroke-linecap="round" stroke-width="3.5"></path>
+</svg>
+<div class="absolute flex flex-col items-center">
+<span class="font-headline-sm text-headline-sm text-error font-bold leading-none">64</span>
+</div>
+</div>
+<div>
+<span class="font-label-lg text-label-lg font-semibold text-error block">64 / 100</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Below Cutoff (&lt;75)</span>
+<span class="font-label-sm text-[10px] text-error block mt-0.5 font-bold">-11 pts Deficit</span>
+</div>
+</div>
+<div class="text-right">
+<span class="font-label-sm text-label-sm text-error font-semibold uppercase tracking-wider block">Financial Penalty</span>
+<span class="font-headline-sm text-headline-sm text-error font-bold block">₹45,000</span>
+<span class="font-label-sm text-[10px] text-error font-medium">Clause 14B deduction</span>
+</div>
+</div>
+<!-- Operational Metrics -->
+<div class="grid grid-cols-3 gap-space-xs py-space-xs text-center">
+<div class="p-space-xs rounded-lg bg-surface-container-low/50">
+<span class="font-headline-sm text-headline-sm text-error font-semibold flex items-center justify-center gap-0.5">
+                  3.4 <span class="material-symbols-outlined text-[15px] text-tertiary" style="font-variation-settings: 'FILL' 1;">star</span>
+</span>
+<span class="font-label-sm text-[11px] text-error block mt-0.5 font-medium">&lt;3.5 cutoff</span>
+</div>
+<div class="p-space-xs rounded-lg bg-surface-container-low/50">
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">28.4h</span>
+<span class="font-label-sm text-[11px] text-on-surface-variant block mt-0.5">Avg Resolution</span>
+</div>
+<div class="p-space-xs rounded-lg bg-surface-container-low/50">
+<span class="font-headline-sm text-headline-sm text-error font-semibold">3</span>
+<span class="font-label-sm text-[11px] text-error block mt-0.5 font-medium">&gt;48h Breaches</span>
+</div>
+</div>
+<!-- Image thumbnail of dining premise -->
+<div class="flex items-center gap-space-sm p-space-sm rounded-lg bg-error-container/20">
+<img class="w-14 h-14 rounded-lg object-cover flex-shrink-0" data-alt="A commercial kitchen prep area with unorganized ingredient storage crates, wet floor hazard signs, and steam kettles showing minor water scaling, captured during a compliance health inspection." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiBbdMJTew6P60yci6XBwYAR-4uVtmfykVDS-jC5gYXrABfZRmQDh0wC82sR_2-Gz3NbtaHMapE5gbdhSj88mR7nT9gJIojfvMcSo7yrTxXJYZMyzNhUC7Rr1zybhbDQzCNjNBHa0LMhR6if5Pi1t2Ti5XSasIxU5xWpgK0moA0Q-b-zJdehFiL7Ly-57WAvMPbJLUyfokhbiyjKgfAjc1dWmnX_K0ZwFyHR3Q0Sx1HTJ1woiCX1VZ"/>
+<div class="min-w-0 flex-1">
+<span class="font-label-sm text-label-sm font-semibold text-error block truncate">Cold Dish Temp Warning</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant block truncate">Dal Makhani served under 55°C limit</span>
+</div>
+</div>
+</div>
+<!-- Actions -->
+<div class="mt-space-lg pt-space-md flex flex-col gap-space-xs">
+<button class="w-full flex items-center justify-center gap-space-xs py-2.5 px-space-md rounded-lg bg-error text-on-error font-label-lg text-label-lg font-semibold hover:bg-on-error-container transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">gavel</span>
+<span>Apply Penalty Notice (₹45,000)</span>
+</button>
+<div class="grid grid-cols-2 gap-space-xs">
+<button class="flex items-center justify-center gap-space-xs py-2 px-space-sm rounded-lg bg-surface-container text-on-surface font-label-md text-label-md hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-[16px]">folder_open</span>
+<span>Breach Dossier</span>
+</button>
+<button class="flex items-center justify-center gap-space-xs py-2 px-space-sm rounded-lg bg-surface-container-highest text-error font-label-md text-label-md hover:bg-error-container transition-colors">
+<span class="material-symbols-outlined text-[16px]">pause_circle</span>
+<span>Withhold Payment</span>
+</button>
+</div>
+</div>
+</div>
+<!-- CARD 3: Royal Caterers & Banquet Services -->
+<div class="rounded-xl bg-surface-container-lowest p-space-lg shadow-sm flex flex-col justify-between relative overflow-hidden transition-all duration-200 hover:shadow-md">
+<div class="absolute top-0 left-0 right-0 h-1.5 bg-secondary"></div>
+<div class="space-y-space-base">
+<div class="flex items-start justify-between gap-space-sm">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline block">Contractor #03 • East Complex</span>
+<h3 class="font-headline-md text-headline-md text-on-surface tracking-tight mt-0.5">Royal Caterers &amp; Banquet</h3>
+<span class="font-body-sm text-body-sm text-on-surface-variant">PG &amp; Research Hostel Block (Capacity: 920)</span>
+</div>
+<span class="px-space-sm py-1 rounded bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm font-semibold whitespace-nowrap">
+                Grade B Satisfactory
+              </span>
+</div>
+<!-- Dial / Score Gauge Graphic Section -->
+<div class="p-space-base rounded-xl bg-surface-container-low flex items-center justify-between">
+<div class="flex items-center gap-space-md">
+<div class="relative w-16 h-16 flex items-center justify-center">
+<svg class="w-16 h-16 transform -rotate-90" viewbox="0 0 36 36">
+<path class="text-surface-container-highest" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3.5"></path>
+<path class="text-secondary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="78, 100" stroke-linecap="round" stroke-width="3.5"></path>
+</svg>
+<div class="absolute flex flex-col items-center">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold leading-none">78</span>
+</div>
+</div>
+<div>
+<span class="font-label-lg text-label-lg font-semibold text-on-surface block">78 / 100</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Contract Health Score</span>
+<span class="font-label-sm text-[10px] text-secondary block mt-0.5 font-medium">+3 pts Above Cutoff</span>
+</div>
+</div>
+<div class="text-right">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider block">Financial Penalty</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold block">₹25,000</span>
+<span class="font-label-sm text-[10px] text-outline">Clause 18 (Pending Sign)</span>
+</div>
+</div>
+<!-- Operational Metrics -->
+<div class="grid grid-cols-3 gap-space-xs py-space-xs text-center">
+<div class="p-space-xs rounded-lg bg-surface-container-low/50">
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold flex items-center justify-center gap-0.5">
+                  4.0 <span class="material-symbols-outlined text-[15px] text-tertiary" style="font-variation-settings: 'FILL' 1;">star</span>
+</span>
+<span class="font-label-sm text-[11px] text-on-surface-variant block mt-0.5">Avg Student Rating</span>
+</div>
+<div class="p-space-xs rounded-lg bg-surface-container-low/50">
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">5.8h</span>
+<span class="font-label-sm text-[11px] text-on-surface-variant block mt-0.5">Avg Resolution</span>
+</div>
+<div class="p-space-xs rounded-lg bg-surface-container-low/50">
+<span class="font-headline-sm text-headline-sm text-tertiary font-semibold">1</span>
+<span class="font-label-sm text-[11px] text-on-surface-variant block mt-0.5">Escalations (&gt;48h)</span>
+</div>
+</div>
+<!-- Image thumbnail of dining premise -->
+<div class="flex items-center gap-space-sm p-space-sm rounded-lg bg-surface-container-low">
+<img class="w-14 h-14 rounded-lg object-cover flex-shrink-0" data-alt="A clean postgraduate dining hall with long wooden tables, students dining, stainless steel dishwash conveyor in the backdrop, and warm afternoon sunlight spilling through large windows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-Zx6_hsv9InrARXkfeSwL2afnkQObLFFctllivUx_UsyiFVbJ3NaA5YxF1K0x9EjCyC56vwuSTgbKlj_hvv7pGenK6jxNaFx-X2-iDQ9Za5uxOVfcuShdElCJpP_64UZJmzD-hE3B9ocImEdft-V2tzN-Z4C6zEqfWq8O3mcq9-na7JkmLUST6zWrqMWgKU-JC1lgCZNLSpElU1MCLUgkd60MU3b8pGUXuHgTUM8hhGNzcESO57-k"/>
+<div class="min-w-0 flex-1">
+<span class="font-label-sm text-label-sm font-semibold text-on-surface block truncate">Turnstile Latch Glitch</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant block truncate">20 min entrance delay on Oct 11</span>
+</div>
+</div>
+</div>
+<!-- Actions -->
+<div class="mt-space-lg pt-space-md flex flex-col gap-space-xs">
+<button class="w-full flex items-center justify-center gap-space-xs py-2.5 px-space-md rounded-lg bg-tertiary text-on-tertiary font-label-lg text-label-lg font-semibold hover:bg-tertiary-container transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">warning</span>
+<span>Issue Formal Warning</span>
+</button>
+<button class="w-full flex items-center justify-center gap-space-xs py-2 px-space-md rounded-lg bg-surface text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-high hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-[16px]">task_alt</span>
+<span>Recommend Conditional Renewal</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Statutory Penalty Framework & Policy Clause Cards -->
+<div class="p-space-lg rounded-xl bg-surface-container-lowest shadow-sm space-y-space-base">
+<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-space-sm">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-tertiary font-semibold">Statutory Standard Operating Procedure</span>
+<h2 class="font-headline-md text-headline-md text-on-surface tracking-tight mt-0.5">Contractual Penalty &amp; SLA Enforcement Framework</h2>
+</div>
+<div class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-tertiary">balance</span>
+<span>Per Institute Dining Directorate Bylaw 2024-V2</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+<div class="p-space-base rounded-lg bg-surface-container-low flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-space-xs">
+<span class="px-space-xs py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold">Clause 12.1</span>
+<span class="font-headline-sm text-headline-sm text-error font-bold">₹15,000 / incident</span>
+</div>
+<h4 class="font-label-lg text-label-lg font-semibold text-on-surface">Food Hygiene &amp; Foreign Object Lapse</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+              Confirmed insect, pest, stone, or hair contamination in prepared batches. Requires immediate batch discard and photographic proof.
+            </p>
+</div>
+<div class="mt-space-md flex items-center gap-space-xs text-outline font-label-sm text-[11px]">
+<span class="material-symbols-outlined text-[14px]">shield</span> Instant fine without dispute arbitration
+          </div>
+</div>
+<div class="p-space-base rounded-lg bg-surface-container-low flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-space-xs">
+<span class="px-space-xs py-0.5 rounded bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold">Clause 14.2</span>
+<span class="font-headline-sm text-headline-sm text-error font-bold">₹5,000 / day</span>
+</div>
+<h4 class="font-label-lg text-label-lg font-semibold text-on-surface">Unresolved SLA Complaint Past 48 Hours</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+              Critical student ticketing regarding meal shortages, raw food, or dirty cutlery left unattended past statutory 48h limit.
+            </p>
+</div>
+<div class="mt-space-md flex items-center gap-space-xs text-outline font-label-sm text-[11px]">
+<span class="material-symbols-outlined text-[14px]">schedule</span> Escalates directly to Dean of Student Affairs
+          </div>
+</div>
+<div class="p-space-base rounded-lg bg-surface-container-low flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-space-xs">
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm font-semibold">Clause 18.0</span>
+<span class="font-headline-sm text-headline-sm text-error font-bold">₹25,000 / occurrence</span>
+</div>
+<h4 class="font-label-lg text-label-lg font-semibold text-on-surface">Turnstile Refusal / Early Kitchen Closure</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+              Denying food access to enrolled students before official session wrap or rationing food portions without committee sanction.
+            </p>
+</div>
+<div class="mt-space-md flex items-center gap-space-xs text-outline font-label-sm text-[11px]">
+<span class="material-symbols-outlined text-[14px]">sensor_door</span> Triggers immediate audit of turnstile scanner logs
+          </div>
+</div>
+</div>
+</div>
+<!-- Statutory Penalty Ledger & Sign-off Table -->
+<div class="p-space-lg rounded-xl bg-surface-container-lowest shadow-sm space-y-space-base" id="penalty-ledger-section">
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-space-sm">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Accounting &amp; Disciplinary Records</span>
+<h2 class="font-headline-md text-headline-md text-on-surface tracking-tight mt-0.5">Recent Statutory Penalty Ledger (FY 2026-27)</h2>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Filter by:</span>
+<select class="px-space-sm py-1.5 rounded-lg bg-surface text-on-surface font-label-sm text-label-sm focus:outline-none focus:ring-1 focus:ring-tertiary">
+<option>All Contractors</option>
+<option>Kisan Canteen Private Ltd.</option>
+<option>Royal Caterers &amp; Banquet Services</option>
+<option>Annapurna Hospitality Services</option>
+</select>
+</div>
+</div>
+<!-- Ledger Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left font-body-md text-body-md">
+<thead>
+<tr class="bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">
+<th class="py-space-sm px-space-md rounded-l-lg">Incident Date &amp; Ref</th>
+<th class="py-space-sm px-space-md">Contractor Name</th>
+<th class="py-space-sm px-space-md">Infraction &amp; Clause</th>
+<th class="py-space-sm px-space-md">Deduction Amount</th>
+<th class="py-space-sm px-space-md">Warden Approval Sign-off</th>
+<th class="py-space-sm px-space-md rounded-r-lg text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-high/40">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low/40 transition-colors">
+<td class="py-space-md px-space-md">
+<span class="font-label-lg text-label-lg font-semibold text-on-surface block">24 Oct 2026</span>
+<span class="font-body-sm text-body-sm text-outline font-mono">DED-2026-089</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-label-lg text-label-lg font-semibold text-on-surface block">Kisan Canteen Private Ltd.</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">North Dining Block</span>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span class="font-label-md text-label-md font-semibold text-error">Clause 14B • 3 Breaches</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant block mt-0.5">3 unaddressed complaints exceeded 72 hours</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-headline-sm text-headline-sm font-bold text-error">₹45,000</span>
+<span class="font-label-sm text-[11px] text-outline block">Auto-deducted from invoice</span>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-space-xs">
+<span class="px-space-xs py-0.5 rounded bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold">
+                    Action Required
+                  </span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant block mt-0.5">Awaiting Warden Dr. K. Raman's seal</span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<button class="px-space-md py-1.5 rounded-lg bg-tertiary text-on-tertiary font-label-sm text-label-sm font-semibold hover:bg-tertiary-container transition-colors shadow-sm inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px]">draw</span>
+<span>Sign &amp; Ratify</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low/40 transition-colors">
+<td class="py-space-md px-space-md">
+<span class="font-label-lg text-label-lg font-semibold text-on-surface block">11 Oct 2026</span>
+<span class="font-body-sm text-body-sm text-outline font-mono">DED-2026-081</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-label-lg text-label-lg font-semibold text-on-surface block">Royal Caterers &amp; Banquet</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">PG &amp; Research Hostel</span>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-label-md text-label-md font-semibold text-on-surface">Clause 18 • Turnstile Halt</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant block mt-0.5">Students queued &gt;35m due to unattended turnstiles</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">₹25,000</span>
+<span class="font-label-sm text-[11px] text-outline block">Invoice hold placed</span>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-primary">verified</span>
+<span class="font-label-sm text-label-sm font-semibold text-primary">Ratified by Warden</span>
+</div>
+<span class="font-body-sm text-body-sm text-outline block mt-0.5">Signed on Oct 14, 2026 by Dr. Raman</span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<button class="px-space-md py-1.5 rounded-lg bg-surface-container text-on-surface font-label-sm text-label-sm hover:bg-surface-container-high transition-colors inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px]">description</span>
+<span>View Voucher</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low/40 transition-colors">
+<td class="py-space-md px-space-md">
+<span class="font-label-lg text-label-lg font-semibold text-on-surface block">28 Sept 2026</span>
+<span class="font-body-sm text-body-sm text-outline font-mono">DED-2026-074</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-label-lg text-label-lg font-semibold text-on-surface block">Annapurna Hospitality Services</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">South Mess Hall 2</span>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="font-label-md text-label-md font-semibold text-on-surface">Clause 12.1 • Dismissed Appeal</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant block mt-0.5">Vegetable vendor defect resolved within 30 min</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-headline-sm text-headline-sm font-bold text-outline line-through">₹15,000</span>
+<span class="font-label-sm text-[11px] text-primary block">Waived via arbitration</span>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-primary">verified</span>
+<span class="font-label-sm text-label-sm font-semibold text-primary">Waived with Warning</span>
+</div>
+<span class="font-body-sm text-body-sm text-outline block mt-0.5">Approved by Dining Directorate</span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<button class="px-space-md py-1.5 rounded-lg bg-surface-container text-on-surface font-label-sm text-label-sm hover:bg-surface-container-high transition-colors inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px]">description</span>
+<span>Review Ruling</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Ledger Footer & Batch Actions -->
+<div class="pt-space-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-space-sm text-on-surface-variant font-body-sm text-body-sm">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-primary">info</span>
+<span>Deductions automatically synced with Central Finance &amp; Accounts Division every 1st of the month.</span>
+</div>
+<div class="flex items-center gap-space-sm">
+<button class="px-space-md py-1.5 rounded-lg bg-surface text-on-surface font-label-sm text-label-sm hover:bg-surface-container-high transition-colors">
+            Previous Semesters
+          </button>
+<button class="px-space-md py-1.5 rounded-lg bg-surface-container-high text-on-surface font-label-sm text-label-sm hover:bg-surface-container-highest transition-colors font-medium">
+            Export Audit CSV (Auditor General)
+          </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+  // Simple interactive feedback on button interactions
+  document.addEventListener('DOMContentLoaded', () => {
+    const signBtns = document.querySelectorAll('button:has(span.material-symbols-outlined:contains("draw"))');
+    signBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        alert('Digital Token Prompt: Please confirm signing of Clause 14B deduction voucher using Warden Digital Signature Key.');
+      });
+    });
+  });
+</script></main></div></body></html>

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none">
+  <defs>
+    <linearGradient id="fbBrandGrad" x1="6" y1="6" x2="58" y2="58" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#059669"/>
+      <stop offset="100%" stop-color="#022c22"/>
+    </linearGradient>
+  </defs>
+  <rect x="6" y="6" width="52" height="52" rx="16" fill="url(#fbBrandGrad)" stroke="#10b981" stroke-width="2"/>
+  <!-- Dining Cloche cover & bowl motif with fresh spark -->
+  <path d="M19 36C19 28.8 24.8 23 32 23C39.2 23 45 28.8 45 36H19Z" fill="#10b981" fill-opacity="0.3" stroke="#34d399" stroke-width="2.4" stroke-linejoin="round"/>
+  <!-- Cloche handle -->
+  <path d="M29 23V20C29 18.3 30.3 17 32 17C33.7 17 35 18.3 35 20V23" stroke="#6ee7b7" stroke-width="2.2" stroke-linecap="round"/>
+  <!-- Plate / Tray line -->
+  <path d="M16 40H48" stroke="#34d399" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Delicious aroma steam lines -->
+  <path d="M27 28C27 26.5 28 25.5 28 24.5M32 28C32 26 33 25 33 24M37 28C37 26.5 38 25.5 38 24.5" stroke="#a7f3d0" stroke-width="1.8" stroke-linecap="round"/>
+  <!-- Star badge of quality -->
+  <circle cx="47" cy="18" r="4.5" fill="#f59e0b" stroke="#fef3c7" stroke-width="1.5"/>
+</svg>

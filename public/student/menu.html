@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>Today's Menu — Food Buddy</title>
+  <link rel="stylesheet" href="/css/main.css"/>
+  <script src="/js/vendor/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    /* View Switcher */
+    .view-switcher {
+      display: inline-flex;
+      background: var(--bg-surface-secondary);
+      padding: 4px;
+      border-radius: 10px;
+      gap: 4px;
+      border: 1px solid var(--border-color);
+    }
+    .view-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      border: none;
+      background: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .view-btn.active {
+      background: var(--bg-surface);
+      color: var(--text-main);
+      box-shadow: var(--shadow-xs);
+    }
+
+    /* Live Service Banner */
+    .live-service-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding: 16px 20px;
+      border-radius: 12px;
+      background: #ECFDF5;
+      border: 1px solid #A7F3D0;
+      color: #065F46;
+      box-shadow: var(--shadow-xs);
+    }
+    .live-counter-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #059669;
+      color: #ffffff;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .live-ping-dot {
+      position: relative;
+      display: inline-flex;
+      width: 8px;
+      height: 8px;
+    }
+    .live-ping-dot::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: #34D399;
+      animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+      opacity: 0.75;
+    }
+    .live-ping-dot::after {
+      content: '';
+      position: relative;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ffffff;
+    }
+    @keyframes ping {
+      75%, 100% {
+        transform: scale(2);
+        opacity: 0;
+      }
+    }
+
+    /* Meal slot tabs */
+    .meal-tabs-bar {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 4px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      box-shadow: var(--shadow-xs);
+    }
+    .meal-tab-btn {
+      flex: 1;
+      min-width: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+      border: none;
+      background: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .meal-tab-btn:hover {
+      color: var(--text-main);
+      background: var(--bg-surface-secondary);
+    }
+    .meal-tab-btn.active {
+      background: #D1FAE5;
+      color: #065F46;
+      font-weight: 700;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    .meal-tab-badge {
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+
+    /* Food Cards Grid */
+    .menu-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .food-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow-xs);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .food-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .food-card-img-wrap {
+      position: relative;
+      height: 170px;
+      width: 100%;
+      background: #F1F5F9;
+      overflow: hidden;
+    }
+    .food-card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+    .food-card:hover .food-card-img {
+      transform: scale(1.05);
+    }
+    .food-card-badges {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .badge-pill {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(4px);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 999px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .badge-veg { color: #059669; }
+    .badge-nonveg { color: #DC2626; }
+    .badge-special { background: #FEF3C7; color: #92400E; }
+    .food-card-kcal {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(15, 23, 42, 0.85);
+      color: #ffffff;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      backdrop-filter: blur(4px);
+    }
+    .food-card-body {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    /* Nutritional Breakdown Card */
+    .nutrition-summary-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: var(--shadow-xs);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .macro-stat-box {
+      background: var(--bg-surface-secondary);
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .macro-bar-track {
+      width: 100%;
+      height: 6px;
+      background: #E2E8F0;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    .macro-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+    }
+
+    /* Week View Schedule */
+    .week-day-col {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: var(--shadow-xs);
+    }
+    .week-day-col.today-col {
+      border-color: #059669;
+      background: #F0FDF4;
+    }
+    .week-meal-mini-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="app-sidebar"></aside>
+
+    <div class="app-main">
+      <header class="app-topbar"></header>
+
+      <main class="content-container">
+        <!-- Top Title & View Switcher -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px;">
+              <span>Rotational Cycle 4</span>
+              <span>•</span>
+              <span style="color: var(--color-primary);">Campus Dining Hall</span>
+              <span id="realtimeLiveIndicator" style="display:none; align-items: center; gap: 4px; color: #059669; text-transform: none; font-weight: 500;">
+                <span class="live-ping-dot"></span> Live Sync
+              </span>
+            </div>
+            <h1 style="font-size: 26px; font-weight: 700; color: var(--text-main); margin: 0;">Mess Dining Menu</h1>
+            <p style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">
+              Real-time daily menu managed by the Mess Catering Committee.
+            </p>
+          </div>
+
+          <div class="view-switcher">
+            <button class="view-btn active" id="btnViewToday" onclick="switchView('today')">
+              <span class="material-symbols-outlined" style="font-size: 18px;">today</span>
+              <span>Today</span>
+            </button>
+            <button class="view-btn" id="btnViewWeek" onclick="switchView('week')">
+              <span class="material-symbols-outlined" style="font-size: 18px;">calendar_view_week</span>
+              <span>This Week</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Service Banner -->
+        <div class="live-service-banner" id="liveServiceBanner">
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <div style="width: 42px; height: 42px; border-radius: 50%; background: #059669; color: #ffffff; display: flex; align-items: center; justify-content: center; position: relative;">
+              <span class="material-symbols-outlined" style="font-size: 22px;">soup_kitchen</span>
+              <span class="live-ping-dot" style="position: absolute; top: 0; right: 0;"></span>
+            </div>
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-weight: 700; font-size: 15px; color: #065F46;" id="liveBannerTitle">Lunch Service Active</span>
+                <span class="live-counter-badge">Live Counter</span>
+              </div>
+              <span style="font-size: 13px; color: #047857;" id="liveBannerSub">
+                12:30 PM – 2:30 PM • Scan QR at counter for entry
+              </span>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.85); padding: 6px 12px; border-radius: 8px; color: #065F46;">
+              <span class="material-symbols-outlined" style="font-size: 18px; color: #059669;">speed</span>
+              <span>Queue: Normal (3-5 min)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- TODAY VIEW CONTAINER -->
+        <div id="viewTodayContainer" style="display: flex; flex-direction: column; gap: 20px;">
+          <!-- Meal Slot Tabs -->
+          <div class="meal-tabs-bar">
+            <button class="meal-tab-btn" id="tab-breakfast" onclick="selectMealSlot('breakfast')">
+              <span class="material-symbols-outlined" style="font-size: 18px;">bakery_dining</span>
+              <span>Breakfast</span>
+              <span class="meal-tab-badge" style="background: #F1F5F9; color: var(--text-muted);">07:30 - 09:30</span>
+            </button>
+            <button class="meal-tab-btn active" id="tab-lunch" onclick="selectMealSlot('lunch')">
+              <span class="material-symbols-outlined" style="font-size: 18px;">lunch_dining</span>
+              <span>Lunch</span>
+              <span class="meal-tab-badge" style="background: #059669; color: #ffffff;">12:30 - 14:30</span>
+            </button>
+            <button class="meal-tab-btn" id="tab-snacks" onclick="selectMealSlot('snacks')">
+              <span class="material-symbols-outlined" style="font-size: 18px;">local_cafe</span>
+              <span>Snacks</span>
+              <span class="meal-tab-badge" style="background: #F1F5F9; color: var(--text-muted);">17:00 - 18:15</span>
+            </button>
+            <button class="meal-tab-btn" id="tab-dinner" onclick="selectMealSlot('dinner')">
+              <span class="material-symbols-outlined" style="font-size: 18px;">dinner_dining</span>
+              <span>Dinner</span>
+              <span class="meal-tab-badge" style="background: #F1F5F9; color: var(--text-muted);">19:45 - 21:45</span>
+            </button>
+          </div>
+
+          <!-- Active Slot Title & Meta -->
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <div>
+              <h2 id="slotHeaderTitle" style="font-size: 18px; font-weight: 700; color: var(--text-main); margin: 0;">Lunch Menu</h2>
+              <p id="slotHeaderTiming" style="font-size: 13px; color: var(--text-muted); margin-top: 2px;">Timing: 12:30 PM – 02:30 PM</p>
+            </div>
+            <div id="slotSpecialNotice" style="display:none; align-items: center; gap: 6px; background: #FEF3C7; color: #92400E; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600;">
+              <span class="material-symbols-outlined" style="font-size: 16px;">stars</span>
+              <span>Chef's Special Today</span>
+            </div>
+          </div>
+
+          <!-- Dynamic Food Items Grid -->
+          <div class="menu-cards-grid" id="foodCardsGrid">
+            <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">
+              Loading menu items...
+            </div>
+          </div>
+
+          <!-- Nutritional & Allergen Breakdown Card -->
+          <div class="nutrition-summary-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="material-symbols-outlined" style="font-size: 22px; color: var(--color-primary);">analytics</span>
+                <span style="font-size: 16px; font-weight: 700; color: var(--text-main);">Meal Nutritional & Allergen Analysis</span>
+              </div>
+              <div style="font-size: 13px; color: var(--text-muted);">
+                Target Intake: <strong style="color: var(--text-main);" id="slotCalorieTarget">680 / 2200 kcal</strong>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 14px;">
+              <div class="macro-stat-box">
+                <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--text-muted);">Total Calories</span>
+                <div style="font-size: 20px; font-weight: 700; color: var(--text-main);" id="macroCalories">680 <span style="font-size: 12px; font-weight: normal; color: var(--text-muted);">kcal</span></div>
+                <div class="macro-bar-track">
+                  <div class="macro-bar-fill" id="macroBarCal" style="width: 35%; background: var(--color-primary);"></div>
+                </div>
+              </div>
+              <div class="macro-stat-box">
+                <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--text-muted);">Protein</span>
+                <div style="font-size: 20px; font-weight: 700; color: #059669;" id="macroProtein">26 <span style="font-size: 12px; font-weight: normal; color: var(--text-muted);">g (16%)</span></div>
+                <div class="macro-bar-track">
+                  <div class="macro-bar-fill" style="width: 48%; background: #059669;"></div>
+                </div>
+              </div>
+              <div class="macro-stat-box">
+                <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--text-muted);">Carbohydrates</span>
+                <div style="font-size: 20px; font-weight: 700; color: #2563EB;" id="macroCarbs">84 <span style="font-size: 12px; font-weight: normal; color: var(--text-muted);">g (52%)</span></div>
+                <div class="macro-bar-track">
+                  <div class="macro-bar-fill" style="width: 55%; background: #2563EB;"></div>
+                </div>
+              </div>
+              <div class="macro-stat-box">
+                <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--text-muted);">Fats</span>
+                <div style="font-size: 20px; font-weight: 700; color: #D97706;" id="macroFats">21 <span style="font-size: 12px; font-weight: normal; color: var(--text-muted);">g (13%)</span></div>
+                <div class="macro-bar-track">
+                  <div class="macro-bar-fill" style="width: 32%; background: #D97706;"></div>
+                </div>
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; padding-top: 8px; border-top: 1px solid var(--border-color);">
+              <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <span style="font-size: 12px; font-weight: 600; color: var(--text-muted);">Allergens:</span>
+                <div id="slotAllergensList" style="display: flex; gap: 6px; flex-wrap: wrap;">
+                  <span style="font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 6px; background: #FEF2F2; color: #DC2626; border: 1px solid #FECACA;">Dairy Products</span>
+                  <span style="font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 6px; background: #FFFBEB; color: #B45309; border: 1px solid #FDE68A;">Gluten (Wheat)</span>
+                  <span style="font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 6px; background: #F0FDF4; color: #15803D; border: 1px solid #BBF7D0;">100% Nut-Free Prep</span>
+                </div>
+              </div>
+              <div style="font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 4px;">
+                <span class="material-symbols-outlined" style="font-size: 16px; color: #059669;">verified</span>
+                <span>Audited by Food Safety Officer: Dr. S. K. Roy</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- THIS WEEK SCHEDULE VIEW CONTAINER -->
+        <div id="viewWeekContainer" style="display: none; flex-direction: column; gap: 20px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; background: var(--bg-surface); padding: 18px; border-radius: 12px; border: 1px solid var(--border-card);">
+            <div>
+              <h2 style="font-size: 18px; font-weight: 700; color: var(--text-main); margin: 0;">Weekly Rotational Meal Schedule</h2>
+              <p style="font-size: 13px; color: var(--text-muted); margin-top: 2px;">
+                Monday through Sunday institutional dining plan approved for all hostels.
+              </p>
+            </div>
+            <button class="btn btn-secondary" onclick="window.print()" style="display: flex; align-items: center; gap: 6px; font-size: 13px;">
+              <span class="material-symbols-outlined" style="font-size: 18px;">print</span>
+              <span>Print / Save PDF</span>
+            </button>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px;" id="weeklyScheduleGrid">
+            <div style="text-align: center; padding: 30px; color: var(--text-muted); grid-column: 1/-1;">
+              Loading weekly schedule...
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { requireAuth } from '/js/auth.js';
+    import { initAppShell, showToast } from '/js/app-shell.js';
+    import { getSupabase } from '/js/supabase.js';
+
+    const foodBuddySupabase = getSupabase();
+    let currentSlot = 'lunch';
+    let todayMenus = [];
+    let weekMenus = [];
+
+
+    // Image bank for popular dishes
+    const DISH_IMAGES = {
+      default: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&auto=format&fit=crop&q=80',
+      paneer: 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=600&auto=format&fit=crop&q=80',
+      dal: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=600&auto=format&fit=crop&q=80',
+      rice: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=600&auto=format&fit=crop&q=80',
+      roti: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=600&auto=format&fit=crop&q=80',
+      idli: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=600&auto=format&fit=crop&q=80',
+      vada: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=600&auto=format&fit=crop&q=80',
+      samosa: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=600&auto=format&fit=crop&q=80',
+      sweet: 'https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?w=600&auto=format&fit=crop&q=80',
+      tea: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=600&auto=format&fit=crop&q=80'
+    };
+
+    function getDishImage(name) {
+      const n = (name || '').toLowerCase();
+      if (n.includes('paneer') || n.includes('chicken') || n.includes('kadai') || n.includes('chole')) return DISH_IMAGES.paneer;
+      if (n.includes('dal') || n.includes('sambar')) return DISH_IMAGES.dal;
+      if (n.includes('rice') || n.includes('poha')) return DISH_IMAGES.rice;
+      if (n.includes('roti') || n.includes('phulka') || n.includes('bread') || n.includes('bhature')) return DISH_IMAGES.roti;
+      if (n.includes('idli')) return DISH_IMAGES.idli;
+      if (n.includes('vada')) return DISH_IMAGES.vada;
+      if (n.includes('samosa')) return DISH_IMAGES.samosa;
+      if (n.includes('jamun') || n.includes('kheer') || n.includes('halwa')) return DISH_IMAGES.sweet;
+      if (n.includes('tea') || n.includes('coffee') || n.includes('chai')) return DISH_IMAGES.tea;
+      return DISH_IMAGES.default;
+    }
+
+    // Top-level initialization with window scroll reset
+    const user = await requireAuth('student');
+    if (user) {
+      await initAppShell({
+        activeNav: 'menu',
+        user: {
+          name: user.profile?.name || user.profile?.full_name || 'Student Resident',
+          roll_number: user.profile?.student_id || user.profile?.roll_number || '2025CSB1001',
+          room_number: user.profile?.room_no || user.profile?.room_number || 'B-314',
+          hostel_block: user.profile?.hostel_block || 'Vikramshila Hostel'
+        }
+      });
+
+      window.scrollTo(0, 0);
+      determineCurrentActiveSlot();
+      await loadTodayMenu();
+      await loadWeekMenu();
+      setupRealtimeMenu();
+    }
+
+
+    function determineCurrentActiveSlot() {
+      const hour = new Date().getHours();
+      if (hour >= 6 && hour < 11) {
+        currentSlot = 'breakfast';
+      } else if (hour >= 11 && hour < 16) {
+        currentSlot = 'lunch';
+      } else if (hour >= 16 && hour < 19) {
+        currentSlot = 'snacks';
+      } else {
+        currentSlot = 'dinner';
+      }
+      updateActiveTabUI();
+    }
+
+    function switchView(view) {
+      const todayBtn = document.getElementById('btnViewToday');
+      const weekBtn = document.getElementById('btnViewWeek');
+      const todayCont = document.getElementById('viewTodayContainer');
+      const weekCont = document.getElementById('viewWeekContainer');
+
+      if (view === 'today') {
+        todayBtn.classList.add('active');
+        weekBtn.classList.remove('active');
+        todayCont.style.display = 'flex';
+        weekCont.style.display = 'none';
+      } else {
+        todayBtn.classList.remove('active');
+        weekBtn.classList.add('active');
+        todayCont.style.display = 'none';
+        weekCont.style.display = 'flex';
+      }
+    }
+    window.switchView = switchView;
+
+    function selectMealSlot(slot) {
+      currentSlot = slot;
+      updateActiveTabUI();
+      renderCurrentSlot();
+    }
+    window.selectMealSlot = selectMealSlot;
+
+
+    function updateActiveTabUI() {
+      ['breakfast', 'lunch', 'snacks', 'dinner'].forEach(s => {
+        const btn = document.getElementById(`tab-${s}`);
+        if (!btn) return;
+        if (s === currentSlot) {
+          btn.classList.add('active');
+          const badge = btn.querySelector('.meal-tab-badge');
+          if (badge) {
+            badge.style.background = '#059669';
+            badge.style.color = '#ffffff';
+          }
+        } else {
+          btn.classList.remove('active');
+          const badge = btn.querySelector('.meal-tab-badge');
+          if (badge) {
+            badge.style.background = '#F1F5F9';
+            badge.style.color = 'var(--text-muted)';
+          }
+        }
+      });
+
+      // Update banner text
+      const bannerTitle = document.getElementById('liveBannerTitle');
+      const bannerSub = document.getElementById('liveBannerSub');
+      const slotNameCapital = currentSlot.charAt(0).toUpperCase() + currentSlot.slice(1);
+      if (bannerTitle) bannerTitle.textContent = `${slotNameCapital} Service Active / Scheduled`;
+      if (bannerSub) {
+        const timings = {
+          breakfast: '07:30 AM – 09:30 AM • Fresh batch rolling',
+          lunch: '12:30 PM – 02:30 PM • Scan QR at counter for entry',
+          snacks: '05:00 PM – 06:15 PM • Hot tea & crispy evening bites',
+          dinner: '07:45 PM – 09:45 PM • Buffet counter active'
+        };
+        bannerSub.textContent = timings[currentSlot] || 'Campus Mess Counter Active';
+      }
+    }
+
+    async function loadTodayMenu() {
+      try {
+        const todayStr = new Date().toISOString().split('T')[0];
+        const { data, error } = await foodBuddySupabase
+          .from('menu')
+          .select('*')
+          .eq('date', todayStr);
+
+        if (error) throw error;
+        todayMenus = data || [];
+        renderCurrentSlot();
+      } catch (err) {
+        console.error('Error loading today menu:', err);
+      }
+    }
+
+    function renderCurrentSlot() {
+      const grid = document.getElementById('foodCardsGrid');
+      const headerTitle = document.getElementById('slotHeaderTitle');
+      const headerTiming = document.getElementById('slotHeaderTiming');
+      const specialNotice = document.getElementById('slotSpecialNotice');
+
+      const menuData = todayMenus.find(m => m.meal_slot === currentSlot);
+      const slotNameCapital = currentSlot.charAt(0).toUpperCase() + currentSlot.slice(1);
+
+      if (headerTitle) headerTitle.textContent = `${slotNameCapital} Menu — ${menuData?.title || 'Daily Specials'}`;
+      if (headerTiming) headerTiming.textContent = `Timing: ${menuData?.timing || 'Regular Hours'}`;
+      if (specialNotice) specialNotice.style.display = menuData?.special ? 'inline-flex' : 'none';
+
+      if (!menuData || !menuData.items || !menuData.items.length) {
+        grid.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 40px; background: var(--bg-surface); border: 1px dashed var(--border-color); border-radius: 12px; color: var(--text-muted);">
+            <span class="material-symbols-outlined" style="font-size: 36px; color: #94A3B8; margin-bottom: 8px;">restaurant_menu</span>
+            <p style="font-size: 15px; font-weight: 600; color: var(--text-main); margin-bottom: 4px;">No items scheduled yet for ${slotNameCapital}</p>
+            <span style="font-size: 13px;">The Catering Committee updates menus each morning. Check back shortly.</span>
+          </div>
+        `;
+        updateNutritionCard(null);
+        return;
+      }
+
+      const items = Array.isArray(menuData.items) ? menuData.items : [];
+      updateNutritionCard(menuData, items);
+
+      grid.innerHTML = items.map(item => {
+        const isVeg = (item.type || 'veg').toLowerCase() === 'veg';
+        const isSpecial = (item.type || '').toLowerCase() === 'special';
+        const imgUrl = item.image_url || getDishImage(item.name);
+        const allergens = Array.isArray(item.allergens) ? item.allergens : [];
+
+        return `
+          <div class="food-card">
+            <div class="food-card-img-wrap">
+              <img src="${imgUrl}" alt="${item.name}" class="food-card-img" onerror="this.src='${DISH_IMAGES.default}'" loading="lazy"/>
+              <div class="food-card-badges">
+                <span class="badge-pill ${isVeg ? 'badge-veg' : 'badge-nonveg'}">
+                  <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:${isVeg ? '#059669' : '#DC2626'};"></span>
+                  ${isVeg ? 'Veg' : 'Non-Veg'}
+                </span>
+                ${isSpecial ? '<span class="badge-pill badge-special">Chef Special</span>' : ''}
+              </div>
+              <div class="food-card-kcal">${item.calories || 150} kcal</div>
+            </div>
+            <div class="food-card-body">
+              <div>
+                <h3 style="font-size: 16px; font-weight: 700; color: var(--text-main); margin: 0 0 6px 0;">${item.name}</h3>
+                <p style="font-size: 13px; color: var(--text-muted); line-height: 1.4; margin: 0;">
+                  ${item.description || 'Prepared fresh in the central mess kitchen following FSSAI hygiene standards.'}
+                </p>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 8px; border-top: 1px solid var(--border-color); font-size: 12px; color: var(--text-muted); margin-top: 8px;">
+                <span>${allergens.length ? 'Contains: ' + allergens.join(', ') : 'Nut-Free Recipe'}</span>
+                <span style="color: var(--primary-emerald); font-weight: 600;">Fresh Batch</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function updateNutritionCard(menuData, items = []) {
+      const macroCal = document.getElementById('macroCalories');
+      const macroProt = document.getElementById('macroProtein');
+      const macroCarb = document.getElementById('macroCarbs');
+      const macroFat = document.getElementById('macroFats');
+      const slotTarget = document.getElementById('slotCalorieTarget');
+      const allergensList = document.getElementById('slotAllergensList');
+
+      const totalKcal = menuData?.calories || items.reduce((acc, i) => acc + (i.calories || 120), 0) || 680;
+      if (macroCal) macroCal.innerHTML = `${totalKcal} <span style="font-size: 12px; font-weight: normal; color: var(--text-muted);">kcal</span>`;
+      if (slotTarget) slotTarget.textContent = `${totalKcal} / 2200 kcal`;
+
+      // Approximate macros
+      const protein = Math.round(totalKcal * 0.04);
+      const carbs = Math.round(totalKcal * 0.12);
+      const fats = Math.round(totalKcal * 0.03);
+
+      if (macroProt) macroProt.innerHTML = `${protein} <span style="font-size: 12px; font-weight: normal; color: var(--text-muted);">g (16%)</span>`;
+      if (macroCarb) macroCarb.innerHTML = `${carbs} <span style="font-size: 12px; font-weight: normal; color: var(--text-muted);">g (52%)</span>`;
+      if (macroFat) macroFat.innerHTML = `${fats} <span style="font-size: 12px; font-weight: normal; color: var(--text-muted);">g (13%)</span>`;
+
+      // Aggregate allergens
+      const allAllergens = new Set();
+      items.forEach(i => {
+        if (Array.isArray(i.allergens)) i.allergens.forEach(a => allAllergens.add(a));
+      });
+
+      if (allergensList) {
+        if (!allAllergens.size) {
+          allergensList.innerHTML = `<span style="font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 6px; background: #F0FDF4; color: #15803D; border: 1px solid #BBF7D0;">No Common Allergens Detected</span>`;
+        } else {
+          allergensList.innerHTML = Array.from(allAllergens).map(a => {
+            return `<span style="font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 6px; background: #FEF2F2; color: #DC2626; border: 1px solid #FECACA;">${a}</span>`;
+          }).join('') + `<span style="font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 6px; background: #F0FDF4; color: #15803D; border: 1px solid #BBF7D0;">Nut-Free Kitchen</span>`;
+        }
+      }
+    }
+
+    async function loadWeekMenu() {
+      try {
+        const today = new Date();
+        const startOfWeek = new Date(today);
+        startOfWeek.setDate(today.getDate() - today.getDay() + 1); // Monday
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
+
+        const startStr = startOfWeek.toISOString().split('T')[0];
+        const endStr = endOfWeek.toISOString().split('T')[0];
+
+        const { data, error } = await foodBuddySupabase
+          .from('menu')
+          .select('*')
+          .gte('date', startStr)
+          .lte('date', endStr)
+          .order('date', { ascending: true });
+
+        if (error) throw error;
+        weekMenus = data || [];
+        renderWeekGrid(startOfWeek);
+      } catch (err) {
+        console.error('Error loading weekly menu:', err);
+      }
+    }
+
+    function renderWeekGrid(startOfWeek) {
+      const grid = document.getElementById('weeklyScheduleGrid');
+      if (!grid) return;
+
+      const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+      const todayStr = new Date().toISOString().split('T')[0];
+
+      let html = '';
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(startOfWeek);
+        d.setDate(startOfWeek.getDate() + i);
+        const dStr = d.toISOString().split('T')[0];
+        const isToday = dStr === todayStr;
+
+        const dayMenus = weekMenus.filter(m => m.date === dStr);
+        const breakfast = dayMenus.find(m => m.meal_slot === 'breakfast');
+        const lunch = dayMenus.find(m => m.meal_slot === 'lunch');
+        const snacks = dayMenus.find(m => m.meal_slot === 'snacks');
+        const dinner = dayMenus.find(m => m.meal_slot === 'dinner');
+
+        function formatItemNames(m) {
+          if (!m || !m.items || !m.items.length) return '<span style="color:#94A3B8;">Regular Hostel Menu</span>';
+          return m.items.map(it => it.name).slice(0, 3).join(', ') + (m.items.length > 3 ? '...' : '');
+        }
+
+        html += `
+          <div class="week-day-col ${isToday ? 'today-col' : ''}">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 6px;">
+              <div>
+                <strong style="font-size: 14px; color: ${isToday ? '#059669' : 'var(--text-main)'};">${days[i]}</strong>
+                <div style="font-size: 11px; color: var(--text-muted);">${d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</div>
+              </div>
+              ${isToday ? '<span style="font-size: 10px; font-weight: 700; background: #059669; color: #fff; padding: 2px 6px; border-radius: 999px;">TODAY</span>' : ''}
+            </div>
+
+            <div class="week-meal-mini-card">
+              <span style="font-size: 11px; font-weight: 700; color: #059669; display: block; margin-bottom: 2px;">Breakfast</span>
+              <div style="color: var(--text-main);">${formatItemNames(breakfast)}</div>
+            </div>
+
+            <div class="week-meal-mini-card">
+              <span style="font-size: 11px; font-weight: 700; color: #2563EB; display: block; margin-bottom: 2px;">Lunch</span>
+              <div style="color: var(--text-main);">${formatItemNames(lunch)}</div>
+            </div>
+
+            <div class="week-meal-mini-card">
+              <span style="font-size: 11px; font-weight: 700; color: #D97706; display: block; margin-bottom: 2px;">Snacks</span>
+              <div style="color: var(--text-main);">${formatItemNames(snacks)}</div>
+            </div>
+
+            <div class="week-meal-mini-card">
+              <span style="font-size: 11px; font-weight: 700; color: #7C3AED; display: block; margin-bottom: 2px;">Dinner</span>
+              <div style="color: var(--text-main);">${formatItemNames(dinner)}</div>
+            </div>
+          </div>
+        `;
+      }
+
+      grid.innerHTML = html;
+    }
+
+    function setupRealtimeMenu() {
+      try {
+        const liveInd = document.getElementById('realtimeLiveIndicator');
+        const channel = foodBuddySupabase
+          .channel('public:menu')
+          .on(
+            'postgres_changes',
+            { event: '*', schema: 'public', table: 'menu' },
+            (payload) => {
+              console.log('Realtime menu update received:', payload);
+              if (liveInd) {
+                liveInd.style.display = 'inline-flex';
+                setTimeout(() => { liveInd.style.display = 'none'; }, 4000);
+              }
+              loadTodayMenu();
+              loadWeekMenu();
+            }
+          )
+          .subscribe((status) => {
+            if (status === 'SUBSCRIBED') {
+              console.log('Realtime menu sync active');
+              if (liveInd) liveInd.style.display = 'inline-flex';
+            }
+          });
+      } catch (err) {
+        console.warn('Realtime subscription error:', err);
+      }
+    }
+  </script>
+</body>
+</html>

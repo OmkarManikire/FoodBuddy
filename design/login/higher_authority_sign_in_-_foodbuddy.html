@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_blank" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "on-primary-container": "#f5fff7",
+          "on-tertiary-container": "#fffbff",
+          "on-primary-fixed": "#002114",
+          "surface": "#faf8ff",
+          "on-surface": "#131b2e",
+          "tertiary-container": "#b15f00",
+          "on-primary-fixed-variant": "#005137",
+          "on-error": "#ffffff",
+          "on-tertiary-fixed-variant": "#6e3900",
+          "on-surface-variant": "#3d4a42",
+          "surface-tint": "#006c4a",
+          "primary-container": "#00855d",
+          "tertiary-fixed": "#ffdcc3",
+          "surface-container-low": "#f2f3ff",
+          "inverse-primary": "#68dba9",
+          "on-secondary-fixed-variant": "#003ea8",
+          "primary-fixed-dim": "#68dba9",
+          "on-secondary-fixed": "#00174b",
+          "primary": "#006948",
+          "on-tertiary": "#ffffff",
+          "on-primary": "#ffffff",
+          "outline": "#6d7a72",
+          "error": "#ba1a1a",
+          "secondary": "#0051d5",
+          "surface-container": "#eaedff",
+          "outline-variant": "#bccac0",
+          "primary-fixed": "#85f8c4",
+          "surface-container-highest": "#dae2fd",
+          "surface-dim": "#d2d9f4",
+          "secondary-container": "#316bf3",
+          "on-tertiary-fixed": "#2f1500",
+          "surface-container-lowest": "#ffffff",
+          "inverse-on-surface": "#eef0ff",
+          "surface-bright": "#faf8ff",
+          "surface-variant": "#dae2fd",
+          "on-secondary-container": "#fefcff",
+          "background": "#faf8ff",
+          "on-background": "#131b2e",
+          "inverse-surface": "#283044",
+          "error-container": "#ffdad6",
+          "on-secondary": "#ffffff",
+          "secondary-fixed-dim": "#b4c5ff",
+          "secondary-fixed": "#dbe1ff",
+          "on-error-container": "#93000a",
+          "surface-container-high": "#e2e7ff",
+          "tertiary": "#8d4b00",
+          "tertiary-fixed-dim": "#ffb77d"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.25rem",
+          "lg": "0.5rem",
+          "xl": "0.75rem",
+          "full": "9999px"
+        },
+        "spacing": {
+          "gutter": "1rem",
+          "space-xl": "2rem",
+          "space-xxs": "0.125rem",
+          "space-sm": "0.5rem",
+          "space-md": "0.75rem",
+          "space-2xl": "3rem",
+          "margin-desktop": "2rem",
+          "gutter-desktop": "1.5rem",
+          "space-lg": "1.5rem",
+          "margin-tablet": "1.5rem",
+          "margin": "1rem",
+          "space-base": "1rem",
+          "space-xs": "0.25rem"
+        },
+        "fontFamily": {
+          "label-md": ["Inter"],
+          "label-sm": ["Inter"],
+          "headline-md": ["Inter"],
+          "display-lg": ["Inter"],
+          "headline-lg": ["Inter"],
+          "body-sm": ["Inter"],
+          "body-md": ["Inter"],
+          "display-lg-mobile": ["Inter"],
+          "headline-sm": ["Inter"],
+          "metric-number": ["Inter"],
+          "body-lg": ["Inter"],
+          "label-lg": ["Inter"]
+        },
+        "fontSize": {
+          "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+          "label-sm": ["11px", {"lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+          "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+          "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+          "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600"}],
+          "body-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+          "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+          "display-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "700"}],
+          "headline-sm": ["16px", {"lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600"}],
+          "metric-number": ["28px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+          "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+          "label-lg": ["14px", {"lineHeight": "20px", "fontWeight": "500"}]
+        }
+      }
+    }
+  }</script></head><body class="bg-surface font-body-md text-body-md text-on-surface"><main class="w-full min-h-screen bg-surface flex items-center justify-center p-space-md"><div class="flex flex-col w-full">
+<div class="w-full max-w-7xl mx-auto min-h-[calc(100vh-2rem)] flex flex-col justify-center py-space-sm sm:py-space-md">
+<!-- Top Administrative Metadata Bar -->
+<div class="flex flex-wrap items-center justify-between gap-space-sm mb-space-md px-space-xs">
+<div class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm">
+<span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+<span class="tracking-wider uppercase">Institutional Node: Campus Dining Operations Authority</span>
+</div>
+<div class="flex items-center gap-space-md text-on-surface-variant font-label-sm text-label-sm">
+<span class="inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px] text-tertiary">verified_user</span>
+          Tier-1 Security Level
+        </span>
+<span class="inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px] text-primary">dns</span>
+          Mainframe Cluster 04 (Active)
+        </span>
+</div>
+</div>
+<!-- Main Split-Screen Container -->
+<div class="grid grid-cols-1 lg:grid-cols-12 rounded-xl overflow-hidden shadow-xl bg-surface-container-lowest">
+<!-- Left Column: Form & Access Control (7 Cols) -->
+<div class="lg:col-span-7 p-space-lg sm:p-space-xl lg:p-space-2xl flex flex-col justify-between">
+<div>
+<!-- Header: Brand mark and Supervisory Badge -->
+<div class="flex items-start justify-between gap-space-md mb-space-lg">
+<div class="flex items-center gap-space-sm">
+<div class="w-11 h-11 rounded-lg bg-tertiary flex items-center justify-center text-on-tertiary shadow-md">
+<span class="material-symbols-outlined text-[26px]">soup_kitchen</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-headline-md text-headline-md tracking-tight text-on-surface">FoodBuddy</span>
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm uppercase tracking-wide">Admin Portal</span>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant">Centralized Dining Governance &amp; Vigilance Engine</p>
+</div>
+</div>
+<!-- Role Badge -->
+<div class="hidden sm:flex flex-col items-end">
+<span class="inline-flex items-center gap-1 px-space-sm py-1 rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm shadow-sm">
+<span class="material-symbols-outlined text-[14px]">shield_person</span>
+                Governance &amp; Oversight
+              </span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-1">Auth Scheme: OAuth 2.0 / FIDO2</span>
+</div>
+</div>
+<!-- Role Switcher Tabs -->
+<div class="mb-space-lg">
+<div class="flex items-center p-1 rounded-lg bg-surface-container gap-1 w-full max-w-md">
+<button class="flex-1 py-1.5 px-3 rounded text-center font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors flex items-center justify-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[16px]">school</span>
+<span>Student</span>
+</button>
+<button class="flex-1 py-1.5 px-3 rounded text-center font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors flex items-center justify-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[16px]">restaurant_menu</span>
+<span>Mess Manager</span>
+</button>
+<button class="flex-1 py-1.5 px-3 rounded text-center font-label-md text-label-md bg-tertiary text-on-tertiary shadow-sm flex items-center justify-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[16px]">account_balance</span>
+<span>Higher Authority</span>
+</button>
+</div>
+</div>
+<!-- Notice Banner -->
+<div class="p-space-md rounded-lg bg-surface-container-low mb-space-lg flex items-start gap-space-sm">
+<span class="material-symbols-outlined text-tertiary text-[20px] mt-0.5">lock</span>
+<div class="flex-1">
+<h4 class="font-label-lg text-label-lg text-on-surface font-semibold">Strictly Restricted Access</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5 leading-relaxed">
+                Authorized for Hostel Wardens, Chief Wardens, Deans of Student Affairs, and Mess Committee leads only. Unauthorized connection attempts are logged with client fingerprints.
+              </p>
+</div>
+</div>
+<!-- Authentication Form -->
+<form class="space-y-space-md" id="admin-auth-form" onsubmit="event.preventDefault();">
+<!-- Email Input -->
+<div class="space-y-1.5">
+<label class="block font-label-md text-label-md text-on-surface" for="admin-email">Institutional Official Email ID</label>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">badge</span>
+</span>
+<input class="w-full pl-9 pr-3 py-2 rounded-lg bg-surface-container-low text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-tertiary font-body-md text-body-md shadow-inner transition-all" id="admin-email" placeholder="warden.blocka@university.edu" required="" type="email"/>
+</div>
+</div>
+<!-- Password / Passkey Input -->
+<div class="space-y-1.5">
+<div class="flex items-center justify-between">
+<label class="block font-label-md text-label-md text-on-surface" for="admin-passkey">Administrative Passkey / Keycard PIN</label>
+<a class="font-label-sm text-label-sm text-tertiary hover:underline" href="#forgot">Forgot credentials?</a>
+</div>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">key</span>
+</span>
+<input class="w-full pl-9 pr-10 py-2 rounded-lg bg-surface-container-low text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-tertiary font-body-md text-body-md shadow-inner transition-all" id="admin-passkey" placeholder="••••••••••••••••" required="" type="password"/>
+<button class="absolute inset-y-0 right-0 pr-3 flex items-center text-on-surface-variant hover:text-on-surface" id="toggle-visibility" type="button">
+<span class="material-symbols-outlined text-[18px]" id="visibility-icon">visibility</span>
+</button>
+</div>
+</div>
+<!-- 2FA Security Advisory -->
+<div class="rounded-lg bg-surface-container-low p-space-sm flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="p-1 rounded bg-tertiary-fixed text-on-tertiary-fixed">
+<span class="material-symbols-outlined text-[16px]">security</span>
+</span>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Hardware Key / 2FA Authenticator</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Hardware prompt or TOTP verification will trigger on step 2</p>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-tertiary uppercase tracking-wider font-semibold">Required</span>
+</div>
+<!-- Primary CTA -->
+<div class="pt-space-xs">
+<button class="w-full py-2.5 px-space-md rounded-lg bg-tertiary hover:bg-tertiary-container text-on-tertiary font-label-lg text-label-lg shadow-md transition-colors flex items-center justify-center gap-2 group cursor-pointer" id="submit-btn" type="submit">
+<span>Sign In to Supervisory Console</span>
+<span class="material-symbols-outlined text-[18px] group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+</button>
+</div>
+</form>
+</div>
+<!-- Footnote: No Registration Notice -->
+<div class="pt-space-lg mt-space-md">
+<div class="flex items-center gap-space-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px] text-tertiary">admin_panel_settings</span>
+<p class="font-body-sm text-body-sm leading-tight">
+              Self-registration is disabled for supervisory tiers. Role credentials are strictly provisioned and audited by the 
+              <span class="font-semibold text-on-surface">Office of the University Registrar</span>.
+            </p>
+</div>
+</div>
+</div>
+<!-- Right Column: Brand Showcase & Institutional Governance Highlights (5 Cols) -->
+<div class="lg:col-span-5 bg-gradient-to-br from-inverse-surface via-[#20273a] to-tertiary-container text-on-primary p-space-lg sm:p-space-xl flex flex-col justify-between relative overflow-hidden">
+<!-- Ambient Decorative Graphics -->
+<div class="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-tertiary/15 blur-2xl pointer-events-none"></div>
+<div class="absolute -left-12 -bottom-12 w-48 h-48 rounded-full bg-primary/20 blur-xl pointer-events-none"></div>
+<!-- Top Status & University Badge -->
+<div class="relative z-10 flex items-center justify-between pb-space-lg">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+<span class="font-label-sm text-label-sm text-surface-container-high tracking-widest uppercase">Central Telemetry Live</span>
+</div>
+<span class="font-label-sm text-label-sm bg-surface-container-lowest/10 backdrop-blur px-2.5 py-1 rounded-full text-inverse-on-surface">
+            v3.8.4 Syndicate Edition
+          </span>
+</div>
+<!-- Institutional Capability Cards -->
+<div class="relative z-10 space-y-space-md my-auto py-space-sm">
+<!-- Capability 1 -->
+<div class="p-space-md rounded-xl bg-surface-container-lowest/10 backdrop-blur hover:bg-surface-container-lowest/15 transition-colors shadow-sm">
+<div class="flex items-start gap-space-sm">
+<div class="w-8 h-8 rounded-lg bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[18px]">schedule_send</span>
+</div>
+<div class="space-y-0.5">
+<div class="flex items-center justify-between gap-2">
+<h3 class="font-headline-sm text-headline-sm text-inverse-on-surface">Automated Escalation Engine</h3>
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-tertiary/30 text-tertiary-fixed">12h SLA</span>
+</div>
+<p class="font-body-sm text-body-sm text-surface-container-high leading-relaxed">
+                  Student hygiene and meal-deficit complaints unaddressed past 12 hours instantly trigger push telemetry, SMS, and direct email escalation to assigned Wardens.
+                </p>
+</div>
+</div>
+</div>
+<!-- Capability 2 -->
+<div class="p-space-md rounded-xl bg-surface-container-lowest/10 backdrop-blur hover:bg-surface-container-lowest/15 transition-colors shadow-sm">
+<div class="flex items-start gap-space-sm">
+<div class="w-8 h-8 rounded-lg bg-secondary-fixed text-on-secondary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+</div>
+<div class="space-y-0.5">
+<div class="flex items-center justify-between gap-2">
+<h3 class="font-headline-sm text-headline-sm text-inverse-on-surface">Contractor Compliance Index</h3>
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-secondary-container/40 text-secondary-fixed">Live Score</span>
+</div>
+<p class="font-body-sm text-body-sm text-surface-container-high leading-relaxed">
+                  Aggregate monthly nutritional density, hygiene swab inspections, and ingredient quality scorecards for commercial catering audit reviews.
+                </p>
+</div>
+</div>
+</div>
+<!-- Capability 3 -->
+<div class="p-space-md rounded-xl bg-surface-container-lowest/10 backdrop-blur hover:bg-surface-container-lowest/15 transition-colors shadow-sm">
+<div class="flex items-start gap-space-sm">
+<div class="w-8 h-8 rounded-lg bg-primary-fixed text-on-primary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[18px]">summarize</span>
+</div>
+<div class="space-y-0.5">
+<div class="flex items-center justify-between gap-2">
+<h3 class="font-headline-sm text-headline-sm text-inverse-on-surface">Audit-Ready Syndicate Reports</h3>
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-primary-container/40 text-primary-fixed">PDF/CSV</span>
+</div>
+<p class="font-body-sm text-body-sm text-surface-container-high leading-relaxed">
+                  One-click tamper-evident telemetry packages formatted for executive senate, Dean conferences, and statutory hostel committee meetings.
+                </p>
+</div>
+</div>
+</div>
+<!-- Quick Metrics Preview Pill Grid -->
+<div class="grid grid-cols-3 gap-space-xs pt-space-xs">
+<div class="p-2.5 rounded-lg bg-surface-container-lowest/5 text-center">
+<span class="font-headline-md text-headline-md text-tertiary-fixed block font-bold">99.4%</span>
+<span class="font-label-sm text-label-sm text-surface-container-high">SLA Adherence</span>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-lowest/5 text-center">
+<span class="font-headline-md text-headline-md text-inverse-primary block font-bold">14 Messes</span>
+<span class="font-label-sm text-label-sm text-surface-container-high">Synchronized</span>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-lowest/5 text-center">
+<span class="font-headline-md text-headline-md text-secondary-fixed block font-bold">Zero-Loss</span>
+<span class="font-label-sm text-label-sm text-surface-container-high">Audit Record</span>
+</div>
+</div>
+</div>
+<!-- Bottom University Trust Stamp -->
+<div class="relative z-10 pt-space-md flex items-center justify-between text-surface-container-high font-label-sm text-label-sm">
+<span>University Dining Oversight Board</span>
+<span class="flex items-center gap-1 text-tertiary-fixed">
+<span class="material-symbols-outlined text-[14px]">encrypted</span>
+            End-to-End Encrypted
+          </span>
+</div>
+</div>
+</div>
+<!-- Minimal System Footer -->
+<div class="mt-space-md flex flex-wrap items-center justify-between text-on-surface-variant font-label-sm text-label-sm px-space-xs">
+<div class="flex items-center gap-space-md">
+<span>© Campus Auxiliary Services Governance Network</span>
+<span>•</span>
+<a class="hover:text-on-surface underline" href="#help">Registrar Support Desk</a>
+<span>•</span>
+<a class="hover:text-on-surface underline" href="#privacy">Statutory Data Policy</a>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span>All Dining Telemetry Systems Normal</span>
+</div>
+</div>
+</div>
+</div>
+<script>
+  (function() {
+    const toggleBtn = document.getElementById('toggle-visibility');
+    const passInput = document.getElementById('admin-passkey');
+    const icon = document.getElementById('visibility-icon');
+
+    if (toggleBtn && passInput && icon) {
+      toggleBtn.addEventListener('click', function() {
+        const isPassword = passInput.getAttribute('type') === 'password';
+        passInput.setAttribute('type', isPassword ? 'text' : 'password');
+        icon.textContent = isPassword ? 'visibility_off' : 'visibility';
+      });
+    }
+
+    const form = document.getElementById('admin-auth-form');
+    const submitBtn = document.getElementById('submit-btn');
+
+    if (form && submitBtn) {
+      form.addEventListener('submit', function() {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `
+          <span class="inline-block animate-spin material-symbols-outlined text-[18px]">progress_activity</span>
+          <span>Initiating 2FA Handshake...</span>
+        `;
+        setTimeout(() => {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = `
+            <span>Awaiting Hardware Key or Passcode...</span>
+            <span class="material-symbols-outlined text-[18px]">fingerprint</span>
+          `;
+        }, 1200);
+      });
+    }
+  })();
+</script></main></body></html>

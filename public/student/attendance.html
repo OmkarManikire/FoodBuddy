@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>QR Attendance — Food Buddy</title>
+  <link rel="stylesheet" href="/css/main.css"/>
+  <script src="/js/vendor/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- HTML5 QR Code Scanner Library -->
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <style>
+    /* Viewfinder Card */
+    .scanner-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-card);
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: var(--shadow-xs);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .viewfinder-viewport {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1/1;
+      max-height: 380px;
+      border-radius: 12px;
+      background: #0F172A;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #qr-reader {
+      width: 100% !important;
+      height: 100% !important;
+      border: none !important;
+    }
+    #qr-reader video {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+      border-radius: 12px;
+    }
+    /* Reticle overlay */
+    .reticle-box {
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      pointer-events: none;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-sizing: border-box;
+    }
+    .reticle-corner {
+      width: 28px;
+      height: 28px;
+      border-color: #34D399;
+      border-style: solid;
+    }
+    .corner-tl { border-width: 3px 0 0 3px; border-top-left-radius: 6px; }
+    .corner-tr { border-width: 3px 3px 0 0; border-top-right-radius: 6px; }
+    .corner-bl { border-width: 0 0 3px 3px; border-bottom-left-radius: 6px; }
+    .corner-br { border-width: 0 3px 3px 0; border-bottom-right-radius: 6px; }
+
+    .laser-scan-line {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #34D399, transparent);
+      box-shadow: 0 0 12px #34D399;
+      animation: scanLaser 2s ease-in-out infinite alternate;
+      z-index: 11;
+      pointer-events: none;
+    }
+    @keyframes scanLaser {
+      0% { top: 15%; opacity: 0.3; }
+      50% { opacity: 1; }
+      100% { top: 85%; opacity: 0.3; }
+    }
+
+    /* Success Card */
+    .success-receipt-card {
+      background: #ECFDF5;
+      border: 1px solid #A7F3D0;
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    .success-receipt-card::after {
+      content: '';
+      position: absolute;
+      top: -40px;
+      right: -40px;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: rgba(5, 150, 105, 0.1);
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="app-sidebar"></aside>
+
+    <div class="app-main">
+      <header class="app-topbar"></header>
+
+      <main class="content-container">
+        <!-- Breadcrumb / Header -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--color-primary); margin-bottom: 4px;">
+              <span class="material-symbols-outlined" style="font-size: 16px;">qr_code_scanner</span>
+              <span>Dining Turnstile Checkpoint</span>
+              <span>•</span>
+              <span style="color: var(--text-muted); text-transform: none; font-weight: 500;">Terminal #02 (South Hall)</span>
+            </div>
+            <h1 style="font-size: 26px; font-weight: 700; color: var(--text-main); margin: 0;">Digital Mess Attendance & QR Scanner</h1>
+            <p style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">
+              Scan the dynamic turnstile QR code at the dining hall entry gate to validate your meal pass.
+            </p>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="background: var(--bg-surface); border: 1px solid var(--border-color); padding: 8px 14px; border-radius: 10px; display: flex; align-items: center; gap: 8px;">
+              <div style="width: 8px; height: 8px; border-radius: 50%; background: #059669; animation: pulse 1.5s infinite;"></div>
+              <span style="font-size: 12px; font-weight: 600; color: #065F46;">Turnstile Stream Active</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Attendance KPI Quick Strip -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+          <div style="background: var(--bg-surface); border: 1px solid var(--border-card); border-radius: 12px; padding: 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-xs);">
+            <div>
+              <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--text-muted);">Attendance Rate</div>
+              <div style="font-size: 24px; font-weight: 700; color: var(--text-main); margin-top: 2px;" id="statAttendanceRate">94.2%</div>
+              <div style="font-size: 12px; color: #059669; font-weight: 600; margin-top: 2px;">↑ Consistent Streak</div>
+            </div>
+            <div style="width: 40px; height: 40px; border-radius: 10px; background: #ECFDF5; color: #059669; display: flex; align-items: center; justify-content: center;">
+              <span class="material-symbols-outlined">trending_up</span>
+            </div>
+          </div>
+
+          <div style="background: var(--bg-surface); border: 1px solid var(--border-card); border-radius: 12px; padding: 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-xs);">
+            <div>
+              <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--text-muted);">Meals Logged This Month</div>
+              <div style="font-size: 24px; font-weight: 700; color: var(--color-primary); margin-top: 2px;" id="statAttendedCount">0</div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Across all 4 sessions</div>
+            </div>
+            <div style="width: 40px; height: 40px; border-radius: 10px; background: #D1FAE5; color: #065F46; display: flex; align-items: center; justify-content: center;">
+              <span class="material-symbols-outlined">verified</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2 Column Split Layout -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; align-items: start;">
+          
+          <!-- Left Column: Camera Scanner & Success Receipt -->
+          <div style="display: flex; flex-direction: column; gap: 20px;">
+            
+            <!-- Scanner Card -->
+            <div class="scanner-card">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span class="material-symbols-outlined" style="color: var(--color-primary); font-size: 20px;">videocam</span>
+                  <span style="font-weight: 700; font-size: 15px; color: var(--text-main);">Optical Turnstile Scanner</span>
+                </div>
+                <button type="button" id="btnToggleCamera" onclick="toggleCamera()" class="btn btn-secondary" style="font-size: 12px; padding: 4px 10px; display: flex; align-items: center; gap: 4px;">
+                  <span class="material-symbols-outlined" style="font-size: 16px;">cameraswitch</span>
+                  <span id="camToggleText">Stop Camera</span>
+                </button>
+              </div>
+
+              <!-- Viewfinder Frame -->
+              <div class="viewfinder-viewport" id="viewportContainer">
+                <div id="qr-reader"></div>
+
+                <!-- Laser + Reticle overlay -->
+                <div class="laser-scan-line"></div>
+                <div class="reticle-box">
+                  <div style="display: flex; justify-content: space-between;">
+                    <div class="reticle-corner corner-tl"></div>
+                    <div class="reticle-corner corner-tr"></div>
+                  </div>
+                  <div style="display: flex; justify-content: space-between;">
+                    <div class="reticle-corner corner-bl"></div>
+                    <div class="reticle-corner corner-br"></div>
+                  </div>
+                </div>
+
+                <!-- Center target -->
+                <div style="position: absolute; width: 8px; height: 8px; border-radius: 50%; background: #34D399; opacity: 0.8; pointer-events: none;"></div>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 10px; background: var(--bg-surface-secondary); padding: 10px 14px; border-radius: 8px; font-size: 12px; color: var(--text-muted);">
+                <span class="material-symbols-outlined" style="color: var(--color-primary); font-size: 18px; flex-shrink: 0;">center_focus_weak</span>
+                <span>Align the mess turnstile screen inside the reticle. Passes are validated with cryptographic nonces.</span>
+              </div>
+
+              <!-- Manual Token Code Entry Fallback -->
+              <div style="border-top: 1px solid var(--border-color); padding-top: 14px;">
+                <div style="font-size: 12px; font-weight: 700; color: var(--text-main); margin-bottom: 6px;">
+                  Hardware Issue? Enter Turnstile Token Manually
+                </div>
+                <div style="display: flex; gap: 8px;">
+                  <input type="text" id="manualTokenInput" class="input-field" placeholder="e.g., FB-LUNCH-2025" style="height: 38px; font-size: 13px; font-family: monospace;"/>
+                  <button type="button" class="btn btn-primary" onclick="submitManualToken()" style="white-space: nowrap; height: 38px; padding: 0 16px; font-size: 13px;">
+                    Validate
+                  </button>
+                </div>
+
+                <!-- Seed tokens for fast one-click simulation -->
+                <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 10px;">
+                  <span style="font-size: 11px; font-weight: 600; color: var(--text-muted);">Quick Demo Tokens:</span>
+                  <button type="button" onclick="quickFillToken('FB-LUNCH-2025')" class="badge badge-green" style="border: 1px solid #BBF7D0; cursor: pointer;">FB-LUNCH-2025</button>
+                  <button type="button" onclick="quickFillToken('FB-DINNER-2025')" class="badge badge-blue" style="border: 1px solid #BFDBFE; cursor: pointer;">FB-DINNER-2025</button>
+                  <button type="button" onclick="quickFillToken('FB-BREAKFAST-2025')" class="badge badge-yellow" style="border: 1px solid #FDE68A; cursor: pointer;">FB-BREAKFAST-2025</button>
+                  <button type="button" onclick="quickFillToken('FB-EXPIRED-TEST')" class="badge badge-red" style="border: 1px solid #FECACA; cursor: pointer;">FB-EXPIRED-TEST</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Prominent Success Receipt Card (Dynamic) -->
+            <div class="success-receipt-card" id="successReceiptCard" style="display: none;">
+              <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <div style="width: 44px; height: 44px; border-radius: 50%; background: #059669; color: #ffffff; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <span class="material-symbols-outlined" style="font-size: 26px;">check_circle</span>
+                  </div>
+                  <div>
+                    <h3 style="font-size: 17px; font-weight: 700; color: #065F46; margin: 0;" id="successHeadline">
+                      Attendance Marked Successfully!
+                    </h3>
+                    <p style="font-size: 12px; color: #047857; margin: 2px 0 0 0;" id="successSub">
+                      Authenticated via Turnstile Cryptographic Node
+                    </p>
+                  </div>
+                </div>
+                <span class="badge badge-green" style="background: #ffffff; border: 1px solid #A7F3D0; font-size: 11px;">
+                  Pass Validated • 1/1 Used
+                </span>
+              </div>
+
+              <!-- Receipt Box -->
+              <div style="background: #ffffff; border-radius: 10px; padding: 14px; border: 1px solid #A7F3D0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div>
+                  <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #64748B;">Assigned Meal</div>
+                  <div style="font-size: 15px; font-weight: 700; color: var(--text-main);" id="receiptMealSlot">Lunch Service</div>
+                </div>
+                <div>
+                  <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #64748B;">Date Validated</div>
+                  <div style="font-size: 15px; font-weight: 700; color: var(--text-main);" id="receiptDate">Today</div>
+                </div>
+                <div>
+                  <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #64748B;">Timestamp Scanned</div>
+                  <div style="font-size: 14px; font-weight: 600; color: #059669;" id="receiptScannedAt">1:05 PM</div>
+                </div>
+                <div>
+                  <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #64748B;">Turnstile Gate</div>
+                  <div style="font-size: 14px; font-weight: 600; color: var(--text-main);">South Hall B, Gate 02</div>
+                </div>
+              </div>
+
+              <div style="display: flex; justify-content: flex-end;">
+                <button type="button" class="btn btn-secondary" onclick="document.getElementById('successReceiptCard').style.display='none'" style="font-size: 12px; padding: 4px 12px; background: #ffffff;">
+                  Dismiss Receipt
+                </button>
+              </div>
+            </div>
+
+            <!-- Duplicate Scan Warning Card (Dynamic) -->
+            <div class="card" id="duplicateReceiptCard" style="display: none; background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 14px; padding: 20px; box-shadow: var(--shadow-sm); flex-direction: column; gap: 14px;">
+              <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <div style="width: 44px; height: 44px; border-radius: 50%; background: #D97706; color: #ffffff; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.08); flex-shrink: 0;">
+                    <span class="material-symbols-outlined" style="font-size: 26px;">event_busy</span>
+                  </div>
+                  <div>
+                    <h3 style="font-size: 16px; font-weight: 700; color: #92400E; margin: 0;" id="dupHeadline">
+                      Already Marked for Dinner Today
+                    </h3>
+                    <p style="font-size: 12px; color: #B45309; margin: 2px 0 0 0;" id="dupSub">
+                      Pass already validated. Only 1 turnstile scan is permitted per resident per meal.
+                    </p>
+                  </div>
+                </div>
+                <span class="badge badge-yellow" style="background: #ffffff; border: 1px solid #FDE68A; font-size: 11px;">
+                  Duplicate Prevented
+                </span>
+              </div>
+              <div style="background: #ffffff; border-radius: 10px; padding: 12px 14px; border: 1px solid #FDE68A; font-size: 12px; color: #78350F; line-height: 1.5;" id="dupNoticeDesc">
+                Your attendance for this meal slot has already been verified today. Check your Attendance Check-in Ledger on the right for full timestamp logs.
+              </div>
+              <div style="display: flex; justify-content: flex-end;">
+                <button type="button" class="btn btn-secondary" onclick="document.getElementById('duplicateReceiptCard').style.display='none'" style="font-size: 12px; padding: 4px 12px; background: #ffffff;">
+                  Dismiss Notice
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right Column: Attendance History Table & Regulations -->
+          <div style="display: flex; flex-direction: column; gap: 20px;">
+            
+            <!-- History Table Card -->
+            <div style="background: var(--bg-surface); border: 1px solid var(--border-card); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-xs);">
+              <div style="padding: 16px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <h2 style="font-size: 16px; font-weight: 700; color: var(--text-main); margin: 0;">Attendance Check-in Ledger</h2>
+                  <p style="font-size: 12px; color: var(--text-muted); margin: 0;">Verified entries recorded at the dining turnstile</p>
+                </div>
+                <span class="badge badge-gray" id="historyCountBadge">0 records</span>
+              </div>
+
+              <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;">
+                  <thead>
+                    <tr style="background: var(--bg-surface-secondary); color: var(--text-muted); font-size: 11px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">
+                      <th style="padding: 10px 16px;">Date</th>
+                      <th style="padding: 10px 16px;">Meal Slot</th>
+                      <th style="padding: 10px 16px;">Time Scanned</th>
+                      <th style="padding: 10px 16px; text-align: right;">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="attendanceHistoryTableBody">
+                    <tr>
+                      <td colspan="4" style="text-align: center; padding: 30px; color: var(--text-muted);">
+                        Loading attendance history...
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Turnstile Guidelines Card -->
+            <div style="background: var(--bg-surface); border: 1px solid var(--border-card); border-radius: 12px; padding: 20px; box-shadow: var(--shadow-xs);">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                <span class="material-symbols-outlined" style="color: var(--color-primary); font-size: 20px;">verified</span>
+                <h3 style="font-size: 14px; font-weight: 700; color: var(--text-main); margin: 0;">Turnstile Security Policy</h3>
+              </div>
+              <ul style="margin: 0; padding-left: 18px; font-size: 12px; color: var(--text-muted); line-height: 1.6; display: flex; flex-direction: column; gap: 6px;">
+                <li><strong>One Scan Per Meal:</strong> Duplicate scans for the same meal slot on the same date are automatically rejected.</li>
+                <li><strong>Anti-Passback:</strong> QR tokens rotate cyclically every 60 seconds at the counter display to prevent screenshot sharing.</li>
+                <li><strong>Offline / Manual Backup:</strong> If camera access fails on mobile, request the duty supervisor for a manual 6-character counter token.</li>
+              </ul>
+            </div>
+
+          </div>
+
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { requireAuth } from '/js/auth.js';
+    import { initAppShell, showToast } from '/js/app-shell.js';
+    import { getSupabase } from '/js/supabase.js';
+
+    const foodBuddySupabase = getSupabase();
+    let currentUser = null;
+    let html5QrScanner = null;
+    let cameraActive = false;
+    let isProcessing = false;
+    let lastScannedToken = '';
+    let lastScanTimestamp = 0;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      currentUser = await requireAuth('student');
+      if (!currentUser) return;
+
+      initAppShell({
+        activeNav: 'attendance',
+        user: {
+          name: currentUser.profile?.full_name || currentUser.profile?.name || 'Student Resident',
+          roll_number: currentUser.profile?.student_id || currentUser.profile?.roll_number || '2025CSB1001',
+          room_number: currentUser.profile?.room_no || currentUser.profile?.room_number || 'B-314',
+          hostel_block: currentUser.profile?.hostel_block || 'North Hostel'
+        }
+      });
+
+      await loadAttendanceHistory();
+      startCamera();
+    });
+
+    function quickFillToken(t) {
+      document.getElementById('manualTokenInput').value = t;
+    }
+
+    async function submitManualToken() {
+      const input = document.getElementById('manualTokenInput');
+      const token = input.value.trim();
+      if (!token) {
+        showToast('Please enter a turnstile token code.', 'warning');
+        return;
+      }
+      await processQrToken(token);
+      input.value = '';
+    }
+
+    async function processQrToken(token) {
+      const cleanToken = (token || '').trim();
+      if (!cleanToken) return;
+
+      const now = Date.now();
+      if (isProcessing) return;
+      if (cleanToken === lastScannedToken && (now - lastScanTimestamp < 4000)) {
+        return;
+      }
+
+      lastScannedToken = cleanToken;
+      lastScanTimestamp = now;
+      isProcessing = true;
+
+      try {
+        showToast('Verifying turnstile token with server...', 'info');
+
+        const { data, error } = await foodBuddySupabase.rpc('mark_attendance', {
+          p_token: cleanToken
+        });
+
+        if (error) throw error;
+
+        if (!data.success) {
+          if (data.already_marked) {
+            const slotName = (data.meal_slot || 'this meal').charAt(0).toUpperCase() + (data.meal_slot || 'this meal').slice(1);
+            showToast(`Already Marked: Attendance recorded for ${slotName} today.`, 'warning');
+
+            // Show Duplicate Notice Banner Card
+            const dupCard = document.getElementById('duplicateReceiptCard');
+            if (dupCard) {
+              const dupHeadline = document.getElementById('dupHeadline');
+              const dupDesc = document.getElementById('dupNoticeDesc');
+              if (dupHeadline) dupHeadline.textContent = `Already Marked for ${slotName} Today`;
+              if (dupDesc) {
+                dupDesc.textContent = `Your meal pass for ${slotName} on ${data.date || 'today'} has already been validated and recorded. Campus dining policy allows 1 turnstile entry per resident per meal session.`;
+              }
+              dupCard.style.display = 'flex';
+              dupCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+
+            // Also reload ledger so verified meal is prominently visible
+            await loadAttendanceHistory();
+          } else {
+            showToast(data.error || 'Invalid or expired QR token.', 'error');
+          }
+          return;
+        }
+
+        // Hide duplicate card if it was showing
+        const dupCard = document.getElementById('duplicateReceiptCard');
+        if (dupCard) dupCard.style.display = 'none';
+
+        // Show Success banner
+        const card = document.getElementById('successReceiptCard');
+        const headline = document.getElementById('successHeadline');
+        const receiptMeal = document.getElementById('receiptMealSlot');
+        const receiptDate = document.getElementById('receiptDate');
+        const receiptTime = document.getElementById('receiptScannedAt');
+
+        const slotCapital = (data.meal_slot || 'Meal').charAt(0).toUpperCase() + (data.meal_slot || 'Meal').slice(1);
+        headline.textContent = `Attendance Marked – ${slotCapital}, ${data.scanned_at || 'Just Now'}`;
+        receiptMeal.textContent = `${slotCapital} Service`;
+        receiptDate.textContent = data.date || 'Today';
+        receiptTime.textContent = data.scanned_at || new Date().toLocaleTimeString();
+
+        card.style.display = 'flex';
+        card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+        showToast(`Attendance marked successfully for ${slotCapital}!`, 'success');
+        await loadAttendanceHistory();
+
+      } catch (err) {
+        console.error('Error marking attendance:', err);
+        showToast(err.message || 'Error recording attendance.', 'error');
+      } finally {
+        setTimeout(() => {
+          isProcessing = false;
+        }, 3000);
+      }
+    }
+
+    function startCamera() {
+      if (typeof Html5Qrcode === 'undefined') return;
+
+      try {
+        html5QrScanner = new Html5Qrcode("qr-reader");
+        const config = { fps: 10, qrbox: { width: 220, height: 220 } };
+
+        html5QrScanner.start(
+          { facingMode: "environment" },
+          config,
+          (decodedText) => {
+            console.log('Scanned QR:', decodedText);
+            processQrToken(decodedText);
+          },
+          (errorMessage) => {
+            // normal scanning search frame noise, ignore
+          }
+        ).then(() => {
+          cameraActive = true;
+          document.getElementById('camToggleText').textContent = 'Stop Camera';
+        }).catch(err => {
+          console.warn("Camera start warning (using simulated manual input):", err);
+          cameraActive = false;
+          document.getElementById('camToggleText').textContent = 'Start Camera';
+        });
+      } catch (e) {
+        console.warn("Camera init exception:", e);
+      }
+    }
+
+    function toggleCamera() {
+      if (cameraActive && html5QrScanner) {
+        html5QrScanner.stop().then(() => {
+          cameraActive = false;
+          document.getElementById('camToggleText').textContent = 'Start Camera';
+        });
+      } else {
+        startCamera();
+      }
+    }
+
+    async function loadAttendanceHistory() {
+      try {
+        const studentId = currentUser?.user?.id || currentUser?.id || currentUser?.profile?.id;
+        if (!studentId) return;
+
+        const { data, error } = await foodBuddySupabase
+          .from('attendance')
+          .select('*')
+          .eq('student_id', studentId)
+          .order('scanned_at', { ascending: false });
+
+        if (error) throw error;
+        renderHistoryTable(data || []);
+      } catch (err) {
+        console.error('Error loading attendance history:', err);
+      }
+    }
+
+    function renderHistoryTable(records) {
+      const tbody = document.getElementById('attendanceHistoryTableBody');
+      const countEl = document.getElementById('statAttendedCount');
+      const badge = document.getElementById('historyCountBadge');
+
+      if (countEl) countEl.textContent = records.length;
+      if (badge) badge.textContent = `${records.length} records`;
+      const rateEl = document.getElementById('statAttendanceRate');
+      if (rateEl && records.length > 0) {
+        const rate = Math.min(100, Math.round((records.length / 21) * 100));
+        rateEl.textContent = `${rate}%`;
+      }
+
+      if (!records.length) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="4" style="text-align: center; padding: 30px; color: var(--text-muted);">
+              No meal attendance marked yet this term.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      const slotIconMap = {
+        breakfast: 'bakery_dining',
+        lunch: 'lunch_dining',
+        snacks: 'local_cafe',
+        dinner: 'dinner_dining'
+      };
+
+      tbody.innerHTML = records.map(r => {
+        const d = new Date(r.date + 'T00:00:00');
+        const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const timeStr = new Date(r.scanned_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        const slotCapital = (r.meal_slot || 'Meal').charAt(0).toUpperCase() + (r.meal_slot || 'Meal').slice(1);
+        const icon = slotIconMap[r.meal_slot] || 'restaurant';
+
+        return `
+          <tr style="border-bottom: 1px solid var(--border-color);">
+            <td style="padding: 12px 16px; font-weight: 600; color: var(--text-main);">${dateStr}</td>
+            <td style="padding: 12px 16px;">
+              <span style="display: inline-flex; align-items: center; gap: 4px; font-weight: 600; color: var(--text-main);">
+                <span class="material-symbols-outlined" style="font-size: 16px; color: var(--color-primary);">${icon}</span>
+                ${slotCapital}
+              </span>
+            </td>
+            <td style="padding: 12px 16px; color: var(--text-muted);">${timeStr}</td>
+            <td style="padding: 12px 16px; text-align: right;">
+              <span class="badge badge-green">
+                <span class="material-symbols-outlined" style="font-size: 13px;">check_circle</span>
+                Verified
+              </span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    window.toggleCamera = toggleCamera;
+    window.submitManualToken = submitManualToken;
+    window.quickFillToken = quickFillToken;
+    window.processQrToken = processQrToken;
+  </script>
+</body>
+</html>
+

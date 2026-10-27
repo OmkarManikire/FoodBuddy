@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Two-Step Verification — Food Buddy</title>
+  <meta name="description" content="Enter 6-digit campus authentication code for Food Buddy Dining OS." />
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/main.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/js/vendor/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    .otp-input {
+      width: 100%;
+      height: 56px;
+      font-size: 26px;
+      font-weight: 700;
+      text-align: center;
+      background-color: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 12px;
+      outline: none;
+      transition: all 0.15s ease;
+      font-family: monospace;
+    }
+    .otp-input:focus {
+      background-color: #ffffff;
+      border-color: #059669;
+      box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+    }
+    .otp-input.manager:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+    .otp-input.authority:focus {
+      border-color: #d97706;
+      box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15);
+    }
+  </style>
+</head>
+<body class="bg-[#faf8ff] text-[#0f172a] font-sans antialiased">
+
+  <main class="w-full min-h-screen flex items-center justify-center p-3 sm:p-6 lg:p-10">
+    <div class="w-full max-w-5xl mx-auto">
+      <div class="grid grid-cols-1 lg:grid-cols-12 bg-white rounded-2xl shadow-xl border border-[#e2e8f0] overflow-hidden min-h-[640px]">
+        
+        <!-- Left Column: Verification Form -->
+        <div class="lg:col-span-7 p-6 sm:p-10 md:p-12 flex flex-col justify-between bg-white">
+          <div>
+            <!-- Top Nav Back Link -->
+            <div class="flex items-center justify-between mb-8">
+              <a href="/login.html" class="inline-flex items-center gap-1.5 text-xs font-semibold text-[#64748b] hover:text-[#059669] transition-colors group">
+                <span class="material-symbols-outlined text-base transition-transform group-hover:-translate-x-1">arrow_back</span>
+                <span>Back to login</span>
+              </a>
+              <span id="role-status-badge" class="badge badge-student">Student Access</span>
+            </div>
+
+            <!-- Brand Header -->
+            <div class="flex items-center gap-3 mb-6">
+              <div id="otp-monogram" class="w-10 h-10 rounded-xl bg-[#059669] text-white flex items-center justify-center font-bold text-lg shadow-sm">
+                FB
+              </div>
+              <div>
+                <span class="font-bold text-lg tracking-tight text-[#0f172a]">Food Buddy</span>
+                <span class="block text-[11px] font-semibold text-[#64748b] uppercase tracking-wider">Two-Step Verification</span>
+              </div>
+            </div>
+
+            <!-- Title Block -->
+            <div class="mb-6">
+              <h1 class="text-2xl sm:text-3xl font-extrabold text-[#0f172a] tracking-tight mb-2">Two-Step Verification</h1>
+              <p class="text-sm text-[#475569] leading-relaxed">
+                Enter the 6-digit access code sent to your campus credentials:
+              </p>
+              <div class="mt-2 inline-flex items-center gap-2 bg-[#f1f5f9] px-3 py-1.5 rounded-lg border border-[#e2e8f0]">
+                <span class="material-symbols-outlined text-[#64748b] text-base">mail</span>
+                <span id="target-email" class="font-mono text-xs font-semibold text-[#0f172a]">student@foodbuddy.test</span>
+              </div>
+            </div>
+
+            <!-- Error Banner -->
+            <div id="otp-error-alert" class="hidden mb-6 p-4 rounded-xl bg-[#fef2f2] border border-[#fecaca] text-[#991b1b] text-xs flex items-start gap-2.5">
+              <span class="material-symbols-outlined text-base text-[#ef4444] mt-0.5">error</span>
+              <span id="otp-error-text" class="font-medium"></span>
+            </div>
+
+            <!-- Prominent Security Passcode Banner -->
+            <div id="otp-code-card" class="hidden mb-6 p-4 rounded-2xl bg-gradient-to-r from-[#ecfdf5] to-[#f0fdf4] border border-[#a7f3d0] shadow-sm">
+              <div class="flex items-center justify-between gap-3 mb-2">
+                <div class="flex items-center gap-2 text-[#065f46] font-bold text-xs uppercase tracking-wider">
+                  <span class="material-symbols-outlined text-base text-[#059669]">verified_user</span>
+                  <span>Your 6-Digit Verification Code</span>
+                </div>
+                <span class="text-[11px] font-semibold text-[#059669] bg-white px-2 py-0.5 rounded-full border border-[#a7f3d0]">Ready</span>
+              </div>
+              <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center gap-2">
+                  <span id="displayed-otp-code" class="font-mono text-3xl font-extrabold text-[#059669] tracking-[0.25em]">------</span>
+                </div>
+                <button type="button" id="btn-card-fill-otp" class="py-2 px-3.5 rounded-xl bg-[#059669] hover:bg-[#047857] text-white text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all cursor-pointer">
+                  <span class="material-symbols-outlined text-sm">auto_fix_high</span>
+                  <span>Auto-fill Code</span>
+                </button>
+              </div>
+              <p class="text-[11px] text-[#047857] mt-2 flex items-center gap-1">
+                <span class="material-symbols-outlined text-xs">info</span>
+                <span>Code is active for 5 minutes. Click <strong>Auto-fill Code</strong> or type the digits below.</span>
+              </p>
+            </div>
+
+            <!-- OTP Form -->
+            <form id="otp-form" class="space-y-6">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <label class="text-xs font-semibold uppercase tracking-wider text-[#64748b]">Security Passcode</label>
+                  <button type="button" id="btn-paste" class="text-xs font-semibold text-[#059669] hover:underline inline-flex items-center gap-1">
+                    <span class="material-symbols-outlined text-sm">content_paste</span>
+                    <span>Paste code</span>
+                  </button>
+                </div>
+
+                <!-- 6 Individual Input Boxes -->
+                <div class="grid grid-cols-6 gap-2 sm:gap-3" id="otp-boxes-container">
+                  <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-input" data-index="0" autofocus />
+                  <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-input" data-index="1" />
+                  <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-input" data-index="2" />
+                  <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-input" data-index="3" />
+                  <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-input" data-index="4" />
+                  <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-input" data-index="5" />
+                </div>
+              </div>
+
+              <!-- Expiry & Resend Controls -->
+              <div class="flex flex-wrap items-center justify-between gap-3 text-xs pt-1">
+                <div class="inline-flex items-center gap-1.5 text-[#475569]">
+                  <span class="material-symbols-outlined text-sm text-[#d97706]">timer</span>
+                  <span>Code expires in <strong id="timer-display" class="font-mono text-[#0f172a] font-bold">05:00</strong></span>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <span class="text-[#64748b]">Didn't get the code?</span>
+                  <button type="button" id="btn-resend" class="font-semibold text-[#059669] disabled:text-[#94a3b8] disabled:cursor-not-allowed hover:underline">
+                    Resend code
+                  </button>
+                </div>
+              </div>
+
+              <!-- Submit Button -->
+              <button type="submit" id="btn-verify-submit" class="w-full py-3.5 px-4 rounded-xl bg-[#059669] hover:bg-[#047857] text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all">
+                <span id="verify-submit-text">Verify &amp; Continue to Dashboard</span>
+                <span class="material-symbols-outlined text-base">verified</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- Institutional Help Notice -->
+          <div class="mt-8 pt-4 border-t border-[#f1f5f9]">
+            <div class="p-3.5 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] flex items-start gap-3">
+              <span class="material-symbols-outlined text-[#64748b] text-base mt-0.5">help_outline</span>
+              <p class="text-xs text-[#64748b] leading-relaxed">
+                Codes are generated securely. If institutional email delivery is in sandbox/dev mode, your active passcode is displayed right above for instant verification.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Visual Brand Elevation Panel -->
+        <div id="otp-side-panel" class="lg:col-span-5 bg-gradient-to-br from-[#005137] via-[#006948] to-[#002114] p-8 sm:p-10 text-white flex flex-col justify-between relative overflow-hidden">
+          <div class="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-[#85f8c4]/15 blur-3xl pointer-events-none"></div>
+          <div class="absolute -bottom-24 -left-24 w-80 h-80 rounded-full bg-[#316bf3]/15 blur-3xl pointer-events-none"></div>
+
+          <div class="relative z-10">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-xs font-semibold uppercase tracking-wider mb-8">
+              <span class="material-symbols-outlined text-sm text-[#85f8c4]">security</span>
+              <span>Campus Guard 2-Step Auth</span>
+            </div>
+
+            <div class="w-14 h-14 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center text-[#85f8c4] mb-6 shadow-inner">
+              <span class="material-symbols-outlined text-3xl">lock_person</span>
+            </div>
+
+            <h2 class="text-2xl font-bold text-white tracking-tight leading-snug mb-3">
+              Better Food • Better Hygiene • Better Experience
+            </h2>
+
+            <p class="text-xs text-white/80 leading-relaxed">
+              Real-time digital meal check-in, transparent nutrient logs, and student-powered kitchen accountability across all residence dining halls.
+            </p>
+          </div>
+
+          <div class="relative z-10 space-y-3 my-6">
+            <div class="p-3.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/10 flex items-center gap-3">
+              <span class="material-symbols-outlined text-[#85f8c4] text-xl">encrypted</span>
+              <div>
+                <h4 class="text-xs font-bold text-white">SHA-256 OTP Storage</h4>
+                <p class="text-[11px] text-white/70">Codes are cryptographically hashed and automatically expire in 5 minutes.</p>
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/10 flex items-center gap-3">
+              <span class="material-symbols-outlined text-[#85f8c4] text-xl">database</span>
+              <div>
+                <h4 class="text-xs font-bold text-white">Strict RLS Data Isolation</h4>
+                <p class="text-[11px] text-white/70">All database access is strictly denied until OTP verification is recorded.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="relative z-10 pt-4 border-t border-white/10 flex items-center justify-between text-[11px] text-white/60">
+            <span>Food Buddy Dining OS</span>
+            <span>Auth v3.2</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { verifyLoginOtp, resendLoginOtp, getPendingOtpSession } from '/js/auth.js';
+    import { renderDemoBanner, showToast } from '/js/app-shell.js';
+    import { isLocalDev } from '/js/config.js';
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const roleParam = urlParams.get('role') || 'student';
+
+    const roleStyles = {
+      student: {
+        accent: '#059669',
+        hover: '#047857',
+        badge: 'Student Portal',
+        badgeClass: 'badge-student',
+        gradient: 'from-[#005137] via-[#006948] to-[#002114]',
+        dash: '/student/',
+      },
+      mess_manager: {
+        accent: '#2563eb',
+        hover: '#1d4ed8',
+        badge: 'Mess Manager Desk',
+        badgeClass: 'badge-manager',
+        gradient: 'from-[#1e3a8a] via-[#1d4ed8] to-[#172554]',
+        dash: '/manager/',
+      },
+      authority: {
+        accent: '#d97706',
+        hover: '#b45309',
+        badge: 'Higher Authority Desk',
+        badgeClass: 'badge-authority',
+        gradient: 'from-[#78350f] via-[#b45309] to-[#451a03]',
+        dash: '/authority/',
+      },
+    };
+
+    const style = roleStyles[roleParam] || roleStyles.student;
+
+    // Apply theme
+    document.getElementById('otp-monogram').style.backgroundColor = style.accent;
+    const badge = document.getElementById('role-status-badge');
+    badge.textContent = style.badge;
+    badge.className = `badge ${style.badgeClass}`;
+    document.getElementById('btn-verify-submit').style.backgroundColor = style.accent;
+    document.getElementById('btn-paste').style.color = style.accent;
+    document.getElementById('btn-resend').style.color = style.accent;
+    document.getElementById('otp-side-panel').className = `lg:col-span-5 bg-gradient-to-br ${style.gradient} p-8 sm:p-10 text-white flex flex-col justify-between relative overflow-hidden`;
+
+    // Retrieve pending session
+    const pending = getPendingOtpSession();
+    if (pending?.email) {
+      document.getElementById('target-email').textContent = pending.email;
+    }
+
+    // OTP Input Boxes Handling
+    const inputs = document.querySelectorAll('.otp-input');
+    inputs.forEach((input) => {
+      if (roleParam === 'mess_manager') input.classList.add('manager');
+      if (roleParam === 'authority') input.classList.add('authority');
+
+      input.addEventListener('input', (e) => {
+        const val = e.target.value.replace(/[^0-9]/g, '');
+        e.target.value = val;
+        const idx = parseInt(e.target.dataset.index, 10);
+        if (val && idx < 5) {
+          inputs[idx + 1].focus();
+        }
+      });
+
+      input.addEventListener('keydown', (e) => {
+        const idx = parseInt(e.target.dataset.index, 10);
+        if (e.key === 'Backspace' && !e.target.value && idx > 0) {
+          inputs[idx - 1].focus();
+        }
+      });
+    });
+
+    // Paste handling
+    window.fillOtp = function(code) {
+      const digits = String(code).replace(/[^0-9]/g, '').slice(0, 6);
+      digits.split('').forEach((d, i) => {
+        if (inputs[i]) inputs[i].value = d;
+      });
+      if (digits.length === 6) {
+        inputs[5].focus();
+      }
+    };
+
+    document.getElementById('btn-paste')?.addEventListener('click', async () => {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text) fillOtp(text);
+      } catch (err) {
+        showToast('Please allow clipboard access or type the 6 digits.', 'warning');
+      }
+    });
+
+    // Expiration Timer (5 mins)
+    let totalSeconds = 300;
+    const timerDisplay = document.getElementById('timer-display');
+    const timerInterval = setInterval(() => {
+      if (totalSeconds <= 0) {
+        clearInterval(timerInterval);
+        timerDisplay.textContent = 'Expired';
+        showOtpError('Security passcode has expired. Please request a new one.');
+        return;
+      }
+      totalSeconds--;
+      const m = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+      const s = String(totalSeconds % 60).padStart(2, '0');
+      timerDisplay.textContent = `${m}:${s}`;
+    }, 1000);
+
+    // Resend Cooldown Timer (30s)
+    let resendCooldown = 30;
+    const resendBtn = document.getElementById('btn-resend');
+    function startResendCooldown() {
+      resendBtn.disabled = true;
+      resendCooldown = 30;
+      const cdInterval = setInterval(() => {
+        if (resendCooldown <= 0) {
+          clearInterval(cdInterval);
+          resendBtn.disabled = false;
+          resendBtn.textContent = 'Resend code';
+          return;
+        }
+        resendBtn.textContent = `Resend in ${resendCooldown}s`;
+        resendCooldown--;
+      }, 1000);
+    }
+    startResendCooldown();
+
+    resendBtn.addEventListener('click', async () => {
+      resendBtn.disabled = true;
+      resendBtn.textContent = 'Sending...';
+      try {
+        const res = await resendLoginOtp(roleParam);
+        if (!res.success) {
+          showOtpError(res.error);
+          showToast(res.error, 'error');
+          startResendCooldown();
+          return;
+        }
+
+        showToast('A new 6-digit verification code has been dispatched.', 'success');
+        totalSeconds = 300;
+        startResendCooldown();
+
+        if (res.devOtp) {
+          displayActiveOtp(res.devOtp);
+        }
+      } catch (err) {
+        showOtpError('Failed to resend code. Please try again.');
+        startResendCooldown();
+      }
+    });
+
+    function showOtpError(msg) {
+      const alert = document.getElementById('otp-error-alert');
+      const text = document.getElementById('otp-error-text');
+      text.textContent = msg;
+      alert.classList.remove('hidden');
+    }
+
+    function hideOtpError() {
+      document.getElementById('otp-error-alert').classList.add('hidden');
+    }
+
+    // Submit handler
+    const form = document.getElementById('otp-form');
+    const submitBtn = document.getElementById('btn-verify-submit');
+    const submitText = document.getElementById('verify-submit-text');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideOtpError();
+
+      let otpValue = '';
+      inputs.forEach((inp) => (otpValue += inp.value.trim()));
+
+      if (otpValue.length !== 6) {
+        showOtpError('Please enter all 6 digits of your verification code.');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitText.textContent = 'Verifying Security Code...';
+
+      try {
+        const result = await verifyLoginOtp(otpValue);
+
+        if (!result.success) {
+          showOtpError(result.error);
+          showToast(result.error, 'error');
+          submitBtn.disabled = false;
+          submitText.textContent = 'Verify & Continue to Dashboard';
+          return;
+        }
+
+        showToast('Verification confirmed! Welcome to Food Buddy.', 'success');
+        const targetDashboard = roleStyles[result.role]?.dash || '/student/';
+        setTimeout(() => {
+          window.location.href = targetDashboard;
+        }, 800);
+      } catch (err) {
+        showOtpError('A verification error occurred. Please try again.');
+        submitBtn.disabled = false;
+        submitText.textContent = 'Verify & Continue to Dashboard';
+      }
+    });
+
+    function displayActiveOtp(otp) {
+      if (!isLocalDev) return; // Strictly restricted to local development
+      if (!otp) return;
+      const card = document.getElementById('otp-code-card');
+      const disp = document.getElementById('displayed-otp-code');
+      if (card && disp) {
+        disp.textContent = otp;
+        card.classList.remove('hidden');
+      }
+      fillOtp(otp);
+      setupDemoBanner(otp);
+    }
+
+    document.getElementById('btn-card-fill-otp')?.addEventListener('click', () => {
+      if (!isLocalDev) return;
+      const disp = document.getElementById('displayed-otp-code');
+      const code = disp ? disp.textContent.trim() : '';
+      if (code && code !== '------') {
+        fillOtp(code);
+        showToast(`Passcode ${code} auto-filled!`, 'success');
+      }
+    });
+
+    function setupDemoBanner(otp) {
+      if (!isLocalDev) return;
+      renderDemoBanner(`[Access Passcode] OTP: ${otp}`, () => {
+        fillOtp(otp);
+        showToast(`Autofilled OTP code ${otp}!`, 'info');
+      }, `Auto-fill Code (${otp})`);
+    }
+
+    if (isLocalDev) {
+      if (pending?.devOtp) {
+        displayActiveOtp(pending.devOtp);
+      } else {
+        // Proactively request code so user has it immediately on screen in local development
+        resendLoginOtp(roleParam).then((res) => {
+          if (res?.success && res?.devOtp) {
+            displayActiveOtp(res.devOtp);
+          } else {
+            renderDemoBanner('Food Buddy OTP Verification Stage. Click resend to generate a code.');
+          }
+        }).catch(() => {
+          renderDemoBanner('Food Buddy OTP Verification Stage. Click resend to generate a code.');
+        });
+      }
+    }
+  </script>
+</body>
+</html>

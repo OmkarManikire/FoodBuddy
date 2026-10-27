@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>Student Dashboard — Food Buddy</title>
+  <link rel="stylesheet" href="/css/main.css"/>
+  <script src="/js/vendor/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Left Sidebar -->
+    <aside class="app-sidebar"></aside>
+
+    <!-- App Main Body -->
+    <div class="app-main">
+      <!-- Top Navigation Bar -->
+      <header class="app-topbar"></header>
+
+      <!-- Content Canvas -->
+      <main class="content-container">
+        <!-- 1. Header & Student Context Banner -->
+        <div class="card" style="padding: 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; background: linear-gradient(to right, #FFFFFF, #F8FAFC);">
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);">Student Dining Portal</span>
+              <span style="color: var(--border-card);">•</span>
+              <span class="role-pill" id="liveServingPill">Loading Session...</span>
+            </div>
+            <h1 style="font-size: 26px; font-weight: 700; color: var(--text-main); letter-spacing: -0.02em;" id="welcomeHeading">
+              Welcome back, Student 👋
+            </h1>
+            <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap; font-size: 13px; color: var(--text-muted);">
+              <span style="display: flex; align-items: center; gap: 4px; font-weight: 500; color: var(--text-main);">
+                <span class="material-symbols-outlined text-[16px] text-muted">badge</span>
+                <span id="studentIdText">ID: 2025CSB1001</span>
+              </span>
+              <span>•</span>
+              <span style="display: flex; align-items: center; gap: 4px;">
+                <span class="material-symbols-outlined text-[16px] text-muted">door_front</span>
+                <span id="studentRoomText">Room B-314 (Mandakini Hostel)</span>
+              </span>
+            </div>
+          </div>
+
+          <div>
+            <a href="/student/attendance.html" class="btn btn-primary btn-lg" style="box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);">
+              <span class="material-symbols-outlined text-[24px]">qr_code_scanner</span>
+              <span>Scan QR for Attendance</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- 2. 4 KPI Cards Grid -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
+          <!-- KPI 1 -->
+          <div class="card" style="padding: 20px; display: flex; flex-direction: column; justify-content: space-between; gap: 14px;">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <span style="font-size: 13px; font-weight: 600; color: var(--text-muted);">Meals Attended This Month</span>
+              <div style="width: 34px; height: 34px; border-radius: 8px; background: var(--primary-tint); color: var(--primary-emerald); display: flex; align-items: center; justify-content: center;">
+                <span class="material-symbols-outlined text-[18px]">restaurant_menu</span>
+              </div>
+            </div>
+            <div>
+              <div style="font-size: 28px; font-weight: 700; color: var(--text-main); letter-spacing: -0.02em;" id="kpiMealsCount">-- / 60</div>
+              <div style="font-size: 12px; color: var(--primary-emerald); font-weight: 600; margin-top: 4px;">Active Dining Streak</div>
+            </div>
+            <div style="width: 100%; height: 6px; background: var(--bg-subtle); border-radius: 9999px; overflow: hidden;">
+              <div id="kpiMealsBar" style="height: 100%; background: var(--primary-emerald); border-radius: 9999px; width: 0%; transition: width 0.5s ease;"></div>
+            </div>
+          </div>
+
+          <!-- KPI 2 -->
+          <div class="card" style="padding: 20px; display: flex; flex-direction: column; justify-content: space-between; gap: 14px;">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <span style="font-size: 13px; font-weight: 600; color: var(--text-muted);">Open Complaints</span>
+              <div style="width: 34px; height: 34px; border-radius: 8px; background: #FEF3C7; color: #B45309; display: flex; align-items: center; justify-content: center;">
+                <span class="material-symbols-outlined text-[18px]">report_problem</span>
+              </div>
+            </div>
+            <div>
+              <div style="font-size: 28px; font-weight: 700; color: var(--text-main); letter-spacing: -0.02em;" id="kpiComplaintsCount">0 Active</div>
+              <div style="font-size: 12px; color: #B45309; font-weight: 500; margin-top: 4px;" id="kpiComplaintsSub">All tickets cleared</div>
+            </div>
+            <div style="width: 100%; height: 6px; background: var(--bg-subtle); border-radius: 9999px; overflow: hidden;">
+              <div id="kpiComplaintsBar" style="height: 100%; background: #D97706; border-radius: 9999px; width: 0%; transition: width 0.5s ease;"></div>
+            </div>
+          </div>
+
+          <!-- KPI 3 -->
+          <div class="card" style="padding: 20px; display: flex; flex-direction: column; justify-content: space-between; gap: 14px;">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <span style="font-size: 13px; font-weight: 600; color: var(--text-muted);">Ratings Given This Week</span>
+              <div style="width: 34px; height: 34px; border-radius: 8px; background: #ECFDF5; color: #059669; display: flex; align-items: center; justify-content: center;">
+                <span class="material-symbols-outlined text-[18px]">hotel_class</span>
+              </div>
+            </div>
+            <div>
+              <div style="font-size: 28px; font-weight: 700; color: var(--text-main); letter-spacing: -0.02em;" id="kpiRatingsCount">-- / 21</div>
+              <div style="font-size: 12px; color: var(--primary-emerald); font-weight: 500; margin-top: 4px;">Weekly Feedback Score</div>
+            </div>
+            <div style="width: 100%; height: 6px; background: var(--bg-subtle); border-radius: 9999px; overflow: hidden;">
+              <div id="kpiRatingsBar" style="height: 100%; background: var(--primary-emerald); border-radius: 9999px; width: 0%; transition: width 0.5s ease;"></div>
+            </div>
+          </div>
+
+          <!-- KPI 4 -->
+          <div class="card" style="padding: 20px; display: flex; flex-direction: column; justify-content: space-between; gap: 14px;">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <span style="font-size: 13px; font-weight: 600; color: var(--text-muted);">Unread Circulars</span>
+              <div style="width: 34px; height: 34px; border-radius: 8px; background: #EFF6FF; color: #2563EB; display: flex; align-items: center; justify-content: center;">
+                <span class="material-symbols-outlined text-[18px]">campaign</span>
+              </div>
+            </div>
+            <div>
+              <div style="font-size: 28px; font-weight: 700; color: var(--text-main); letter-spacing: -0.02em;" id="kpiNoticesCount">0 New</div>
+              <div style="font-size: 12px; color: #2563EB; font-weight: 500; margin-top: 4px;">Hostel Warden & Committee</div>
+            </div>
+            <div style="width: 100%; height: 6px; background: var(--bg-subtle); border-radius: 9999px; overflow: hidden;">
+              <div id="kpiNoticesBar" style="height: 100%; background: #2563EB; border-radius: 9999px; width: 0%; transition: width 0.5s ease;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. 7 Numbered Quick-Action Cards Section -->
+        <div>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="width: 4px; height: 18px; background: var(--primary-emerald); border-radius: 9999px;"></span>
+              <h2 style="font-size: 18px; font-weight: 700; color: var(--text-main);">Quick Actions & Workflows</h2>
+            </div>
+            <span style="font-size: 12px; color: var(--text-muted); font-weight: 500;">Tap card to open</span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); gap: 12px;">
+            <!-- Card 1: Rate Food -->
+            <a href="/student/rate.html" class="card" style="padding: 16px; display: flex; flex-direction: column; justify-content: space-between; min-height: 135px; text-decoration: none;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <span style="font-size: 11px; font-weight: 700; background: var(--primary-tint); color: var(--primary-emerald); padding: 2px 6px; border-radius: 4px;">01</span>
+                <span class="material-symbols-outlined text-[20px] text-muted">star_rate</span>
+              </div>
+              <div>
+                <div style="font-weight: 600; font-size: 15px; color: var(--text-main);">Rate Food</div>
+                <div style="font-size: 12px; color: var(--text-muted);">Breakfast • Lunch • Dinner</div>
+                <div style="font-size: 11px; font-weight: 600; color: var(--primary-emerald); margin-top: 4px;">Rate Today's Meals</div>
+              </div>
+            </a>
+
+            <!-- Card 2: Today's Menu -->
+            <a href="/student/menu.html" class="card" style="padding: 16px; display: flex; flex-direction: column; justify-content: space-between; min-height: 135px; text-decoration: none;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <span style="font-size: 11px; font-weight: 700; background: var(--bg-subtle); color: var(--text-muted); padding: 2px 6px; border-radius: 4px;">02</span>
+                <span class="material-symbols-outlined text-[20px] text-muted">menu_book</span>
+              </div>
+              <div>
+                <div style="font-weight: 600; font-size: 15px; color: var(--text-main);">Today's Menu</div>
+                <div style="font-size: 12px; color: var(--text-muted);">Dishes, calories & allergens</div>
+                <div style="font-size: 11px; font-weight: 600; color: #2563EB; margin-top: 4px;">4 Meal Slots Active</div>
+              </div>
+            </a>
+
+            <!-- Card 3: Hygiene & Quality -->
+            <a href="/student/complaints/new.html?category=Hygiene" class="card" style="padding: 16px; display: flex; flex-direction: column; justify-content: space-between; min-height: 135px; text-decoration: none;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <span style="font-size: 11px; font-weight: 700; background: var(--bg-subtle); color: var(--text-muted); padding: 2px 6px; border-radius: 4px;">03</span>
+                <span class="material-symbols-outlined text-[20px] text-muted">sanitizer</span>
+              </div>
+              <div>
+                <div style="font-weight: 600; font-size: 15px; color: var(--text-main);">Hygiene & Quality</div>
+                <div style="font-size: 12px; color: var(--text-muted);">Report cleanliness issue</div>
+                <div style="font-size: 11px; font-weight: 600; color: #059669; margin-top: 4px;">Grade A Kitchen Audit</div>
+              </div>
+            </a>
+
+            <!-- Card 4: Upload Photo / Video -->
+            <a href="/student/complaints/new.html" class="card" style="padding: 16px; display: flex; flex-direction: column; justify-content: space-between; min-height: 135px; text-decoration: none;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <span style="font-size: 11px; font-weight: 700; background: var(--bg-subtle); color: var(--text-muted); padding: 2px 6px; border-radius: 4px;">04</span>
+                <span class="material-symbols-outlined text-[20px] text-muted">add_photo_alternate</span>
+              </div>
+              <div>
+                <div style="font-weight: 600; font-size: 15px; color: var(--text-main);">Photo Proof</div>
+                <div style="font-size: 12px; color: var(--text-muted);">Upload meal evidence</div>
+                <div style="font-size: 11px; font-weight: 600; color: #D97706; margin-top: 4px;">Direct Contractor Dispatch</div>
+              </div>
+            </a>
+
+            <!-- Card 5: Food Improvement -->
+            <a href="/student/suggestions.html" class="card" style="padding: 16px; display: flex; flex-direction: column; justify-content: space-between; min-height: 135px; text-decoration: none;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <span style="font-size: 11px; font-weight: 700; background: var(--bg-subtle); color: var(--text-muted); padding: 2px 6px; border-radius: 4px;">05</span>
+                <span class="material-symbols-outlined text-[20px] text-muted">thumb_up</span>
+              </div>
+              <div>
+                <div style="font-weight: 600; font-size: 15px; color: var(--text-main);">Improvement</div>
+                <div style="font-size: 12px; color: var(--text-muted);">Dish suggestions & voting</div>
+                <div style="font-size: 11px; font-weight: 600; color: #2563EB; margin-top: 4px;">Sunday Feast Poll Open</div>
+              </div>
+            </a>
+
+            <!-- Card 6: Track Complaints -->
+            <a href="/student/complaints/" class="card" style="padding: 16px; display: flex; flex-direction: column; justify-content: space-between; min-height: 135px; text-decoration: none;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <span style="font-size: 11px; font-weight: 700; background: var(--bg-subtle); color: var(--text-muted); padding: 2px 6px; border-radius: 4px;">06</span>
+                <span class="material-symbols-outlined text-[20px] text-muted">task_alt</span>
+              </div>
+              <div>
+                <div style="font-weight: 600; font-size: 15px; color: var(--text-main);">Track Issues</div>
+                <div style="font-size: 12px; color: var(--text-muted);">Timeline & resolution SLA</div>
+                <div style="font-size: 11px; font-weight: 600; color: #B45309; margin-top: 4px;">View 4-Stage History</div>
+              </div>
+            </a>
+
+            <!-- Card 7: Notices -->
+            <a href="/student/notices.html" class="card" style="padding: 16px; display: flex; flex-direction: column; justify-content: space-between; min-height: 135px; text-decoration: none;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <span style="font-size: 11px; font-weight: 700; background: var(--bg-subtle); color: var(--text-muted); padding: 2px 6px; border-radius: 4px;">07</span>
+                <span class="material-symbols-outlined text-[20px] text-muted">notifications_active</span>
+              </div>
+              <div>
+                <div style="font-weight: 600; font-size: 15px; color: var(--text-main);">Circulars</div>
+                <div style="font-size: 12px; color: var(--text-muted);">Warden & Manager updates</div>
+                <div style="font-size: 11px; font-weight: 600; color: #2563EB; margin-top: 4px;">Official Feed</div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- 4. Lower Split Section: Menu Preview & Recent Complaints -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 24px; align-items: start;">
+          <!-- Left: Today's Menu Live Preview -->
+          <div class="card" style="padding: 0; overflow: hidden; display: flex; flex-direction: column;">
+            <div style="height: 4px; background: var(--primary-emerald);"></div>
+            <div style="padding: 20px 24px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span class="role-pill" id="menuSlotBadge">Lunch</span>
+                  <h3 style="font-size: 17px; font-weight: 700; color: var(--text-main);" id="menuTitlePreview">Today's Lunch Menu</h3>
+                </div>
+                <a href="/student/menu.html" style="font-size: 13px; font-weight: 600; color: var(--primary-emerald);">Full Menu →</a>
+              </div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;" id="menuTimingPreview">Serving: 12:30 PM – 02:30 PM</div>
+
+              <!-- Menu Items List -->
+              <div id="menuItemsPreviewList" style="display: flex; flex-direction: column; gap: 10px;">
+                <div style="color: var(--text-muted); font-size: 13px;">Loading live menu...</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Recent Complaints Mini-Table -->
+          <div class="card" style="padding: 20px 24px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="width: 4px; height: 16px; background: #D97706; border-radius: 9999px;"></span>
+                <h3 style="font-size: 17px; font-weight: 700; color: var(--text-main);">Recent Complaints</h3>
+              </div>
+              <a href="/student/complaints/" style="font-size: 13px; font-weight: 600; color: var(--primary-emerald);">View All Tickets →</a>
+            </div>
+
+            <div id="recentComplaintsList" style="display: flex; flex-direction: column; gap: 12px;">
+              <div style="color: var(--text-muted); font-size: 13px;">Loading tickets...</div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { requireAuth } from '/js/auth.js';
+    import { initAppShell, showToast } from '/js/app-shell.js';
+    import { getSupabase } from '/js/supabase.js';
+
+    // 1. Guard page
+    const authState = await requireAuth('student');
+    if (!authState) {
+      // redirected
+    } else {
+      const profile = authState.profile;
+      await initAppShell('dashboard', profile);
+
+      // Populate student details
+      document.getElementById('welcomeHeading').textContent = `Welcome back, ${profile?.name?.split(' ')[0] || 'Student'} 👋`;
+      document.getElementById('studentIdText').textContent = `ID: ${profile?.student_id || '2025CSB1001'}`;
+      document.getElementById('studentRoomText').textContent = `Room ${profile?.room_no || 'B-314'} • ${profile?.hostel_block || 'Hostel'}`;
+
+      // Current meal slot calculation
+      const hour = new Date().getHours();
+      let activeSlot = 'lunch';
+      let slotPill = 'Lunch Active (12:30 – 14:30)';
+      if (hour >= 7 && hour < 11) {
+        activeSlot = 'breakfast';
+        slotPill = 'Breakfast Active (07:30 – 09:30)';
+      } else if (hour >= 11 && hour < 16) {
+        activeSlot = 'lunch';
+        slotPill = 'Lunch Active (12:30 – 14:30)';
+      } else if (hour >= 16 && hour < 19) {
+        activeSlot = 'snacks';
+        slotPill = 'Snacks Active (17:00 – 18:15)';
+      } else {
+        activeSlot = 'dinner';
+        slotPill = 'Dinner Active (19:45 – 21:45)';
+      }
+      document.getElementById('liveServingPill').textContent = slotPill;
+
+      const supabase = getSupabase();
+
+      // 2. Fetch Live KPIs
+      try {
+        const { data: kpi, error: kpiErr } = await supabase.rpc('get_student_kpis');
+        if (!kpiErr && kpi) {
+          document.getElementById('kpiMealsCount').textContent = `${kpi.meals_attended} / 60`;
+          document.getElementById('kpiMealsBar').style.width = `${Math.min(100, (kpi.meals_attended / 60) * 100)}%`;
+
+          document.getElementById('kpiComplaintsCount').textContent = `${kpi.open_complaints} Active`;
+          if (kpi.open_complaints > 0) {
+            document.getElementById('kpiComplaintsSub').textContent = `Ticket ${kpi.active_ticket_id} in resolution`;
+          }
+          document.getElementById('kpiComplaintsBar').style.width = kpi.open_complaints > 0 ? '60%' : '100%';
+
+          document.getElementById('kpiRatingsCount').textContent = `${kpi.ratings_given} / 21`;
+          document.getElementById('kpiRatingsBar').style.width = `${Math.min(100, (kpi.ratings_given / 21) * 100)}%`;
+
+          document.getElementById('kpiNoticesCount').textContent = `${kpi.unread_notices} New`;
+          document.getElementById('kpiNoticesBar').style.width = kpi.unread_notices > 0 ? '100%' : '20%';
+        }
+      } catch (e) {
+        console.error('KPI error:', e);
+      }
+
+      // 3. Fetch Active Menu
+      try {
+        const todayStr = new Date().toISOString().split('T')[0];
+        const { data: menuData } = await supabase
+          .from('menu')
+          .select('*')
+          .eq('date', todayStr)
+          .eq('meal_slot', activeSlot)
+          .maybeSingle();
+
+        const menuListEl = document.getElementById('menuItemsPreviewList');
+        if (menuData) {
+          document.getElementById('menuSlotBadge').textContent = menuData.meal_slot.toUpperCase();
+          document.getElementById('menuTitlePreview').textContent = menuData.title;
+          document.getElementById('menuTimingPreview').textContent = `Serving Window: ${menuData.timing} • ${menuData.calories || 600} kcal`;
+
+          menuListEl.innerHTML = '';
+          const items = Array.isArray(menuData.items) ? menuData.items : [];
+          items.forEach(item => {
+            const isSpecial = item.type === 'special';
+            const itemRow = document.createElement('div');
+            itemRow.style.cssText = 'display:flex; align-items:center; justify-content:space-between; padding: 8px 12px; background: var(--bg-subtle); border-radius: 8px; font-size: 13px;';
+            itemRow.innerHTML = `
+              <div style="display:flex; align-items:center; gap: 8px;">
+                <span class="material-symbols-outlined text-[16px]" style="color: ${isSpecial ? '#D97706' : '#059669'};">${isSpecial ? 'stars' : 'check_circle'}</span>
+                <span style="font-weight: 500; color: var(--text-main);">${item.name || item}</span>
+              </div>
+              ${item.calories ? `<span style="font-size: 11px; color: var(--text-muted);">${item.calories} kcal</span>` : ''}
+            `;
+            menuListEl.appendChild(itemRow);
+          });
+        } else {
+          menuListEl.innerHTML = `<div style="color: var(--text-muted); font-size: 13px;">No menu scheduled yet for ${activeSlot}.</div>`;
+        }
+      } catch (e) {
+        console.error('Menu preview error:', e);
+      }
+
+      // 4. Fetch Recent Complaints
+      try {
+        const { data: complaints } = await supabase
+          .from('complaints')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(3);
+
+        const complaintsListEl = document.getElementById('recentComplaintsList');
+        if (complaints && complaints.length > 0) {
+          complaintsListEl.innerHTML = '';
+          complaints.forEach(c => {
+            const row = document.createElement('div');
+            row.style.cssText = 'border: 1px solid var(--border-subtle); border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 6px;';
+            const badgeClass = `badge badge-${c.status}`;
+            const timeAgo = new Date(c.created_at).toLocaleDateString();
+            row.innerHTML = `
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <span style="font-weight: 700; font-size: 13px; color: var(--text-main);">${c.tracking_id}</span>
+                <span class="${badgeClass}">${c.status.replace('_', ' ').toUpperCase()}</span>
+              </div>
+              <p style="font-size: 13px; color: var(--text-body); margin: 0; line-clamp: 2;">${c.description}</p>
+              <div style="font-size: 11px; color: var(--text-muted); display:flex; justify-content:space-between; margin-top: 2px;">
+                <span>Category: <strong>${c.category}</strong></span>
+                <span>${timeAgo}</span>
+              </div>
+            `;
+            complaintsListEl.appendChild(row);
+          });
+        } else {
+          complaintsListEl.innerHTML = `<div style="color: var(--text-muted); font-size: 13px;">No complaints registered. Good job mess team!</div>`;
+        }
+      } catch (e) {
+        console.error('Recent complaints error:', e);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Attendance Overview — Food Buddy</title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/js/vendor/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="theme-manager">
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="app-sidebar"></aside>
+
+    <!-- Main Content Area -->
+    <div class="app-main">
+      <header class="app-topbar"></header>
+
+      <main class="content-container">
+        
+        <!-- Header with Title & Export Action -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+              <span class="badge badge-blue">Operations & Access</span>
+              <span style="font-size: 13px; color: var(--text-muted);">Verified Turnstile Logs</span>
+            </div>
+            <h1 style="font-size: 24px; font-weight: 700; margin: 0 0 4px 0;">Dining Hall Attendance Overview</h1>
+            <p style="font-size: 14px; color: var(--text-muted); margin: 0;">Comprehensive turnout ledger, meal cycle stats, and verified QR check-in records.</p>
+          </div>
+
+          <div style="display: flex; gap: 10px;">
+            <button onclick="exportAttendanceCSV()" class="btn btn-outline" style="background: #fff; font-size: 13px;">
+              <span class="material-symbols-outlined" style="font-size: 18px;">download</span>
+              <span>Export CSV</span>
+            </button>
+            <a href="/manager/qr.html" class="btn btn-primary" style="background: #2563EB; font-size: 13px;">
+              <span class="material-symbols-outlined" style="font-size: 18px;">qr_code_2</span>
+              <span>Open Kiosk QR</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- 4 Shift Counters Strip -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4" style="margin-bottom: 24px;">
+          <div class="card" style="padding: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <span style="font-size: 12px; font-weight: 600; color: var(--text-muted);">Breakfast</span>
+              <span class="material-symbols-outlined" style="color: #F59E0B; font-size: 18px;">bakery_dining</span>
+            </div>
+            <div style="font-size: 24px; font-weight: 700; color: var(--text-main);" id="statBreakfast">0</div>
+            <div style="font-size: 11px; color: var(--text-muted);">07:30 - 09:30 AM</div>
+          </div>
+
+          <div class="card" style="padding: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <span style="font-size: 12px; font-weight: 600; color: var(--text-muted);">Lunch</span>
+              <span class="material-symbols-outlined" style="color: #2563EB; font-size: 18px;">lunch_dining</span>
+            </div>
+            <div style="font-size: 24px; font-weight: 700; color: var(--text-main);" id="statLunch">0</div>
+            <div style="font-size: 11px; color: var(--text-muted);">12:30 - 02:30 PM</div>
+          </div>
+
+          <div class="card" style="padding: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <span style="font-size: 12px; font-weight: 600; color: var(--text-muted);">Snacks</span>
+              <span class="material-symbols-outlined" style="color: #8B5CF6; font-size: 18px;">local_cafe</span>
+            </div>
+            <div style="font-size: 24px; font-weight: 700; color: var(--text-main);" id="statSnacks">0</div>
+            <div style="font-size: 11px; color: var(--text-muted);">05:00 - 06:15 PM</div>
+          </div>
+
+          <div class="card" style="padding: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <span style="font-size: 12px; font-weight: 600; color: var(--text-muted);">Dinner</span>
+              <span class="material-symbols-outlined" style="color: #10B981; font-size: 18px;">dinner_dining</span>
+            </div>
+            <div style="font-size: 24px; font-weight: 700; color: var(--text-main);" id="statDinner">0</div>
+            <div style="font-size: 11px; color: var(--text-muted);">07:45 - 09:45 PM</div>
+          </div>
+        </div>
+
+        <!-- Filter Controls Bar -->
+        <div class="card" style="padding: 16px 20px; margin-bottom: 20px;">
+          <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
+            
+            <!-- Date Filter -->
+            <div class="sm:col-span-4">
+              <label class="input-label" style="font-size: 12px; margin-bottom: 4px;">Attendance Date</label>
+              <input type="date" id="filterDate" class="input-field" style="padding: 8px 12px; font-size: 13px;" onchange="applyFilters()" />
+            </div>
+
+            <!-- Meal Slot Filter -->
+            <div class="sm:col-span-3">
+              <label class="input-label" style="font-size: 12px; margin-bottom: 4px;">Meal Service</label>
+              <select id="filterSlot" class="input-field" style="padding: 8px 12px; font-size: 13px;" onchange="applyFilters()">
+                <option value="all">All Meal Cycles</option>
+                <option value="breakfast">Breakfast</option>
+                <option value="lunch">Lunch</option>
+                <option value="snacks">Evening Snacks</option>
+                <option value="dinner">Dinner</option>
+              </select>
+            </div>
+
+            <!-- Search Roll / Name -->
+            <div class="sm:col-span-5">
+              <label class="input-label" style="font-size: 12px; margin-bottom: 4px;">Resident Search</label>
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+                <input type="text" id="filterSearch" placeholder="Search by student roll or name..." class="input-field pl-9" style="padding: 8px 12px 8px 32px; font-size: 13px;" oninput="applyFilters()" />
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Attendance Data Table -->
+        <div class="card" style="padding: 0; overflow: hidden; margin-bottom: 20px;">
+          <div style="padding: 16px 20px; border-bottom: 1px solid var(--border-card); display: flex; justify-content: space-between; align-items: center; background: #FAFBFD;">
+            <div style="font-size: 14px; font-weight: 700; color: var(--text-main);">
+              <span id="tableResultsCount">Loading attendance records...</span>
+            </div>
+            <div style="font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 6px;">
+              <span class="material-symbols-outlined" style="font-size: 16px; color: #10B981;">sensors</span>
+              <span>Live Turnstile Feed</span>
+            </div>
+          </div>
+
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;">
+              <thead>
+                <tr style="background: #F8FAFC; border-bottom: 1px solid var(--border-card); color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">
+                  <th style="padding: 12px 20px; font-weight: 600;">Resident</th>
+                  <th style="padding: 12px 16px; font-weight: 600;">Hostel & Room</th>
+                  <th style="padding: 12px 16px; font-weight: 600;">Service Shift</th>
+                  <th style="padding: 12px 16px; font-weight: 600;">Scanned Time</th>
+                  <th style="padding: 12px 20px; font-weight: 600; text-align: right;">Authentication</th>
+                </tr>
+              </thead>
+              <tbody id="attendanceTableBody">
+                <tr>
+                  <td colspan="5" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                    Loading verified turnout logs...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination Bar -->
+          <div style="padding: 12px 20px; border-top: 1px solid var(--border-card); display: flex; justify-content: space-between; align-items: center; background: #FAFBFD; font-size: 13px;">
+            <span style="color: var(--text-muted);" id="paginationInfo">Showing 0 of 0</span>
+            <div style="display: flex; gap: 8px;">
+              <button id="btnPrevPage" onclick="changePage(-1)" class="btn btn-outline btn-sm" disabled>Previous</button>
+              <button id="btnNextPage" onclick="changePage(1)" class="btn btn-outline btn-sm" disabled>Next</button>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { requireAuth } from '/js/auth.js';
+    import { initAppShell, showToast } from '/js/app-shell.js';
+    import { getSupabase } from '/js/supabase.js';
+
+    const foodBuddySupabase = getSupabase();
+    let currentUser = null;
+
+    let allRecords = [];
+    let filteredRecords = [];
+    let currentPage = 1;
+    const pageSize = 15;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      currentUser = await requireAuth('mess_manager');
+      if (!currentUser) return;
+
+      const opName = currentUser.profile?.name || currentUser.profile?.full_name || 'Rameshwar Kumar';
+      const opFacility = currentUser.profile?.hostel_block || 'Mess 1 (Vikramshila & Mithila)';
+
+      initAppShell({
+        activeNav: 'attendance',
+        user: {
+          name: opName,
+          role: 'mess_manager',
+          hostel_block: opFacility,
+          email: currentUser.user?.email || currentUser.profile?.email,
+        }
+      });
+
+      // Default date to today
+      const todayStr = new Date().toISOString().split('T')[0];
+      document.getElementById('filterDate').value = todayStr;
+
+      await fetchAttendance();
+
+      // Live realtime updates
+      foodBuddySupabase
+        .channel('attendance-live-feed')
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'attendance' }, () => {
+          fetchAttendance();
+        })
+        .subscribe();
+    });
+
+    async function fetchAttendance() {
+      try {
+        const { data, error } = await foodBuddySupabase
+          .from('attendance')
+          .select(`
+            id,
+            date,
+            meal_slot,
+            scanned_at,
+            student_id,
+            profiles (
+              id,
+              name,
+              roll_number,
+              room_number,
+              hostel_block
+            )
+          `)
+          .order('scanned_at', { ascending: false })
+          .limit(500);
+
+        if (error) throw error;
+        allRecords = data || [];
+        applyFilters();
+
+      } catch (err) {
+        console.error('Error fetching attendance:', err);
+        showToast('Error loading attendance logs', 'error');
+      }
+    }
+
+    function applyFilters() {
+      const selectedDate = document.getElementById('filterDate').value;
+      const selectedSlot = document.getElementById('filterSlot').value;
+      const search = (document.getElementById('filterSearch').value || '').trim().toLowerCase();
+
+      filteredRecords = allRecords.filter(r => {
+        if (selectedDate && r.date !== selectedDate) return false;
+        if (selectedSlot !== 'all' && r.meal_slot !== selectedSlot) return false;
+        if (search) {
+          const name = (r.profiles?.name || '').toLowerCase();
+          const roll = (r.profiles?.roll_number || '').toLowerCase();
+          if (!name.includes(search) && !roll.includes(search)) return false;
+        }
+        return true;
+      });
+
+      // Compute Slot Stats for the selected date
+      const dateRecords = allRecords.filter(r => !selectedDate || r.date === selectedDate);
+      document.getElementById('statBreakfast').textContent = dateRecords.filter(r => r.meal_slot === 'breakfast').length;
+      document.getElementById('statLunch').textContent = dateRecords.filter(r => r.meal_slot === 'lunch').length;
+      document.getElementById('statSnacks').textContent = dateRecords.filter(r => r.meal_slot === 'snacks').length;
+      document.getElementById('statDinner').textContent = dateRecords.filter(r => r.meal_slot === 'dinner').length;
+
+      currentPage = 1;
+      renderTable();
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('attendanceTableBody');
+      const countEl = document.getElementById('tableResultsCount');
+      const infoEl = document.getElementById('paginationInfo');
+
+      countEl.textContent = `${filteredRecords.length} Verified Turnstile Records`;
+
+      if (!filteredRecords.length) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" style="text-align: center; padding: 40px; color: var(--text-muted);">
+              No attendance records match your filter criteria.
+            </td>
+          </tr>
+        `;
+        infoEl.textContent = 'Showing 0 of 0';
+        document.getElementById('btnPrevPage').disabled = true;
+        document.getElementById('btnNextPage').disabled = true;
+        return;
+      }
+
+      const totalPages = Math.ceil(filteredRecords.length / pageSize);
+      const startIdx = (currentPage - 1) * pageSize;
+      const endIdx = Math.min(startIdx + pageSize, filteredRecords.length);
+      const pageItems = filteredRecords.slice(startIdx, endIdx);
+
+      infoEl.textContent = `Showing ${startIdx + 1}–${endIdx} of ${filteredRecords.length}`;
+      document.getElementById('btnPrevPage').disabled = currentPage <= 1;
+      document.getElementById('btnNextPage').disabled = currentPage >= totalPages;
+
+      const slotIconMap = {
+        breakfast: { icon: 'bakery_dining', color: '#F59E0B', label: 'Breakfast' },
+        lunch: { icon: 'lunch_dining', color: '#2563EB', label: 'Lunch' },
+        snacks: { icon: 'local_cafe', color: '#8B5CF6', label: 'Evening Snacks' },
+        dinner: { icon: 'dinner_dining', color: '#10B981', label: 'Dinner' }
+      };
+
+      tbody.innerHTML = pageItems.map(r => {
+        const p = r.profiles || {};
+        const slot = slotIconMap[r.meal_slot] || { icon: 'restaurant', color: '#2563EB', label: r.meal_slot };
+        const scanTime = new Date(r.scanned_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        const scanDate = new Date(r.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+        return `
+          <tr style="border-bottom: 1px solid var(--border-card);">
+            <td style="padding: 12px 20px;">
+              <div style="font-weight: 600; color: var(--text-main);">${p.name || 'Student Resident'}</div>
+              <div style="font-family: monospace; font-size: 11px; color: var(--text-muted);">${p.roll_number || 'ID Pending'}</div>
+            </td>
+            <td style="padding: 12px 16px; color: var(--text-body);">
+              ${p.hostel_block || 'Vikramshila'} • Room ${p.room_number || 'Unassigned'}
+            </td>
+            <td style="padding: 12px 16px;">
+              <span style="display: inline-flex; align-items: center; gap: 6px; font-weight: 600; color: ${slot.color};">
+                <span class="material-symbols-outlined" style="font-size: 18px;">${slot.icon}</span>
+                ${slot.label}
+              </span>
+            </td>
+            <td style="padding: 12px 16px; color: var(--text-body);">
+              <strong>${scanTime}</strong> <span style="font-size: 11px; color: var(--text-muted);">(${scanDate})</span>
+            </td>
+            <td style="padding: 12px 20px; text-align: right;">
+              <span class="badge badge-green" style="font-size: 11px;">
+                <span class="material-symbols-outlined" style="font-size: 13px;">check_circle</span>
+                Dynamic QR Token
+              </span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function changePage(delta) {
+      currentPage += delta;
+      renderTable();
+    }
+
+    function exportAttendanceCSV() {
+      if (!filteredRecords.length) {
+        showToast('No records to export', 'warning');
+        return;
+      }
+
+      const headers = ['Student Name', 'Roll Number', 'Hostel', 'Room', 'Meal Slot', 'Date', 'Scanned Time'];
+      const rows = filteredRecords.map(r => {
+        const p = r.profiles || {};
+        const time = new Date(r.scanned_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        return [
+          `"${p.name || 'Student'}"`,
+          `"${p.roll_number || ''}"`,
+          `"${p.hostel_block || ''}"`,
+          `"${p.room_number || ''}"`,
+          `"${r.meal_slot}"`,
+          `"${r.date}"`,
+          `"${time}"`
+        ].join(',');
+      });
+
+      const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows].join('\n');
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', `food_buddy_attendance_${new Date().toISOString().split('T')[0]}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      showToast(`Exported ${filteredRecords.length} turnout rows to CSV!`, 'success');
+    }
+
+    window.applyFilters = applyFilters;
+    window.changePage = changePage;
+    window.exportAttendanceCSV = exportAttendanceCSV;
+  </script>
+</body>
+</html>

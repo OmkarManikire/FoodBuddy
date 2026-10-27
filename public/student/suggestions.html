@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>Food Improvement — Food Buddy</title>
+  <link rel="stylesheet" href="/css/main.css"/>
+  <script src="/js/vendor/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    .improvement-header-banner {
+      background: #F0FDF4;
+      border: 1px solid #BBF7D0;
+      border-radius: 14px;
+      padding: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      box-shadow: var(--shadow-xs);
+    }
+    .form-section-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: var(--shadow-xs);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .pill-checkbox {
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      background: var(--bg-surface-secondary);
+      border: 1px solid var(--border-color);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-main);
+      user-select: none;
+      transition: all 0.15s ease;
+    }
+    .pill-checkbox:hover {
+      background: #E2E8F0;
+    }
+    .pill-checkbox.checked {
+      background: #059669;
+      color: #ffffff;
+      border-color: #059669;
+    }
+    .range-slider-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      background: var(--bg-surface-secondary);
+      padding: 14px;
+      border-radius: 10px;
+    }
+    .slider-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .wishlist-chip {
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: var(--bg-surface-secondary);
+      border: 1px solid var(--border-color);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-main);
+      transition: all 0.15s ease;
+    }
+    .wishlist-chip:hover {
+      background: #E2E8F0;
+    }
+    .wishlist-chip.selected {
+      background: #059669;
+      color: #ffffff;
+      border-color: #059669;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="app-sidebar"></aside>
+
+    <div class="app-main">
+      <header class="app-topbar"></header>
+
+      <main class="content-container">
+        <!-- Top Banner -->
+        <div class="improvement-header-banner">
+          <div style="max-width: 650px;">
+            <div style="display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; text-transform: uppercase; color: #065F46; margin-bottom: 6px;">
+              <span style="background: #059669; color: #ffffff; padding: 2px 8px; border-radius: 999px;">Cycle #42</span>
+              <span>•</span>
+              <span>Semester Dining Forum</span>
+            </div>
+            <h1 style="font-size: 24px; font-weight: 700; color: var(--text-main); margin: 0 0 6px 0;">
+              Food Improvement & Menu Suggestions
+            </h1>
+            <p style="font-size: 14px; color: #047857; margin: 0; line-height: 1.4;">
+              Weekly suggestions are compiled and reviewed every Friday by the Hostel Dining Committee and Kitchen Head Chef.
+            </p>
+          </div>
+
+          <div style="background: var(--bg-surface); padding: 12px 18px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px;">
+            <div style="width: 40px; height: 40px; border-radius: 10px; background: #ECFDF5; color: #059669; display: flex; align-items: center; justify-content: center;">
+              <span class="material-symbols-outlined" style="font-size: 24px;">event_available</span>
+            </div>
+            <div>
+              <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted);">Next Review Session</div>
+              <div style="font-size: 15px; font-weight: 700; color: var(--text-main);">Friday, 6:00 PM</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2 Column Layout (Submit Form & My Suggestions Ledger) -->
+        <div style="display: grid; grid-template-columns: 1fr; gap: 24px;">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; align-items: start;">
+            
+            <!-- Form Column -->
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+              <!-- Quick Suggestion Box -->
+              <div class="form-section-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="width: 32px; height: 32px; border-radius: 8px; background: #D1FAE5; color: #065F46; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px;">01</span>
+                    <div>
+                      <h2 style="font-size: 16px; font-weight: 700; color: var(--text-main); margin: 0;">Submit a Menu Idea or Improvement</h2>
+                      <p style="font-size: 12px; color: var(--text-muted); margin: 0;">Direct suggestion for the weekly catering review</p>
+                    </div>
+                  </div>
+                  <span class="material-symbols-outlined" style="color: var(--text-muted);">lightbulb</span>
+                </div>
+
+                <form id="suggestionForm" onsubmit="event.preventDefault(); submitSuggestion();">
+                  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px;">
+                    <div>
+                      <label style="font-size: 12px; font-weight: 700; color: var(--text-main); display: block; margin-bottom: 4px;">Category <span style="color:red;">*</span></label>
+                      <select id="sugCategory" class="input-field" style="height: 42px; font-size: 14px;" required>
+                        <option value="Rice & Grains">Rice & Grains (Pulav, Biryani, Jeera Rice)</option>
+                        <option value="Roti & Breads">Roti & Breads (Phulkas, Parathas, Missi Roti)</option>
+                        <option value="Vegetables & Dal">Vegetables & Dal (Gravy, Sabzi, Tadka)</option>
+                        <option value="Breakfast & Snacks">Breakfast & Snacks (Poha, Upma, Samosa)</option>
+                        <option value="Desserts & Fruits">Desserts & Fruits (Sweets, Salad, Kheer)</option>
+                        <option value="Hygiene & Sanitation">Hygiene & Kitchen Sanitation</option>
+                        <option value="General Dining">General Dining Experience</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label style="font-size: 12px; font-weight: 700; color: var(--text-main); display: block; margin-bottom: 4px;">Suggestion Title <span style="color:red;">*</span></label>
+                      <input type="text" id="sugTitle" class="input-field" placeholder="e.g., Introduce Missi Roti on Sundays" style="height: 42px; font-size: 14px;" required/>
+                    </div>
+                  </div>
+
+                  <!-- Quick preference helpers -->
+                  <div style="margin-top: 14px;">
+                    <label style="font-size: 12px; font-weight: 700; color: var(--text-main); display: block; margin-bottom: 6px;">
+                      Select Dish Wishlist Items (Tap to append)
+                    </label>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                      <span class="wishlist-chip" onclick="toggleWishlistChip(this, 'Paneer Butter Masala')">+ Paneer Butter Masala</span>
+                      <span class="wishlist-chip" onclick="toggleWishlistChip(this, 'Chole Bhature Weekend')">+ Chole Bhature</span>
+                      <span class="wishlist-chip" onclick="toggleWishlistChip(this, 'Brown Rice Option')">+ Brown Rice Option</span>
+                      <span class="wishlist-chip" onclick="toggleWishlistChip(this, 'Ghee on Phulkas')">+ Ghee on Phulkas</span>
+                      <span class="wishlist-chip" onclick="toggleWishlistChip(this, 'Less Oil in Gravies')">+ Less Oil in Gravies</span>
+                      <span class="wishlist-chip" onclick="toggleWishlistChip(this, 'Cold Sweet Curd / Lassi')">+ Cold Sweet Curd / Lassi</span>
+                    </div>
+                  </div>
+
+                  <!-- Detailed Suggestion Box -->
+                  <div style="margin-top: 14px;">
+                    <label style="font-size: 12px; font-weight: 700; color: var(--text-main); display: block; margin-bottom: 4px;">
+                      Detailed Suggestion / Recipe Idea <span style="color:red;">*</span>
+                    </label>
+                    <textarea id="sugDetails" class="input-field" rows="4" placeholder="Explain your recommendation, portion suggestion, or proposed schedule rotation..." style="font-size: 14px; resize: vertical;" required></textarea>
+                  </div>
+
+                  <!-- Sliders for Spice & Oil Preferences -->
+                  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-top: 14px;">
+                    <div class="range-slider-wrap">
+                      <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 12px; font-weight: 700; color: var(--text-main);">Desired Oil Level</span>
+                        <span id="oilValLabel" style="font-size: 12px; font-weight: 700; color: var(--color-primary);">Balanced</span>
+                      </div>
+                      <input type="range" id="oilRange" min="1" max="3" value="2" oninput="updateOilLabel(this.value)" style="accent-color: #059669; cursor: pointer;"/>
+                      <div class="slider-labels">
+                        <span>Minimal Oil</span>
+                        <span>Balanced</span>
+                        <span>Rich Dhaba</span>
+                      </div>
+                    </div>
+
+                    <div class="range-slider-wrap">
+                      <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 12px; font-weight: 700; color: var(--text-main);">Desired Spice Level</span>
+                        <span id="spiceValLabel" style="font-size: 12px; font-weight: 700; color: #D97706;">Medium</span>
+                      </div>
+                      <input type="range" id="spiceRange" min="1" max="3" value="2" oninput="updateSpiceLabel(this.value)" style="accent-color: #D97706; cursor: pointer;"/>
+                      <div class="slider-labels">
+                        <span>Mild</span>
+                        <span>Medium</span>
+                        <span>Extra Spicy</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; justify-content: flex-end; margin-top: 18px;">
+                    <button type="submit" id="submitSugBtn" class="btn btn-primary" style="display: flex; align-items: center; gap: 6px; padding: 10px 24px;">
+                      <span class="material-symbols-outlined" style="font-size: 18px;">send</span>
+                      <span>Submit to Dining Committee</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!-- Right Column: My Submitted Suggestions Ledger -->
+            <div class="form-section-card">
+              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+                <div>
+                  <h2 style="font-size: 16px; font-weight: 700; color: var(--text-main); margin: 0;">My Submitted Suggestions</h2>
+                  <p style="font-size: 12px; color: var(--text-muted); margin: 0;">Track status of your recommendations</p>
+                </div>
+                <span class="badge badge-gray" id="sugCountBadge">0 Total</span>
+              </div>
+
+              <div id="suggestionsList" style="display: flex; flex-direction: column; gap: 14px;">
+                <div style="text-align: center; padding: 30px; color: var(--text-muted);">
+                  Loading your suggestions...
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { requireAuth } from '/js/auth.js';
+    import { initAppShell, showToast } from '/js/app-shell.js';
+    import { getSupabase } from '/js/supabase.js';
+
+    const foodBuddySupabase = getSupabase();
+    let currentUser = null;
+    let selectedWishlist = [];
+
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      currentUser = await requireAuth('student');
+      if (!currentUser) return;
+
+      initAppShell({
+        activeNav: 'food-improvement',
+        user: {
+          name: currentUser.profile?.full_name || 'Student Resident',
+          roll_number: currentUser.profile?.roll_number || '2025CSB1001',
+          room_number: currentUser.profile?.room_number || 'B-314',
+          hostel_block: currentUser.profile?.hostel_block || 'North Hostel'
+        }
+      });
+
+      await loadMySuggestions();
+    });
+
+    function updateOilLabel(val) {
+      const labels = { 1: 'Minimal Oil', 2: 'Balanced', 3: 'Rich Dhaba' };
+      document.getElementById('oilValLabel').textContent = labels[val] || 'Balanced';
+    }
+
+    function updateSpiceLabel(val) {
+      const labels = { 1: 'Mild', 2: 'Medium', 3: 'Extra Spicy' };
+      document.getElementById('spiceValLabel').textContent = labels[val] || 'Medium';
+    }
+
+    function toggleWishlistChip(el, item) {
+      if (selectedWishlist.includes(item)) {
+        selectedWishlist = selectedWishlist.filter(i => i !== item);
+        el.classList.remove('selected');
+        el.textContent = `+ ${item}`;
+      } else {
+        selectedWishlist.push(item);
+        el.classList.add('selected');
+        el.textContent = `✓ ${item}`;
+      }
+
+      // Append to details if empty or update
+      const details = document.getElementById('sugDetails');
+      if (!details.value.includes('Wishlist preferences:')) {
+        if (selectedWishlist.length) {
+          details.value = (details.value ? details.value + '\n\n' : '') + `Wishlist preferences: ${selectedWishlist.join(', ')}`;
+        }
+      } else {
+        const parts = details.value.split('Wishlist preferences:');
+        details.value = parts[0].trim() + (selectedWishlist.length ? `\n\nWishlist preferences: ${selectedWishlist.join(', ')}` : '');
+      }
+    }
+
+    async function loadMySuggestions() {
+      try {
+        const { data, error } = await foodBuddySupabase
+          .from('suggestions')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        renderSuggestions(data || []);
+      } catch (err) {
+        console.error('Error loading suggestions:', err);
+      }
+    }
+
+    function renderSuggestions(list) {
+      const listEl = document.getElementById('suggestionsList');
+      const countBadge = document.getElementById('sugCountBadge');
+      if (countBadge) countBadge.textContent = `${list.length} Submitted`;
+
+      if (!list.length) {
+        listEl.innerHTML = `
+          <div style="text-align: center; padding: 40px; color: var(--text-muted); background: var(--bg-surface-secondary); border-radius: 10px;">
+            <span class="material-symbols-outlined" style="font-size: 32px; color: #94A3B8; margin-bottom: 6px;">thumb_up</span>
+            <p style="font-size: 14px; font-weight: 600; color: var(--text-main); margin: 0;">No suggestions submitted yet</p>
+            <span style="font-size: 12px;">Share your food preferences or recipe suggestions above.</span>
+          </div>
+        `;
+        return;
+      }
+
+      const statusMap = {
+        submitted: { label: 'Submitted', badge: 'badge-gray' },
+        under_consideration: { label: 'Under Consideration', badge: 'badge-yellow' },
+        accepted: { label: 'Accepted by Chef', badge: 'badge-green' },
+        planned: { label: 'Planned for Menu', badge: 'badge-blue' }
+      };
+
+      listEl.innerHTML = list.map(item => {
+        const st = statusMap[item.status] || { label: item.status, badge: 'badge-gray' };
+        const dateStr = new Date(item.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+        return `
+          <div style="background: var(--bg-surface-secondary); border: 1px solid var(--border-color); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
+              <div>
+                <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--color-primary);">${item.category}</span>
+                <h3 style="font-size: 15px; font-weight: 700; color: var(--text-main); margin: 2px 0 0 0;">${item.title}</h3>
+              </div>
+              <span class="badge ${st.badge}">${st.label}</span>
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.4; margin: 0; white-space: pre-wrap;">${item.suggestion}</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 6px; font-size: 11px; color: var(--text-muted);">
+              <span>Submitted on ${dateStr}</span>
+              <span style="display: flex; align-items: center; gap: 4px; font-weight: 600; color: #059669;">
+                <span class="material-symbols-outlined" style="font-size: 14px;">thumb_up</span>
+                ${item.votes || 0} votes
+              </span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function submitSuggestion() {
+      const btn = document.getElementById('submitSugBtn');
+      const category = document.getElementById('sugCategory').value;
+      const title = document.getElementById('sugTitle').value.trim();
+      const rawDetails = document.getElementById('sugDetails').value.trim();
+      const oilVal = document.getElementById('oilValLabel').textContent;
+      const spiceVal = document.getElementById('spiceValLabel').textContent;
+
+      if (!title || !rawDetails) {
+        showToast('Please fill in both title and suggestion details.', 'warning');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = `
+        <span class="material-symbols-outlined" style="animation: spin 1s linear infinite; font-size: 18px;">progress_activity</span>
+        <span>Submitting...</span>
+      `;
+
+      try {
+        const fullSuggestionText = `${rawDetails}\n\n[Preferences: Oil: ${oilVal}, Spice: ${spiceVal}]`;
+
+        const { data, error } = await foodBuddySupabase
+          .from('suggestions')
+          .insert({
+            student_id: currentUser.user?.id || currentUser.id || currentUser.profile?.id,
+            category: category,
+            title: title,
+            suggestion: fullSuggestionText,
+            votes: 1
+          })
+          .select()
+          .single();
+
+        if (error) throw error;
+
+        showToast('Suggestion submitted for Friday Catering Committee review!', 'success');
+        document.getElementById('suggestionForm').reset();
+        selectedWishlist = [];
+        document.querySelectorAll('.wishlist-chip').forEach(el => {
+          el.classList.remove('selected');
+        });
+        await loadMySuggestions();
+
+      } catch (err) {
+        console.error('Error submitting suggestion:', err);
+        showToast(err.message || 'Error submitting suggestion.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `
+          <span class="material-symbols-outlined" style="font-size: 18px;">send</span>
+          <span>Submit to Dining Committee</span>
+        `;
+      }
+    }
+
+    window.updateOilLabel = updateOilLabel;
+    window.updateSpiceLabel = updateSpiceLabel;
+    window.toggleWishlistChip = toggleWishlistChip;
+    window.submitSuggestion = submitSuggestion;
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mess Manager Overview — Food Buddy</title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/js/vendor/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="theme-manager">
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="app-sidebar"></aside>
+
+    <!-- Main Content Area -->
+    <div class="app-main">
+      <!-- Topbar -->
+      <header class="app-topbar"></header>
+
+      <!-- Page Content -->
+      <main class="content-container">
+        
+        <!-- Welcome Header Banner -->
+        <div style="background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%); border-radius: 14px; padding: 24px 28px; color: #fff; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-sm);">
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+              <span class="material-symbols-outlined" style="font-size: 20px; color: #93C5FD;">storefront</span>
+              <span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #BFDBFE;">Dining Operations Control</span>
+              <span style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 12px; font-size: 11px; font-weight: 600; color: #6EE7B7;">
+                <span style="width: 6px; height: 6px; border-radius: 50%; background: #10B981;"></span>
+                Active Dining Service
+              </span>
+            </div>
+            <h1 style="font-size: 26px; font-weight: 700; margin: 0 0 6px 0;" id="welcomeManagerTitle">Mess 1 Operations Lead</h1>
+            <p style="font-size: 14px; color: #DBEAFE; margin: 0;">Supervising Vikramshila & Mithila Hostels • Live turnstile headcount, service checklists & grievance triage.</p>
+          </div>
+
+          <div style="display: flex; gap: 10px;">
+            <a href="/manager/qr.html" class="btn btn-primary" style="background: #fff; color: #1D4ED8; font-weight: 600; box-shadow: var(--shadow-sm); border: none;">
+              <span class="material-symbols-outlined" style="font-size: 18px;">qr_code_2</span>
+              <span>Launch Live QR Kiosk</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- KPI Cards Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" style="margin-bottom: 24px;">
+          <!-- Card 1: Live Headcount Today -->
+          <div class="card" style="padding: 20px; border-left: 4px solid #2563EB;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+              <span style="font-size: 13px; font-weight: 600; color: var(--text-muted);">Today's Turnout Headcount</span>
+              <span class="material-symbols-outlined" style="color: #2563EB; font-size: 22px;">groups</span>
+            </div>
+            <div style="font-size: 30px; font-weight: 700; color: var(--text-main); margin-bottom: 4px;" id="kpiTotalHeadcount">--</div>
+            <div style="font-size: 12px; color: var(--text-muted); display: flex; gap: 8px;">
+              <span id="kpiSlotBreakdown">Breakfast: -- • Lunch: --</span>
+            </div>
+          </div>
+
+          <!-- Card 2: Pending Grievances -->
+          <div class="card" style="padding: 20px; border-left: 4px solid #F59E0B;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+              <span style="font-size: 13px; font-weight: 600; color: var(--text-muted);">Pending Grievances</span>
+              <span class="material-symbols-outlined" style="color: #F59E0B; font-size: 22px;">report_problem</span>
+            </div>
+            <div style="font-size: 30px; font-weight: 700; color: var(--text-main); margin-bottom: 4px;" id="kpiPendingComplaints">--</div>
+            <div style="font-size: 12px; color: #B45309; font-weight: 500;">
+              Requires review & manager notes
+            </div>
+          </div>
+
+          <!-- Card 3: Today's Food Quality Rating -->
+          <div class="card" style="padding: 20px; border-left: 4px solid #10B981;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+              <span style="font-size: 13px; font-weight: 600; color: var(--text-muted);">Food Quality Rating</span>
+              <span class="material-symbols-outlined" style="color: #10B981; font-size: 22px;">star</span>
+            </div>
+            <div style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px;">
+              <span style="font-size: 30px; font-weight: 700; color: var(--text-main);" id="kpiAvgFood">--</span>
+              <span style="font-size: 14px; color: var(--text-muted);">/ 5.0</span>
+            </div>
+            <div style="font-size: 12px; color: var(--text-muted);" id="kpiRatingCount">Based on today's student ratings</div>
+          </div>
+
+          <!-- Card 4: Staff & Service Rating -->
+          <div class="card" style="padding: 20px; border-left: 4px solid #6366F1;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+              <span style="font-size: 13px; font-weight: 600; color: var(--text-muted);">Staff Courtesy Rating</span>
+              <span class="material-symbols-outlined" style="color: #6366F1; font-size: 22px;">sentiment_satisfied</span>
+            </div>
+            <div style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px;">
+              <span style="font-size: 30px; font-weight: 700; color: var(--text-main);" id="kpiAvgStaff">--</span>
+              <span style="font-size: 14px; color: var(--text-muted);">/ 5.0</span>
+            </div>
+            <div style="font-size: 12px; color: #10B981; font-weight: 500;">
+              Counter & clearing hygiene compliant
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Dashboard Split: Turnout Chart & Needs Attention List -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6" style="margin-bottom: 24px;">
+          
+          <!-- Left: Today's Turnout Distribution Bar Chart (7 cols) -->
+          <div class="lg:col-span-7 card" style="padding: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+              <div>
+                <h2 style="font-size: 17px; font-weight: 700; margin: 0 0 4px 0;">Today's Meal Turnout Distribution</h2>
+                <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Live counter attendance scans captured across 4 shifts</p>
+              </div>
+              <a href="/manager/attendance.html" class="btn btn-outline btn-sm" style="font-size: 12px;">
+                <span>Detailed Attendance</span>
+                <span class="material-symbols-outlined" style="font-size: 14px;">arrow_forward</span>
+              </a>
+            </div>
+
+            <!-- Turnout Progress Bars -->
+            <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 12px;">
+              <!-- Breakfast -->
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 4px;">
+                  <span style="display: flex; align-items: center; gap: 6px;">
+                    <span class="material-symbols-outlined" style="color: #F59E0B; font-size: 18px;">bakery_dining</span>
+                    Breakfast (07:30 - 09:30 AM)
+                  </span>
+                  <span id="turnoutBreakfastText">0 scanned</span>
+                </div>
+                <div style="height: 10px; background: #F1F5F9; border-radius: 6px; overflow: hidden;">
+                  <div id="turnoutBreakfastBar" style="height: 100%; width: 0%; background: #F59E0B; transition: width 0.6s ease;"></div>
+                </div>
+              </div>
+
+              <!-- Lunch -->
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 4px;">
+                  <span style="display: flex; align-items: center; gap: 6px;">
+                    <span class="material-symbols-outlined" style="color: #2563EB; font-size: 18px;">lunch_dining</span>
+                    Lunch (12:30 - 02:30 PM)
+                  </span>
+                  <span id="turnoutLunchText">0 scanned</span>
+                </div>
+                <div style="height: 10px; background: #F1F5F9; border-radius: 6px; overflow: hidden;">
+                  <div id="turnoutLunchBar" style="height: 100%; width: 0%; background: #2563EB; transition: width 0.6s ease;"></div>
+                </div>
+              </div>
+
+              <!-- Snacks -->
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 4px;">
+                  <span style="display: flex; align-items: center; gap: 6px;">
+                    <span class="material-symbols-outlined" style="color: #8B5CF6; font-size: 18px;">local_cafe</span>
+                    Evening Snacks (05:00 - 06:15 PM)
+                  </span>
+                  <span id="turnoutSnacksText">0 scanned</span>
+                </div>
+                <div style="height: 10px; background: #F1F5F9; border-radius: 6px; overflow: hidden;">
+                  <div id="turnoutSnacksBar" style="height: 100%; width: 0%; background: #8B5CF6; transition: width 0.6s ease;"></div>
+                </div>
+              </div>
+
+              <!-- Dinner -->
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 4px;">
+                  <span style="display: flex; align-items: center; gap: 6px;">
+                    <span class="material-symbols-outlined" style="color: #10B981; font-size: 18px;">dinner_dining</span>
+                    Dinner (07:45 - 09:45 PM)
+                  </span>
+                  <span id="turnoutDinnerText">0 scanned</span>
+                </div>
+                <div style="height: 10px; background: #F1F5F9; border-radius: 6px; overflow: hidden;">
+                  <div id="turnoutDinnerBar" style="height: 100%; width: 0%; background: #10B981; transition: width 0.6s ease;"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Turnout Footer stats -->
+            <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border-card); display: flex; justify-content: space-between; align-items: center; font-size: 13px;">
+              <span style="color: var(--text-muted);">Capacity Target: <strong>450 Residents</strong></span>
+              <span class="badge badge-blue" id="turnoutPctBadge">0% Peak Attendance</span>
+            </div>
+          </div>
+
+          <!-- Right: Needs Attention - Oldest Pending Complaints (5 cols) -->
+          <div class="lg:col-span-5 card" style="padding: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+              <div>
+                <h2 style="font-size: 17px; font-weight: 700; margin: 0 0 4px 0;">Needs Attention</h2>
+                <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Oldest unresolved resident complaints</p>
+              </div>
+              <a href="/manager/complaints.html" class="btn btn-outline btn-sm" style="font-size: 12px;">
+                <span>View Queue</span>
+              </a>
+            </div>
+
+            <div id="needsAttentionList" style="display: flex; flex-direction: column; gap: 10px;">
+              <div style="text-align: center; padding: 30px; color: var(--text-muted); font-size: 13px;">
+                <span class="material-symbols-outlined" style="font-size: 32px; color: #CBD5E1; margin-bottom: 6px;">check_circle</span>
+                <div>Loading pending grievances...</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Operations Quick Actions Strip -->
+        <div style="margin-bottom: 16px;">
+          <h2 style="font-size: 16px; font-weight: 700; margin-bottom: 12px; color: var(--text-main);">Daily Operational Workflows</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            <a href="/manager/qr.html" class="card" style="padding: 16px; display: flex; gap: 14px; align-items: center; text-decoration: none; border-left: 3px solid #2563EB;">
+              <div style="width: 42px; height: 42px; border-radius: 10px; background: #EFF6FF; color: #2563EB; display: flex; align-items: center; justify-content: center;">
+                <span class="material-symbols-outlined">qr_code_2</span>
+              </div>
+              <div>
+                <div style="font-size: 14px; font-weight: 700; color: var(--text-main);">1. Live QR Kiosk</div>
+                <div style="font-size: 12px; color: var(--text-muted);">Display turnstile QR for students</div>
+              </div>
+            </a>
+
+            <a href="/manager/checklist.html" class="card" style="padding: 16px; display: flex; gap: 14px; align-items: center; text-decoration: none; border-left: 3px solid #10B981;">
+              <div style="width: 42px; height: 42px; border-radius: 10px; background: #ECFDF5; color: #059669; display: flex; align-items: center; justify-content: center;">
+                <span class="material-symbols-outlined">fact_check</span>
+              </div>
+              <div>
+                <div style="font-size: 14px; font-weight: 700; color: var(--text-main);">2. Pre-Meal Checklist</div>
+                <div style="font-size: 12px; color: var(--text-muted);">Log temperature & cook sign-off</div>
+              </div>
+            </a>
+
+            <a href="/manager/menu.html" class="card" style="padding: 16px; display: flex; gap: 14px; align-items: center; text-decoration: none; border-left: 3px solid #8B5CF6;">
+              <div style="width: 42px; height: 42px; border-radius: 10px; background: #F5F3FF; color: #7C3AED; display: flex; align-items: center; justify-content: center;">
+                <span class="material-symbols-outlined">menu_book</span>
+              </div>
+              <div>
+                <div style="font-size: 14px; font-weight: 700; color: var(--text-main);">3. Menu Management</div>
+                <div style="font-size: 12px; color: var(--text-muted);">Update 7-day meal schedule</div>
+              </div>
+            </a>
+
+            <a href="/manager/notices.html" class="card" style="padding: 16px; display: flex; gap: 14px; align-items: center; text-decoration: none; border-left: 3px solid #F59E0B;">
+              <div style="width: 42px; height: 42px; border-radius: 10px; background: #FEF3C7; color: #D97706; display: flex; align-items: center; justify-content: center;">
+                <span class="material-symbols-outlined">campaign</span>
+              </div>
+              <div>
+                <div style="font-size: 14px; font-weight: 700; color: var(--text-main);">4. Post Circular</div>
+                <div style="font-size: 12px; color: var(--text-muted);">Publish announcements to students</div>
+              </div>
+            </a>
+
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { requireAuth } from '/js/auth.js';
+    import { initAppShell, showToast } from '/js/app-shell.js';
+    import { getSupabase } from '/js/supabase.js';
+
+    const foodBuddySupabase = getSupabase();
+    let currentUser = null;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      currentUser = await requireAuth('mess_manager');
+      if (!currentUser) return;
+
+      const opName = currentUser.profile?.name || currentUser.profile?.full_name || 'Rameshwar Kumar';
+      const opFacility = currentUser.profile?.hostel_block || 'Mess 1 (Vikramshila & Mithila)';
+
+      initAppShell({
+        activeNav: 'dashboard',
+        user: {
+          name: opName,
+          role: 'mess_manager',
+          hostel_block: opFacility,
+          email: currentUser.user?.email || currentUser.profile?.email,
+        }
+      });
+
+      await loadOverviewData();
+
+      // Subscribe to Realtime attendance & complaints
+      foodBuddySupabase
+        .channel('manager-overview-live')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'attendance' }, () => {
+          loadOverviewData();
+        })
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'complaints' }, () => {
+          loadOverviewData();
+        })
+        .subscribe();
+    });
+
+    async function loadOverviewData() {
+      try {
+        const { data: kpi, error } = await foodBuddySupabase.rpc('get_manager_overview_kpis');
+        if (error) throw error;
+
+        // Populate KPIs
+        const totalHeadcount = kpi.headcount.total || 0;
+        document.getElementById('kpiTotalHeadcount').textContent = totalHeadcount;
+        document.getElementById('kpiSlotBreakdown').textContent = 
+          `B: ${kpi.headcount.breakfast} • L: ${kpi.headcount.lunch} • S: ${kpi.headcount.snacks} • D: ${kpi.headcount.dinner}`;
+
+        document.getElementById('kpiPendingComplaints').textContent = kpi.pending_complaints || 0;
+        document.getElementById('kpiAvgFood').textContent = Number(kpi.ratings_today.food || 0).toFixed(1);
+        document.getElementById('kpiAvgStaff').textContent = Number(kpi.ratings_today.staff || 0).toFixed(1);
+        document.getElementById('kpiRatingCount').textContent = `${kpi.ratings_today.count || 0} reviews submitted today`;
+
+        // Update Turnout Progress Bars (Relative to expected 400 target)
+        const target = 400;
+        const bPct = Math.min(100, Math.round((kpi.headcount.breakfast / target) * 100));
+        const lPct = Math.min(100, Math.round((kpi.headcount.lunch / target) * 100));
+        const sPct = Math.min(100, Math.round((kpi.headcount.snacks / target) * 100));
+        const dPct = Math.min(100, Math.round((kpi.headcount.dinner / target) * 100));
+
+        document.getElementById('turnoutBreakfastText').textContent = `${kpi.headcount.breakfast} scanned (${bPct}%)`;
+        document.getElementById('turnoutBreakfastBar').style.width = `${bPct}%`;
+
+        document.getElementById('turnoutLunchText').textContent = `${kpi.headcount.lunch} scanned (${lPct}%)`;
+        document.getElementById('turnoutLunchBar').style.width = `${lPct}%`;
+
+        document.getElementById('turnoutSnacksText').textContent = `${kpi.headcount.snacks} scanned (${sPct}%)`;
+        document.getElementById('turnoutSnacksBar').style.width = `${sPct}%`;
+
+        document.getElementById('turnoutDinnerText').textContent = `${kpi.headcount.dinner} scanned (${dPct}%)`;
+        document.getElementById('turnoutDinnerBar').style.width = `${dPct}%`;
+
+        const maxSlot = Math.max(kpi.headcount.breakfast, kpi.headcount.lunch, kpi.headcount.dinner);
+        const peakPct = Math.min(100, Math.round((maxSlot / target) * 100));
+        document.getElementById('turnoutPctBadge').textContent = `${peakPct}% Peak Shift`;
+
+        // Render Needs Attention List
+        renderNeedsAttention(kpi.oldest_pending_complaints || []);
+
+      } catch (err) {
+        console.error('Error loading manager overview:', err);
+      }
+    }
+
+    function renderNeedsAttention(complaints) {
+      const container = document.getElementById('needsAttentionList');
+      if (!complaints.length) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 30px; color: var(--text-muted); font-size: 13px;">
+            <span class="material-symbols-outlined" style="font-size: 32px; color: #10B981; margin-bottom: 6px;">verified</span>
+            <div>Zero pending complaints! All resident grievances are handled.</div>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = complaints.map(c => {
+        const timeAgo = formatTimeAgo(c.created_at);
+        const catBadgeClass = c.category === 'Hygiene' ? 'badge-red' : c.category === 'Food Quality' ? 'badge-amber' : 'badge-blue';
+
+        return `
+          <div style="padding: 12px 14px; background: #F8FAFC; border: 1px solid var(--border-card); border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+            <div style="flex: 1; min-width: 0; padding-right: 12px;">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                <span style="font-family: monospace; font-size: 12px; font-weight: 700; color: #1E40AF;">${c.tracking_id}</span>
+                <span class="badge ${catBadgeClass}" style="font-size: 11px; padding: 1px 6px;">${c.category}</span>
+                <span style="font-size: 11px; color: var(--text-muted);">${timeAgo}</span>
+              </div>
+              <div style="font-size: 13px; color: var(--text-body); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                ${c.description}
+              </div>
+            </div>
+            <a href="/manager/complaints.html?id=${c.id}" class="btn btn-outline btn-sm" style="font-size: 12px; padding: 4px 10px;">
+              Review
+            </a>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function formatTimeAgo(dateStr) {
+      const diffSec = Math.floor((new Date() - new Date(dateStr)) / 1000);
+      if (diffSec < 60) return 'Just now';
+      if (diffSec < 3600) return `${Math.floor(diffSec / 60)}m ago`;
+      if (diffSec < 86400) return `${Math.floor(diffSec / 3600)}h ago`;
+      return `${Math.floor(diffSec / 86400)}d ago`;
+    }
+  </script>
+</body>
+</html>

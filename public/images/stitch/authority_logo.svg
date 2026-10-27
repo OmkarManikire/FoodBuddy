@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none">
+  <defs>
+    <linearGradient id="authGrad" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#b45309"/>
+      <stop offset="100%" stop-color="#78350f"/>
+    </linearGradient>
+  </defs>
+  <!-- Card background -->
+  <rect x="6" y="6" width="52" height="52" rx="16" fill="url(#authGrad)" stroke="#fbbf24" stroke-width="2"/>
+  
+  <!-- Heraldic Shield of Governance / University Authority -->
+  <path d="M32 16L45 22V32C45 40.5 39.5 46.5 32 49C24.5 46.5 19 40.5 19 32V22L32 16Z" fill="#d97706" fill-opacity="0.4" stroke="#fcd34d" stroke-width="2.4" stroke-linejoin="round"/>
+  
+  <!-- Balance scale of justice & oversight or university column -->
+  <!-- Pillars of authority / governance scale -->
+  <path d="M32 23V42M25 42H39" stroke="#fef3c7" stroke-width="2.2" stroke-linecap="round"/>
+  <!-- Balance beam -->
+  <path d="M24 28L32 26L40 28" stroke="#fef3c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Scale pans -->
+  <path d="M22 34C22 35.5 23.5 36.5 25 36.5C26.5 36.5 28 35.5 28 34L24 28L28 34" stroke="#fde68a" stroke-width="1.6" stroke-linejoin="round"/>
+  <path d="M36 34C36 35.5 37.5 36.5 39 36.5C40.5 36.5 42 35.5 42 34L40 28L36 34" stroke="#fde68a" stroke-width="1.6" stroke-linejoin="round"/>
+</svg>

@@ -1,0 +1,19 @@
+{
+  "name": "food-buddy",
+  "version": "1.0.0",
+  "description": "Food Buddy - Campus Hostel Mess Management & Feedback System",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-config.mjs",
+    "dev": "node scripts/dev_server.mjs",
+    "seed": "node scripts/seed.mjs",
+    "test:rls": "node scripts/test-rls.mjs",
+    "test:student": "node scripts/test-student-rls.mjs",
+    "check": "node scripts/verify_syntax.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.1",
+    "dotenv": "^16.4.7",
+    "ws": "^8.18.0"
+  }
+}

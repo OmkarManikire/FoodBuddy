@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={"darkMode":"class","theme":{"extend":{"colors":{"on-primary":"#ffffff","tertiary-fixed":"#ffdcc3","on-secondary-container":"#fefcff","tertiary":"#8d4b00","on-surface-variant":"#3d4a42","on-error-container":"#93000a","on-tertiary":"#ffffff","outline":"#6d7a72","surface-variant":"#dae2fd","surface-bright":"#faf8ff","error":"#ba1a1a","primary-fixed":"#85f8c4","secondary-fixed":"#dbe1ff","primary-container":"#00855d","surface-container":"#eaedff","on-primary-fixed":"#002114","inverse-primary":"#68dba9","surface-container-high":"#e2e7ff","surface-dim":"#d2d9f4","surface-container-lowest":"#ffffff","primary-fixed-dim":"#68dba9","error-container":"#ffdad6","on-primary-fixed-variant":"#005137","inverse-on-surface":"#eef0ff","on-secondary-fixed":"#00174b","on-tertiary-fixed-variant":"#6e3900","on-secondary":"#ffffff","surface-container-low":"#f2f3ff","background":"#faf8ff","on-primary-container":"#f5fff7","on-background":"#131b2e","on-tertiary-fixed":"#2f1500","tertiary-fixed-dim":"#ffb77d","tertiary-container":"#b15f00","secondary-container":"#316bf3","on-tertiary-container":"#fffbff","on-surface":"#131b2e","surface":"#faf8ff","on-error":"#ffffff","inverse-surface":"#283044","on-secondary-fixed-variant":"#003ea8","primary":"#006948","outline-variant":"#bccac0","secondary-fixed-dim":"#b4c5ff","surface-tint":"#006c4a","surface-container-highest":"#dae2fd","secondary":"#0051d5"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"space-xs":"0.25rem","margin":"1rem","space-sm":"0.5rem","margin-desktop":"2rem","gutter":"1rem","space-lg":"1.5rem","margin-tablet":"1.5rem","gutter-desktop":"1.5rem","space-xl":"2rem","space-md":"0.75rem","space-base":"1rem","space-xxs":"0.125rem","space-2xl":"3rem"},"fontFamily":{"display-lg-mobile":["Inter"],"label-md":["Inter"],"display-lg":["Inter"],"body-md":["Inter"],"headline-sm":["Inter"],"metric-number":["Inter"],"label-sm":["Inter"],"headline-lg":["Inter"],"body-sm":["Inter"],"label-lg":["Inter"],"body-lg":["Inter"],"headline-md":["Inter"]},"fontSize":{"display-lg-mobile":["24px",{"lineHeight":"32px","letterSpacing":"-0.015em","fontWeight":"700"}],"label-md":["12px",{"lineHeight":"16px","fontWeight":"500"}],"display-lg":["32px",{"lineHeight":"40px","letterSpacing":"-0.02em","fontWeight":"700"}],"body-md":["14px",{"lineHeight":"20px","fontWeight":"400"}],"headline-sm":["16px",{"lineHeight":"24px","letterSpacing":"-0.005em","fontWeight":"600"}],"metric-number":["28px",{"lineHeight":"32px","letterSpacing":"-0.02em","fontWeight":"600"}],"label-sm":["11px",{"lineHeight":"14px","letterSpacing":"0.02em","fontWeight":"600"}],"headline-lg":["24px",{"lineHeight":"32px","letterSpacing":"-0.015em","fontWeight":"600"}],"body-sm":["12px",{"lineHeight":"16px","fontWeight":"400"}],"label-lg":["14px",{"lineHeight":"20px","fontWeight":"500"}],"body-lg":["16px",{"lineHeight":"24px","fontWeight":"400"}],"headline-md":["20px",{"lineHeight":"28px","letterSpacing":"-0.01em","fontWeight":"600"}]}}}}</script></head><body class="bg-surface font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-[260px] bg-surface-container-lowest border-r border-outline-variant z-50 flex flex-col justify-between"><div class="flex flex-col"><div class="h-16 px-space-base flex items-center gap-space-sm border-b border-outline-variant"><div class="w-8 h-8 rounded-lg bg-primary-fixed flex items-center justify-center text-on-primary-fixed"><span class="material-symbols-outlined text-[20px]">restaurant</span></div><div class="flex flex-col"><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm text-on-surface">FoodBuddy</span><span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed">Student</span></div></div></div><div class="px-space-md py-space-md flex flex-col gap-space-md overflow-y-auto"><div class="flex flex-col gap-space-xxs"><span class="px-space-sm font-label-sm text-label-sm uppercase tracking-wider text-outline">Overview</span><nav class="flex flex-col gap-space-xxs" data-active-classes="bg-primary-fixed text-on-primary-fixed font-semibold rounded-lg"><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="dashboard-home" href="#"><span class="material-symbols-outlined text-[20px]">space_dashboard</span><span class="font-label-lg text-label-lg">Dashboard Home</span></a></nav></div><div class="flex flex-col gap-space-xxs"><span class="px-space-sm font-label-sm text-label-sm uppercase tracking-wider text-outline">Mess</span><nav class="flex flex-col gap-space-xxs" data-active-classes="bg-primary-fixed text-on-primary-fixed font-semibold rounded-lg"><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="todays-menu" href="#"><span class="material-symbols-outlined text-[20px]">menu_book</span><span class="font-label-lg text-label-lg">Today's Menu</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="qr-attendance" href="#"><span class="material-symbols-outlined text-[20px]">qr_code_scanner</span><span class="font-label-lg text-label-lg">QR Attendance</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="rate-food" href="#"><span class="material-symbols-outlined text-[20px]">star_rate</span><span class="font-label-lg text-label-lg">Rate Food</span></a></nav></div><div class="flex flex-col gap-space-xxs"><span class="px-space-sm font-label-sm text-label-sm uppercase tracking-wider text-outline">Support</span><nav class="flex flex-col gap-space-xxs" data-active-classes="bg-primary-fixed text-on-primary-fixed font-semibold rounded-lg"><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="complaints-track-file" href="#"><span class="material-symbols-outlined text-[20px]">report_problem</span><span class="font-label-lg text-label-lg">Complaints</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="food-improvement" href="#"><span class="material-symbols-outlined text-[20px]">thumb_up</span><span class="font-label-lg text-label-lg">Food Improvement</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="notices-circulars" href="#"><span class="material-symbols-outlined text-[20px]">campaign</span><span class="font-label-lg text-label-lg">Notices & Circulars</span></a></nav></div></div></div><div class="p-space-base border-t border-outline-variant bg-surface-container-lowest"><div class="flex items-center gap-space-sm p-space-xs rounded-lg hover:bg-surface-container-low transition-colors cursor-pointer"><div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="flex flex-col min-w-0 flex-1"><span class="font-label-lg text-label-lg text-on-surface font-semibold truncate">Aarav Patel</span><span class="font-body-sm text-body-sm text-outline truncate">#2024CSB1042</span><span class="font-body-sm text-body-sm text-outline truncate">Room B-314 • North Hostel</span></div></div></div></aside><div class="pl-[260px]"><header class="fixed top-0 left-[260px] right-0 h-16 bg-surface-container-lowest border-b border-outline-variant z-40 px-space-lg flex items-center justify-between"><div class="flex items-center gap-space-sm text-outline font-body-sm text-body-sm"><span class="hover:text-on-surface cursor-pointer">Student Portal</span><span class="material-symbols-outlined text-[16px]">chevron_right</span><span class="font-label-lg text-label-lg text-on-surface font-medium">North Campus Dining</span></div><div class="flex items-center gap-space-base"><div class="flex items-center gap-space-xs px-space-sm py-1.5 rounded-lg border border-outline-variant bg-surface text-on-surface"><span class="material-symbols-outlined text-[18px] text-outline">apartment</span><span class="font-label-md text-label-md font-medium">North Hostel Block B</span><span class="material-symbols-outlined text-[16px] text-outline">expand_more</span></div><a class="flex items-center gap-space-xs px-space-md py-1.5 rounded-lg bg-primary text-on-primary hover:bg-primary-container transition-colors shadow-sm" data-path="qr-attendance" href="#"><span class="material-symbols-outlined text-[18px]">qr_code</span><span class="font-label-md text-label-md font-semibold">Scan Attendance</span></a><div class="relative flex items-center justify-center p-2 rounded-lg text-outline hover:text-on-surface hover:bg-surface-container-low transition-colors cursor-pointer"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-error"></span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><main class="w-full pt-16 bg-surface min-h-screen"><div class="flex flex-col w-full">
+<div class="px-space-md sm:px-margin-tablet lg:px-margin-desktop py-space-lg flex flex-col gap-space-lg max-w-[1440px] mx-auto w-full">
+<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-space-base">
+<div class="flex flex-col gap-space-xxs">
+<div class="flex items-center gap-space-xs text-outline">
+<span class="font-label-sm text-label-sm tracking-wider uppercase">Cycle 4 • Autumn Term</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="font-label-sm text-label-sm text-primary font-semibold">South Mess Ward #2</span>
+</div>
+<h1 class="font-display-lg text-display-lg text-on-surface tracking-tight">Mess Dining Menu</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Real-time cyclic menu managed by South Mess Catering Committee.</p>
+</div>
+<div class="flex items-center p-1 rounded-xl bg-surface-container shadow-sm self-start sm:self-auto">
+<button class="flex items-center gap-space-xs px-space-base py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-lg text-label-lg font-semibold shadow-sm transition-all duration-200" id="btn-view-today" onclick="switchView('today')">
+<span class="material-symbols-outlined text-[18px] text-primary">today</span>
+<span>Today</span>
+</button>
+<button class="flex items-center gap-space-xs px-space-base py-1.5 rounded-lg text-outline hover:text-on-surface font-label-lg text-label-lg transition-all duration-200" id="btn-view-week" onclick="switchView('week')">
+<span class="material-symbols-outlined text-[18px]">calendar_view_week</span>
+<span>This Week</span>
+</button>
+</div>
+</div>
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md p-space-base sm:p-space-lg rounded-xl bg-primary-fixed/20 text-on-primary-fixed shadow-sm">
+<div class="flex items-center gap-space-md">
+<div class="relative flex items-center justify-center w-10 h-10 rounded-full bg-primary text-on-primary shadow-sm flex-shrink-0">
+<span class="material-symbols-outlined text-[22px]">soup_kitchen</span>
+<span class="absolute -top-0.5 -right-0.5 flex h-3.5 w-3.5">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-container opacity-75"></span>
+<span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-primary"></span>
+</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">Lunch is Currently Being Served</span>
+<span class="px-2 py-0.5 rounded-full bg-primary text-on-primary font-label-sm text-label-sm uppercase tracking-wide">Live Counter</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface-variant font-medium">12:30 PM – 2:30 PM • Service window closes in 42 minutes</span>
+</div>
+</div>
+<div class="flex items-center gap-space-sm pl-14 md:pl-0">
+<div class="flex items-center gap-space-xs text-outline font-label-md text-label-md bg-surface-container-lowest/80 px-space-md py-1.5 rounded-lg">
+<span class="material-symbols-outlined text-[18px] text-primary">speed</span>
+<span class="text-on-surface font-semibold">Queue: Normal (3-5 min)</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-space-lg" id="today-container">
+<div class="flex items-center gap-space-xs overflow-x-auto bg-surface-container-lowest p-1.5 rounded-xl shadow-sm">
+<button class="meal-tab flex-1 min-w-[130px] flex items-center justify-center gap-space-xs py-2.5 px-space-base rounded-lg text-outline hover:text-on-surface font-label-lg text-label-lg font-medium transition-colors" id="tab-breakfast" onclick="selectMealTab('breakfast')">
+<span class="material-symbols-outlined text-[18px]">bakery_dining</span>
+<span>Breakfast</span>
+<span class="font-label-sm text-label-sm text-outline">07:30</span>
+</button>
+<button class="meal-tab active flex-1 min-w-[160px] flex items-center justify-center gap-space-xs py-2.5 px-space-base rounded-lg bg-primary-fixed text-on-primary-fixed font-label-lg text-label-lg font-bold shadow-sm transition-colors" id="tab-lunch" onclick="selectMealTab('lunch')">
+<span class="material-symbols-outlined text-[18px]">lunch_dining</span>
+<span>Lunch</span>
+<span class="px-2 py-0.5 rounded-full bg-primary text-on-primary font-label-sm text-label-sm font-semibold">Serving Now</span>
+</button>
+<button class="meal-tab flex-1 min-w-[130px] flex items-center justify-center gap-space-xs py-2.5 px-space-base rounded-lg text-outline hover:text-on-surface font-label-lg text-label-lg font-medium transition-colors" id="tab-snacks" onclick="selectMealTab('snacks')">
+<span class="material-symbols-outlined text-[18px]">local_cafe</span>
+<span>Snacks</span>
+<span class="font-label-sm text-label-sm text-outline">17:00</span>
+</button>
+<button class="meal-tab flex-1 min-w-[130px] flex items-center justify-center gap-space-xs py-2.5 px-space-base rounded-lg text-outline hover:text-on-surface font-label-lg text-label-lg font-medium transition-colors" id="tab-dinner" onclick="selectMealTab('dinner')">
+<span class="material-symbols-outlined text-[18px]">dinner_dining</span>
+<span>Dinner</span>
+<span class="font-label-sm text-label-sm text-outline">19:45</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-space-lg">
+<div class="flex flex-col bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group">
+<div class="relative h-44 w-full overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="A top-down gourmet shot of rich Indian Paneer Butter Masala served in a traditional copper bowl, garnished with a swirl of fresh heavy cream and coriander leaves, flanked by earthen mess dining ambience with warm natural lighting and fresh green herbs" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPIyZO4iyxJ3y47nLcaswk8ZeL56P5yR9Z5RO-ove7AuHBzNDUZkxeg76xH8TF46w0eRSMc_8KxanJMCWqlfEWDSl0glZnl2DwA62o2pOnFbbG7vQ1p5EJo_aINg_TWTy3JifsrFVR2Xi_y6Ed4K7lykitKnEAg86bE0QDfLHn8vQUqojLuLvfS6w6lyMODMEmLTc98Ir9VMX5-phBkwrS36T0qVkGprvXnaGgrL0I_VUF4d4nUhPe"/>
+<div class="absolute top-space-sm left-space-sm flex gap-space-xs">
+<span class="px-2 py-0.5 rounded-full bg-surface-container-lowest/95 text-primary font-label-sm text-label-sm font-bold shadow-sm flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-primary"></span> Veg
+              </span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-lowest/95 text-on-surface font-label-sm text-label-sm font-semibold shadow-sm">Main Gravy</span>
+</div>
+<div class="absolute bottom-space-sm right-space-sm px-2 py-0.5 rounded bg-on-surface/80 backdrop-blur-sm text-surface font-label-sm text-label-sm font-semibold">
+              280 kcal
+            </div>
+</div>
+<div class="p-space-lg flex flex-col justify-between flex-1 gap-space-sm">
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Paneer Butter Masala</h3>
+<span class="material-symbols-outlined text-primary text-[20px]" style="font-variation-settings: 'FILL' 1;">eco</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">Rich and velvety slow-simmered tomato gravy infused with fresh malai paneer cubes, cashews, and aromatic kasuri methi.</p>
+</div>
+<div class="flex items-center justify-between pt-space-xs text-outline font-label-sm text-label-sm">
+<span class="bg-surface-container-low px-2 py-1 rounded">Cottage Cheese • Dairy</span>
+<span class="text-primary font-semibold">Fresh Batch #1</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group">
+<div class="relative h-44 w-full overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="A steaming hot bowl of golden Yellow Dal Tadka with roasted cumin, brown garlic, bright red dried chili tempering floating on surface, fresh coriander garnish, bright directional kitchen lights in a modern canteen setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNLP39_Fr3fp-OdDEn0pBH4t3HVaBuRR-LVZwRr8ty_6vJc7v7y5B5j3yTRMg7er_tWwSaaaw0IoyD2u0ssiZ7MaLWzpR-9Przkt-1NubrhgoWVNkG9K9Hp36nSg4Yf1G5HkpYW8WsZwv5eiB0YEtBtzTZ0KnFF2YodtDGgftnosRLC4cdVWGmjI8IK291NHu2-luwNICBpTNOCbAfXrXQ5QNAVu1Ylj3BFVHuG4nIg5XjCnbPpZl9"/>
+<div class="absolute top-space-sm left-space-sm flex gap-space-xs">
+<span class="px-2 py-0.5 rounded-full bg-surface-container-lowest/95 text-primary font-label-sm text-label-sm font-bold shadow-sm flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-primary"></span> Veg
+              </span>
+<span class="px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm font-bold shadow-sm">High Protein</span>
+</div>
+<div class="absolute bottom-space-sm right-space-sm px-2 py-0.5 rounded bg-on-surface/80 backdrop-blur-sm text-surface font-label-sm text-label-sm font-semibold">
+              140 kcal
+            </div>
+</div>
+<div class="p-space-lg flex flex-col justify-between flex-1 gap-space-sm">
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Dal Tadka (Double Tadka)</h3>
+<span class="material-symbols-outlined text-primary text-[20px]" style="font-variation-settings: 'FILL' 1;">nutrition</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">Arhar and Moong lentils cooked to soft tenderness, tempered twice in pure desi ghee with crushed garlic, jeera, and dry deghi chili.</p>
+</div>
+<div class="flex items-center justify-between pt-space-xs text-outline font-label-sm text-label-sm">
+<span class="bg-surface-container-low px-2 py-1 rounded">9.2g Protein / cup</span>
+<span class="text-on-surface font-medium">Gluten Free</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group">
+<div class="relative h-44 w-full overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Stack of piping hot traditional Tandoori Phulkas and rotis made of 100 percent whole wheat, brushed with a golden layer of clarified butter ghee, resting in a woven cloth basket against a clean minimalist dining counter backdrop" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBP82lB7749QNvNVXr8yjBvefF0OvSXDktOaQTXT7pzRmuJ22AaJ8lKOZZdDKyohhIB-zvRooEetLCiJUx0YDbmHjMzWUNrW6DAYsLYy5ljIhqx9oQbMOdyxusxJReDa2opgo-dOL1vGFjzxj-47oyTG5usNQXGe1bA7stR_buHA3FpGM1PQB-JCPCahM6uHbl3TBgvqOxRFhe7a8nAKWsuHGPHlHRcYABi-HbhS-tTPBcd_0oqleI9"/>
+<div class="absolute top-space-sm left-space-sm flex gap-space-xs">
+<span class="px-2 py-0.5 rounded-full bg-surface-container-lowest/95 text-on-surface font-label-sm text-label-sm font-semibold shadow-sm">Breads (Unlimited)</span>
+</div>
+<div class="absolute bottom-space-sm right-space-sm px-2 py-0.5 rounded bg-on-surface/80 backdrop-blur-sm text-surface font-label-sm text-label-sm font-semibold">
+              160 kcal (3 pcs)
+            </div>
+</div>
+<div class="p-space-lg flex flex-col justify-between flex-1 gap-space-sm">
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Tandoori Phulkas / Roti</h3>
+<span class="material-symbols-outlined text-outline text-[20px]">flatware</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">Handmade 100% whole wheat flatbreads puffed over direct flame, delicately brushed with pure cow ghee. Live rolling station active.</p>
+</div>
+<div class="flex items-center justify-between pt-space-xs text-outline font-label-sm text-label-sm">
+<span class="bg-surface-container-low px-2 py-1 rounded">Whole Wheat Chakki</span>
+<span class="text-tertiary font-medium">Contains Gluten</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group">
+<div class="relative h-44 w-full overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Platter of fluffy long grain Basmati Jeera Rice tempered with whole roasted royal cumin seeds, small hint of whole black peppercorns and bay leaf, light steam rising from the pristine white plate in institutional clean style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0jbtFevSaYAveXEIwAj5Egqc2USji_R61eqWc_8i6n8qSJnidkUl5KlLCR23d3youHSYLgvQDYLhGkrZG5kNBLhm7cccR38mHlSf6wZyE8ObpYb7PJ8A8m2xpD_oLDLBqCv-tFWpMSSl0N6F_VaQ7SWYcyC8vfj4hVv8YFqO1XzDKkuTOhJlNQ5XfAYv9aKcTysn7L4mEXd2-61dZn27EgSvs2Ismqi-3xXPCvy0CZa_qpt92jgv8"/>
+<div class="absolute top-space-sm left-space-sm flex gap-space-xs">
+<span class="px-2 py-0.5 rounded-full bg-surface-container-lowest/95 text-on-surface font-label-sm text-label-sm font-semibold shadow-sm">Rice Grains</span>
+</div>
+<div class="absolute bottom-space-sm right-space-sm px-2 py-0.5 rounded bg-on-surface/80 backdrop-blur-sm text-surface font-label-sm text-label-sm font-semibold">
+              180 kcal
+            </div>
+</div>
+<div class="p-space-lg flex flex-col justify-between flex-1 gap-space-sm">
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Jeera Rice</h3>
+<span class="material-symbols-outlined text-outline text-[20px]">grain</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">Fragrant long-grain aged Basmati rice tempered gently with toasted Shahi Jeera and subtle notes of whole spices.</p>
+</div>
+<div class="flex items-center justify-between pt-space-xs text-outline font-label-sm text-label-sm">
+<span class="bg-surface-container-low px-2 py-1 rounded">Basmati Special</span>
+<span class="text-on-surface font-medium">Low Fat</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group">
+<div class="relative h-44 w-full overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Refreshing cold side dish showing creamy whipped yogurt curd boondi raita topped with roasted cumin powder, paprika pinch, alongside crisp julienned red onions, cucumber and lemon wedge salad bowl, high clarity kitchen table" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBY_w5co2s8sZwcKwrHh2bBpA_qTTqF6pS0eH4TqUcqf7H3HvofVxvHuN9sw63Jrv2bs94_RtHbLbwTM6DxyxrkLMOEh5iZhZuEA15NiafmCJHfF0vQEHdyM5KUpxUGlqJ3hWITXpfoQItlfxWPT4vp6KHOYHwqU1sI8HrKXVuwUUozdf0yzhKqu_e3kzNHeBQAm1xtduC8JjbldmZB-gAGuL13ipGKrVn0aM6mvYe3-zT3MP6Qk3Oa"/>
+<div class="absolute top-space-sm left-space-sm flex gap-space-xs">
+<span class="px-2 py-0.5 rounded-full bg-surface-container-lowest/95 text-primary font-label-sm text-label-sm font-semibold shadow-sm">Probiotic & Raw</span>
+</div>
+<div class="absolute bottom-space-sm right-space-sm px-2 py-0.5 rounded bg-on-surface/80 backdrop-blur-sm text-surface font-label-sm text-label-sm font-semibold">
+              90 kcal
+            </div>
+</div>
+<div class="p-space-lg flex flex-col justify-between flex-1 gap-space-sm">
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Boondi Raita & Mixed Salad</h3>
+<span class="material-symbols-outlined text-outline text-[20px]">local_florist</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">Chilled probiotic whole milk curd with crisp gram flour pearls, accompanied by garden radish, onion rounds, and lemon slices.</p>
+</div>
+<div class="flex items-center justify-between pt-space-xs text-outline font-label-sm text-label-sm">
+<span class="bg-surface-container-low px-2 py-1 rounded">Chilled Side</span>
+<span class="text-tertiary font-medium">Contains Dairy</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group">
+<div class="relative h-44 w-full overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="A single luscious dark golden Gulab Jamun dumpling bathed in aromatic rose and cardamom flavored warm sugar syrup, served in an elegant white ceramic cup with pistachio slivers on top, warm culinary lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0g-xnPu3-ASPgPiOTbNkKYkcaHQad_tZXFLLQT5_fVkukHKLw2FX0LjuZp1UyXFgwh4J5WS2mJlk4Jb-auc3bVIUl2fj4wsrlGKwhe1svLNWYzEuCRjGgGD5M96fTp1SbNZU_1VmkJ0G3-LltpWttg3lFr3UMxmUJh0Ws01Kgp0en63JqC4UkmvT6xCyOwg9tjDeR-ZVpHSc2staubI5mNPgdvg4OjnqodbXSXthH57qpXUANNeXm"/>
+<div class="absolute top-space-sm left-space-sm flex gap-space-xs">
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-bold shadow-sm">Dessert Special</span>
+</div>
+<div class="absolute bottom-space-sm right-space-sm px-2 py-0.5 rounded bg-on-surface/80 backdrop-blur-sm text-surface font-label-sm text-label-sm font-semibold">
+              150 kcal (1 pc)
+            </div>
+</div>
+<div class="p-space-lg flex flex-col justify-between flex-1 gap-space-sm">
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Gulab Jamun (1 pc)</h3>
+<span class="material-symbols-outlined text-tertiary text-[20px]">cake</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">Traditional khoya milk-solid dumplings gently fried and soaked in warm green cardamom and saffron scented sugar nectar.</p>
+</div>
+<div class="flex items-center justify-between pt-space-xs text-outline font-label-sm text-label-sm">
+<span class="bg-surface-container-low px-2 py-1 rounded">Sweet Tooth</span>
+<span class="text-tertiary font-medium">Dairy • Limit 1</span>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[22px]">analytics</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">Lunch Nutritional & Allergen Breakdown</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline">Target Caloric Intake:</span>
+<span class="font-label-lg text-label-lg font-bold text-on-surface">820 / 2200 kcal</span>
+</div>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-space-md">
+<div class="flex flex-col p-space-md rounded-lg bg-surface-container-low">
+<span class="font-label-sm text-label-sm text-outline uppercase font-semibold">Total Energy</span>
+<div class="flex items-baseline gap-1 mt-1">
+<span class="font-metric-number text-metric-number font-bold text-on-surface">820</span>
+<span class="font-label-sm text-label-sm text-outline">kcal</span>
+</div>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full mt-2 overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 37%"></div>
+</div>
+</div>
+<div class="flex flex-col p-space-md rounded-lg bg-surface-container-low">
+<span class="font-label-sm text-label-sm text-outline uppercase font-semibold">Protein</span>
+<div class="flex items-baseline gap-1 mt-1">
+<span class="font-metric-number text-metric-number font-bold text-primary">28</span>
+<span class="font-label-sm text-label-sm text-outline">g (14%)</span>
+</div>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full mt-2 overflow-hidden">
+<div class="bg-primary-container h-full rounded-full" style="width: 52%"></div>
+</div>
+</div>
+<div class="flex flex-col p-space-md rounded-lg bg-surface-container-low">
+<span class="font-label-sm text-label-sm text-outline uppercase font-semibold">Carbohydrates</span>
+<div class="flex items-baseline gap-1 mt-1">
+<span class="font-metric-number text-metric-number font-bold text-secondary">95</span>
+<span class="font-label-sm text-label-sm text-outline">g (46%)</span>
+</div>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full mt-2 overflow-hidden">
+<div class="bg-secondary-container h-full rounded-full" style="width: 48%"></div>
+</div>
+</div>
+<div class="flex flex-col p-space-md rounded-lg bg-surface-container-low">
+<span class="font-label-sm text-label-sm text-outline uppercase font-semibold">Fats</span>
+<div class="flex items-baseline gap-1 mt-1">
+<span class="font-metric-number text-metric-number font-bold text-tertiary">22</span>
+<span class="font-label-sm text-label-sm text-outline">g (11%)</span>
+</div>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full mt-2 overflow-hidden">
+<div class="bg-tertiary-container h-full rounded-full" style="width: 31%"></div>
+</div>
+</div>
+</div>
+<div class="flex flex-wrap items-center justify-between gap-space-sm pt-space-xs">
+<div class="flex flex-wrap items-center gap-space-xs">
+<span class="font-label-md text-label-md text-outline font-medium mr-1">Allergen Notice:</span>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">warning</span> Dairy Products
+            </span>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">grain</span> Gluten (Wheat)
+            </span>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">done</span> 100% Nut Free Prep
+            </span>
+</div>
+<div class="flex items-center gap-space-xs text-outline font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[16px] text-primary">verified</span>
+<span>Audited by Food Safety Officer: Dr. S. K. Roy</span>
+</div>
+</div>
+</div>
+</div>
+<div class="hidden flex flex-col gap-space-lg" id="week-container">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-md p-space-lg rounded-xl bg-surface-container-lowest shadow-sm">
+<div class="flex flex-col">
+<h2 class="font-headline-lg text-headline-lg text-on-surface font-bold">Cycle 4: Weekly Meal Schedule</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Monday through Sunday rotational institutional dining plan for hostel residents.</p>
+</div>
+<button class="flex items-center gap-space-xs px-space-base py-2 rounded-lg bg-primary text-on-primary hover:bg-primary-container transition-colors shadow-sm self-start sm:self-auto font-label-lg text-label-lg font-semibold" onclick="downloadPdfNotification()">
+<span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+<span>Download Weekly PDF Circular</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-7 gap-space-sm">
+<div class="flex flex-col bg-surface-container-lowest rounded-xl p-space-md shadow-sm gap-space-sm">
+<div class="flex items-center justify-between pb-space-xs">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">Mon</span>
+<span class="font-label-sm text-label-sm text-outline">Oct 21</span>
+</div>
+<div class="flex flex-col gap-space-xs font-body-sm text-body-sm">
+<div class="p-2 rounded bg-surface-container-low">
+<span class="font-label-sm text-label-sm text-primary font-bold block">Lunch</span>
+<span class="text-on-surface font-medium">Rajma Masala, Steamed Rice, Roti, Boondi Raita</span>
+</div>
+<div class="p-2 rounded bg-surface-container-low">
+<span class="font-label-sm text-label-sm text-outline font-bold block">Dinner</span>
+<span class="text-on-surface-variant">Mix Veg Korma, Dal Fry, Phulka, Kheer</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col bg-surface-container-lowest rounded-xl p-space-md shadow-sm gap-space-sm ring-2 ring-primary">
+<div class="flex items-center justify-between pb-space-xs">
+<span class="font-headline-sm text-headline-sm font-bold text-primary">Tue (Today)</span>
+<span class="font-label-sm text-label-sm text-primary font-bold">Oct 22</span>
+</div>
+<div class="flex flex-col gap-space-xs font-body-sm text-body-sm">
+<div class="p-2 rounded bg-primary-fixed/30">
+<span class="font-label-sm text-label-sm text-primary font-bold block">Lunch (Live)</span>
+<span class="text-on-surface font-medium">Paneer Butter Masala, Dal Tadka, Phulkas, Jeera Rice, Gulab Jamun</span>
+</div>
+<div class="p-2 rounded bg-surface-container-low">
+<span class="font-label-sm text-label-sm text-outline font-bold block">Dinner</span>
+<span class="text-on-surface-variant">Aloo Gobhi Adraki, Moong Dal, Roti, Sewaiyan</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col bg-surface-container-lowest rounded-xl p-space-md shadow-sm gap-space-sm">
+<div class="flex items-center justify-between pb-space-xs">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">Wed</span>
+<span class="font-label-sm text-label-sm text-outline">Oct 23</span>
+</div>
+<div class="flex flex-col gap-space-xs font-body-sm text-body-sm">
+<div class="p-2 rounded bg-surface-container-low">
+<span class="font-label-sm text-label-sm text-primary font-bold block">Lunch</span>
+<span class="text-on-surface font-medium">Chole Bhature / Rice, Dahi Bhalla, Kachumber Salad</span>
+</div>
+<div class="p-2 rounded bg-surface-container-low">
+<span class="font-label-sm text-label-sm text-outline font-bold block">Dinner</span>
+<span class="text-on-surface-variant">Egg Curry / Shahi Soya Chaap, Plain Rice, Roti</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col bg-surface-container-lowest rounded-xl p-space-md shadow-sm gap-space-sm">
+<div class="flex items-center justify-between pb-space-xs">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">Thu</span>
+<span class="font-label-sm text-label-sm text-outline">Oct 24</span>
+</div>
+<div class="flex flex-col gap-space-xs font-body-sm text-body-sm">
+<div class="p-2 rounded bg-surface-container-low">
+<span class="font-label-sm text-label-sm text-primary font-bold block">Lunch</span>
+<span class="text-on-surface font-medium">Kadai Veg, Panchmel Dal, Phulkas, Lemon Rice</span>
+</div>
+<div class="p-2 rounded bg-surface-container-low">
+<span class="font-label-sm text-label-sm text-outline font-bold block">Dinner</span>
+<span class="text-on-surface-variant">Malai Kofta Gravy, Dal Makhani, Naan, Fruit Custard</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col bg-surface-container-lowest rounded-xl p-space-md shadow-sm gap-space-sm">
+<div class="flex items-center justify-between pb-space-xs">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">Fri</span>
+<span class="font-label-sm text-label-sm text-outline">Oct 25</span>
+</div>
+<div class="flex flex-col gap-space-xs font-body-sm text-body-sm">
+<div class="p-2 rounded bg-surface-container-low">
+<span class="font-label-sm text-label-sm text-primary font-bold block">Lunch</span>
+<span class="text-on-surface font-medium">Kadhi Pakoda, steamed basmati rice, Aloo Jeera, Papad</span>
+</div>
+<div class="p-2 rounded bg-surface-container-low">
+<span class="font-label-sm text-label-sm text-outline font-bold block">Dinner</span>
+<span class="text-on-surface-variant">Mushroom Peas Masala, Chana Dal, Chapati, Moong Halwa</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col bg-surface-container-lowest rounded-xl p-space-md shadow-sm gap-space-sm">
+<div class="flex items-center justify-between pb-space-xs">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">Sat</span>
+<span class="font-label-sm text-label-sm text-outline">Oct 26</span>
+</div>
+<div class="flex flex-col gap-space-xs font-body-sm text-body-sm">
+<div class="p-2 rounded bg-surface-container-low">
+<span class="font-label-sm text-label-sm text-primary font-bold block">Lunch</span>
+<span class="text-on-surface font-medium">South Indian Feast: Sambar, Rasam, Medu Vada, Curd Rice</span>
+</div>
+<div class="p-2 rounded bg-surface-container-low">
+<span class="font-label-sm text-label-sm text-outline font-bold block">Dinner</span>
+<span class="text-on-surface-variant">Pav Bhaji Station, Tawa Pulao, Masala Chhach</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col bg-surface-container-lowest rounded-xl p-space-md shadow-sm gap-space-sm">
+<div class="flex items-center justify-between pb-space-xs">
+<span class="font-headline-sm text-headline-sm font-bold text-tertiary">Sun (Special)</span>
+<span class="font-label-sm text-label-sm text-outline">Oct 27</span>
+</div>
+<div class="flex flex-col gap-space-xs font-body-sm text-body-sm">
+<div class="p-2 rounded bg-surface-container-low">
+<span class="font-label-sm text-label-sm text-primary font-bold block">Lunch</span>
+<span class="text-on-surface font-medium">Dum Veg / Chicken Biryani, Mirchi Ka Salan, Burani Raita</span>
+</div>
+<div class="p-2 rounded bg-surface-container-low">
+<span class="font-label-sm text-label-sm text-outline font-bold block">Dinner</span>
+<span class="text-on-surface-variant">Light Khichdi, Tomato Chutney, Roasted Papad, Ice Cream</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row items-center justify-between p-space-base rounded-xl bg-surface-container-lowest shadow-sm gap-space-base">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed">
+<span class="material-symbols-outlined text-[18px]">rate_review</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg font-bold text-on-surface">Did you finish your meal?</span>
+<span class="font-body-sm text-body-sm text-outline">Help improve tomorrow's kitchen preparation with quick rating.</span>
+</div>
+</div>
+<div class="flex items-center gap-space-sm w-full sm:w-auto">
+<a class="flex-1 sm:flex-initial text-center px-space-base py-2 rounded-lg bg-surface-container-high hover:bg-surface-container text-on-surface font-label-lg text-label-lg font-semibold transition-colors" data-path="rate-food" href="#">
+          Rate Current Meal
+        </a>
+<a class="flex-1 sm:flex-initial text-center px-space-base py-2 rounded-lg text-primary hover:bg-primary-fixed/20 font-label-lg text-label-lg font-semibold transition-colors" data-path="food-improvement" href="#">
+          Suggest Dish
+        </a>
+</div>
+</div>
+</div>
+</div>
+<script>
+  function switchView(mode) {
+    const todayCont = document.getElementById('today-container');
+    const weekCont = document.getElementById('week-container');
+    const btnToday = document.getElementById('btn-view-today');
+    const btnWeek = document.getElementById('btn-view-week');
+
+    if (mode === 'week') {
+      todayCont.classList.add('hidden');
+      weekCont.classList.remove('hidden');
+      btnWeek.className = "flex items-center gap-space-xs px-space-base py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-lg text-label-lg font-semibold shadow-sm transition-all duration-200";
+      btnToday.className = "flex items-center gap-space-xs px-space-base py-1.5 rounded-lg text-outline hover:text-on-surface font-label-lg text-label-lg transition-all duration-200";
+    } else {
+      weekCont.classList.add('hidden');
+      todayCont.classList.remove('hidden');
+      btnToday.className = "flex items-center gap-space-xs px-space-base py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-lg text-label-lg font-semibold shadow-sm transition-all duration-200";
+      btnWeek.className = "flex items-center gap-space-xs px-space-base py-1.5 rounded-lg text-outline hover:text-on-surface font-label-lg text-label-lg transition-all duration-200";
+    }
+  }
+
+  function selectMealTab(meal) {
+    const tabs = ['breakfast', 'lunch', 'snacks', 'dinner'];
+    tabs.forEach(t => {
+      const el = document.getElementById('tab-' + t);
+      if (t === meal) {
+        el.className = "meal-tab flex-1 min-w-[130px] flex items-center justify-center gap-space-xs py-2.5 px-space-base rounded-lg bg-primary-fixed text-on-primary-fixed font-label-lg text-label-lg font-bold shadow-sm transition-colors";
+      } else {
+        el.className = "meal-tab flex-1 min-w-[130px] flex items-center justify-center gap-space-xs py-2.5 px-space-base rounded-lg text-outline hover:text-on-surface font-label-lg text-label-lg font-medium transition-colors";
+      }
+    });
+  }
+
+  function downloadPdfNotification() {
+    alert("Weekly Dining Circular (Cycle 4) PDF downloaded successfully.");
+  }
+</script></main></div></body></html>

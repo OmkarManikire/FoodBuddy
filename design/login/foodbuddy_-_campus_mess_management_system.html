@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "on-primary-container": "#f5fff7",
+          "on-tertiary-container": "#fffbff",
+          "on-primary-fixed": "#002114",
+          "surface": "#faf8ff",
+          "on-surface": "#131b2e",
+          "tertiary-container": "#b15f00",
+          "on-primary-fixed-variant": "#005137",
+          "on-error": "#ffffff",
+          "on-tertiary-fixed-variant": "#6e3900",
+          "on-surface-variant": "#3d4a42",
+          "surface-tint": "#006c4a",
+          "primary-container": "#00855d",
+          "tertiary-fixed": "#ffdcc3",
+          "surface-container-low": "#f2f3ff",
+          "inverse-primary": "#68dba9",
+          "on-secondary-fixed-variant": "#003ea8",
+          "primary-fixed-dim": "#68dba9",
+          "on-secondary-fixed": "#00174b",
+          "primary": "#006948",
+          "on-tertiary": "#ffffff",
+          "on-primary": "#ffffff",
+          "outline": "#6d7a72",
+          "error": "#ba1a1a",
+          "secondary": "#0051d5",
+          "surface-container": "#eaedff",
+          "outline-variant": "#bccac0",
+          "primary-fixed": "#85f8c4",
+          "surface-container-highest": "#dae2fd",
+          "surface-dim": "#d2d9f4",
+          "secondary-container": "#316bf3",
+          "on-tertiary-fixed": "#2f1500",
+          "surface-container-lowest": "#ffffff",
+          "inverse-on-surface": "#eef0ff",
+          "surface-bright": "#faf8ff",
+          "surface-variant": "#dae2fd",
+          "on-secondary-container": "#fefcff",
+          "background": "#faf8ff",
+          "on-background": "#131b2e",
+          "inverse-surface": "#283044",
+          "error-container": "#ffdad6",
+          "on-secondary": "#ffffff",
+          "secondary-fixed-dim": "#b4c5ff",
+          "secondary-fixed": "#dbe1ff",
+          "on-error-container": "#93000a",
+          "surface-container-high": "#e2e7ff",
+          "tertiary": "#8d4b00",
+          "tertiary-fixed-dim": "#ffb77d"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.25rem",
+          "lg": "0.5rem",
+          "xl": "0.75rem",
+          "full": "9999px"
+        },
+        "spacing": {
+          "gutter": "1rem",
+          "space-xl": "2rem",
+          "space-xxs": "0.125rem",
+          "space-sm": "0.5rem",
+          "space-md": "0.75rem",
+          "space-2xl": "3rem",
+          "margin-desktop": "2rem",
+          "gutter-desktop": "1.5rem",
+          "space-lg": "1.5rem",
+          "margin-tablet": "1.5rem",
+          "margin": "1rem",
+          "space-base": "1rem",
+          "space-xs": "0.25rem"
+        },
+        "fontFamily": {
+          "label-md": ["Inter"],
+          "label-sm": ["Inter"],
+          "headline-md": ["Inter"],
+          "display-lg": ["Inter"],
+          "headline-lg": ["Inter"],
+          "body-sm": ["Inter"],
+          "body-md": ["Inter"],
+          "display-lg-mobile": ["Inter"],
+          "headline-sm": ["Inter"],
+          "metric-number": ["Inter"],
+          "body-lg": ["Inter"],
+          "label-lg": ["Inter"]
+        },
+        "fontSize": {
+          "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+          "label-sm": ["11px", {"lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+          "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+          "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+          "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600"}],
+          "body-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+          "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+          "display-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "700"}],
+          "headline-sm": ["16px", {"lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600"}],
+          "metric-number": ["28px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+          "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+          "label-lg": ["14px", {"lineHeight": "20px", "fontWeight": "500"}]
+        }
+      }
+    }
+  }</script></head><body class="bg-surface font-body-md text-body-md text-on-surface"><header class="fixed top-0 w-full z-50 bg-surface-container-lowest/90 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 max-w-7xl mx-auto px-space-lg flex items-center justify-between"><div class="flex items-center gap-space-md"><img alt="FoodBuddy Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1XmhewISWhUXRt_oIJCwtwXwEY6puSrTbyQa4uyAclgxiINFFbhP91iQWTSRc8BEnB2Wn82AqYCDZNWD583KUaclL14COvPRj8l7n5tOBAMnLalct58Sn1stGH3peNxmmgSvjzHFyYVncc2xu2JRv-_OjDS5QoJtcyUvCQx1rwFohIznY2asP0gMSqdUEjlnBs8KtvDTXezEov-lglFAmUxyUn64nEF9CYOhfbVhO2jsbGHHspVW57CQA"/><span class="font-headline-sm text-headline-sm text-on-surface font-semibold">FoodBuddy Campus</span></div><nav class="hidden md:flex items-center gap-space-lg" data-active-classes="text-primary font-semibold"><a aria-current="page" class="transition-colors text-primary font-semibold" data-path="daily-menu-view" href="#">Today's Menu</a><a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="meal-token-pass" href="#">Meal Token</a><a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="student-feedback" href="#">Rate Meal</a><a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="announcements" href="#">Notices</a></nav><div class="flex items-center gap-space-sm"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-16 bg-surface min-h-[calc(100vh-80px)]"><div class="flex flex-col w-full">
+<!-- Top Quick Bar / System Status Notification -->
+<div class="w-full bg-surface-container py-space-xs px-space-lg text-center">
+<div class="max-w-7xl mx-auto flex items-center justify-center gap-space-sm font-label-sm text-label-sm text-on-surface-variant">
+<span class="inline-flex w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="font-semibold text-on-surface">Spring 2025 Semester Deployment:</span>
+<span>Automated SLA Escalation Matrix v3.2 active across 18 Campus Hostels</span>
+<a class="ml-2 font-semibold text-primary underline underline-offset-2 hover:opacity-80 transition-opacity" href="#roles">Select Login Role →</a>
+</div>
+</div>
+<!-- Hero Presentation Section -->
+<section class="relative w-full overflow-hidden bg-gradient-to-b from-surface-container-lowest via-surface to-surface-container-low/40 pt-space-2xl pb-space-2xl">
+<!-- Ambient backdrops -->
+<div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[720px] h-[360px] bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+<div class="absolute -bottom-24 -right-16 w-[420px] h-[320px] bg-secondary-container/10 rounded-full blur-2xl pointer-events-none"></div>
+<div class="max-w-7xl mx-auto px-space-lg relative z-10">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-center">
+<!-- Text Column -->
+<div class="lg:col-span-7 flex flex-col gap-space-md">
+<div class="inline-flex items-center gap-space-xs bg-surface-container-high text-primary px-space-sm py-space-xxs rounded-full w-fit shadow-sm">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+<span class="font-label-sm text-label-sm font-semibold tracking-wide uppercase">Institutional Dining Intelligence</span>
+</div>
+<h1 class="font-display-lg text-display-lg text-on-surface tracking-tight text-balance">
+            Better Food <span class="text-primary">•</span> Better Hygiene <span class="text-secondary">•</span> Better Experience
+          </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl leading-relaxed">
+            Empowering students, mess managers, and hostel authorities with real-time feedback, transparent menus, QR attendance, and automated resolution tracking across campus dining halls.
+          </p>
+<div class="flex flex-wrap items-center gap-space-md pt-space-sm">
+<a class="inline-flex items-center justify-center gap-space-xs bg-primary text-on-primary font-label-lg text-label-lg px-space-lg py-3 rounded-lg shadow-md hover:bg-primary-container transition-all" href="#roles">
+<span>Get Started</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</a>
+<a class="inline-flex items-center justify-center gap-space-xs bg-surface-container-lowest text-on-surface font-label-lg text-label-lg px-space-lg py-3 rounded-lg shadow-sm hover:bg-surface-container-low transition-all" href="#interactive-preview">
+<span class="material-symbols-outlined text-[18px] text-primary">calendar_today</span>
+<span>Book a Campus Demo</span>
+</a>
+</div>
+<!-- SaaS Metrics Row -->
+<div class="grid grid-cols-3 gap-space-md pt-space-lg">
+<div class="p-space-md rounded-xl bg-surface-container-lowest shadow-sm flex flex-col">
+<span class="font-metric-number text-metric-number text-primary">99.2%</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase mt-1">On-Time SLA Resolution</span>
+<span class="font-body-sm text-body-sm text-outline mt-0.5">Complaints closed &lt;12 hrs</span>
+</div>
+<div class="p-space-md rounded-xl bg-surface-container-lowest shadow-sm flex flex-col">
+<span class="font-metric-number text-metric-number text-secondary">45k+</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase mt-1">Daily Hostel Meals</span>
+<span class="font-body-sm text-body-sm text-outline mt-0.5">Automated QR verification</span>
+</div>
+<div class="p-space-md rounded-xl bg-surface-container-lowest shadow-sm flex flex-col">
+<div class="flex items-center gap-1">
+<span class="font-metric-number text-metric-number text-tertiary-container">4.8</span>
+<span class="material-symbols-outlined text-tertiary-container text-[22px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase mt-1">Student Satisfaction</span>
+<span class="font-body-sm text-body-sm text-outline mt-0.5">Based on 120k+ ratings</span>
+</div>
+</div>
+</div>
+<!-- Visual / Interactive Preview Mockup -->
+<div class="lg:col-span-5 relative">
+<div class="relative bg-surface-container-lowest rounded-2xl p-space-lg shadow-xl">
+<!-- Simulated Campus Mess Live Feed -->
+<div class="flex items-center justify-between pb-space-md">
+<div class="flex items-center gap-space-xs">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span class="font-label-md text-label-md font-semibold text-on-surface">Central Mess Hall 03 • Live Stream</span>
+</div>
+<span class="bg-surface-container-high font-label-sm text-label-sm text-primary px-space-xs py-0.5 rounded">Breakfast Live</span>
+</div>
+<!-- Dynamic QR Token Preview Card -->
+<div class="bg-surface-container-low rounded-xl p-space-md flex items-center justify-between shadow-sm">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Current Valid Token</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">#TK-8942-L</span>
+<span class="font-body-sm text-body-sm text-primary mt-1">Authorized for Hostels A, B, C</span>
+<div class="flex items-center gap-1 font-label-sm text-label-sm text-error mt-2">
+<span class="material-symbols-outlined text-[14px]">timer</span>
+<span>Expires in 14m 20s</span>
+</div>
+</div>
+<!-- Simulated High-Contrast QR Code SVG -->
+<div class="bg-surface-container-lowest p-2 rounded-lg shadow-sm">
+<svg class="text-on-surface fill-current" height="84" viewbox="0 0 84 84" width="84">
+<rect height="28" width="28" x="0" y="0"></rect>
+<rect fill="white" height="20" width="20" x="4" y="4"></rect>
+<rect height="12" width="12" x="8" y="8"></rect>
+<rect height="28" width="28" x="56" y="0"></rect>
+<rect fill="white" height="20" width="20" x="60" y="4"></rect>
+<rect height="12" width="12" x="64" y="8"></rect>
+<rect height="28" width="28" x="0" y="56"></rect>
+<rect fill="white" height="20" width="20" x="4" y="60"></rect>
+<rect height="12" width="12" x="8" y="64"></rect>
+<rect height="8" width="8" x="36" y="10"></rect>
+<rect height="8" width="8" x="36" y="24"></rect>
+<rect height="10" width="10" x="44" y="38"></rect>
+<rect height="8" width="8" x="18" y="38"></rect>
+<rect height="6" width="14" x="60" y="42"></rect>
+<rect height="12" width="12" x="34" y="54"></rect>
+<rect height="8" width="16" x="56" y="66"></rect>
+<rect height="18" width="6" x="74" y="56"></rect>
+</svg>
+</div>
+</div>
+<!-- Instant Feedback Snapshot -->
+<div class="mt-space-md space-y-space-xs">
+<div class="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant">
+<span>Today's Meal Satisfaction Ratio</span>
+<span class="font-semibold text-primary">94% Positive</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container-highest overflow-hidden flex">
+<div class="bg-primary h-full" style="width: 78%;"></div>
+<div class="bg-secondary h-full" style="width: 16%;"></div>
+<div class="bg-error h-full" style="width: 6%;"></div>
+</div>
+<div class="flex justify-between font-body-sm text-body-sm text-outline pt-1">
+<span>Paneer Tikka &amp; Daal Makhani</span>
+<span>Breakfast: 1,842 Scans</span>
+</div>
+</div>
+<!-- Overlapping Evidence Card -->
+<div class="mt-space-md p-space-sm bg-surface-container-lowest rounded-lg shadow-md flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-full bg-primary-container/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">task_alt</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-label-md text-label-md font-semibold text-on-surface truncate">SLA Auto-Escalation Cleared</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Water cooler filter sanitized in Mess 02 (Resolved &lt;45m)</p>
+</div>
+<span class="bg-on-primary-container text-primary font-label-sm text-label-sm px-2 py-1 rounded">Audit Verified</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Photo Showcase Strip: Realistic Campus Kitchen & Dining -->
+<section class="w-full bg-surface-container-low py-space-xl">
+<div class="max-w-7xl mx-auto px-space-lg">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+<div class="relative group overflow-hidden rounded-xl bg-surface-container-lowest shadow-sm h-48">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Modern high-volume university dining hall in daylight, clean stainless steel service counters, university students enjoying lunch seated at tidy wooden communal tables, natural sunlight, crisp emerald accents, professional institutional photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwl3bZam-QyOlIBHd3_qbSh72NXTvwIZ2CeAg8NUovEZgzwZrigk-LyoZiumdkg8qMymP00He4jrnW0-1Ll3N5nZo1KFq0-B2F0nrpQ-O2xGb1TD2MXD-D43YaKpXYfos2Z3RmyxXnqPlaill_O9egm1TVbWqdeIPKCL-Y4gIysX6lzsjmWIXrTwZZ-Cv-3NA8VCoBOXHbo9e_hxOfrfw4lYTkFxt8YSNei-cNB6CAUJ6ceypFjriB"/>
+<div class="absolute inset-0 bg-gradient-to-t from-on-surface/80 via-transparent to-transparent flex items-end p-space-md">
+<span class="font-label-md text-label-md text-on-primary font-semibold">ISO-Certified Hygiene Protocols</span>
+</div>
+</div>
+<div class="relative group overflow-hidden rounded-xl bg-surface-container-lowest shadow-sm h-48">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Campus head chef in clean white apron inspecting fresh vegetables and organic spices in a spotless university mess kitchen, high-grade steel cookware, bright warm kitchen lighting, documentary style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqGKKuLfOfR9q71RyBBPcEd2rwir0wI1UxeXLcT_jsBBmABnItXiqGFHJiYLRjgQaq5A6dQd1nW0jIh0RXD-1JNvSTGxyNN1-i_RS0brhDiLzBqJfhdm4b33O8lWpQBVwnUIBIoBxfAxzGpjJn61h7EJH7eOHWlicglFyTMdzli7UEBdHeK6jI4L48sx49ltLYXdXl9Nf6cPHrRpWPXIt6UNrKjW4c7DyC-Ss4VLeeTkmTsMJepXAt"/>
+<div class="absolute inset-0 bg-gradient-to-t from-on-surface/80 via-transparent to-transparent flex items-end p-space-md">
+<span class="font-label-md text-label-md text-on-primary font-semibold">Traceable Ingredient Logs</span>
+</div>
+</div>
+<div class="relative group overflow-hidden rounded-xl bg-surface-container-lowest shadow-sm h-48">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Student scanning QR code from smartphone at digital cafeteria turnstile check-in terminal, seamless contactless admission, clean institutional campus setting, modern green and white accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAD_i8dV3rLkYyMiggkWCrho4UqVOVx8iudid3y7TrtY8tRwrnbBaNG5jbnLIsRmXw8xKvambelgFPpPYgWPE7335r4eWGiiVDBlpxTHRtvny4pp9B16hvQPou68PwX2zA0Xen4smr-uynhbZfB3wkoqYIoS_pX9hX4D0b2z5ptOiqfBjwPG0o5pKIvci3e6kzGD_cyTPoveFEroEjuauVsHCj_4XIHoinFOCWV8eFgDBr38Lp2Qmcz"/>
+<div class="absolute inset-0 bg-gradient-to-t from-on-surface/80 via-transparent to-transparent flex items-end p-space-md">
+<span class="font-label-md text-label-md text-on-primary font-semibold">Sub-Second QR Verification</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: Choose Your Role (Interactive Portal Switcher) -->
+<section class="w-full py-space-2xl bg-surface" id="roles">
+<div class="max-w-7xl mx-auto px-space-lg flex flex-col gap-space-xl">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md">
+<div class="flex flex-col gap-space-xs">
+<span class="font-label-sm text-label-sm font-semibold tracking-wider uppercase text-primary">Tailored Operational Workspaces</span>
+<h2 class="font-headline-lg text-headline-lg text-on-surface font-bold">Choose your dedicated campus portal</h2>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-md">
+          Role-governed authentication ensures students, kitchen supervisors, and hostel wardens see precisely the data they need.
+        </p>
+</div>
+<!-- 3 Distinct Role Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-lg">
+<!-- 1. Student Card (Emerald Theme) -->
+<div class="flex flex-col justify-between bg-surface-container-lowest rounded-2xl p-space-lg shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+<div class="absolute top-0 left-0 right-0 h-1.5 bg-primary"></div>
+<div>
+<div class="flex items-center justify-between mb-space-md">
+<div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[28px]">school</span>
+</div>
+<span class="bg-primary/10 text-primary font-label-sm text-label-sm font-bold px-space-sm py-1 rounded-full">
+                Student Portal
+              </span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface font-semibold mb-space-xs">Hostel Student</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-space-md leading-relaxed">
+              Real-time daily menu, instant QR meal token, transparent complaint filing with photo evidence, and meal feedback.
+            </p>
+<!-- Feature Pills -->
+<ul class="space-y-space-xs mb-space-lg font-body-sm text-body-sm text-on-surface">
+<li class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[18px]">check_circle</span>
+<span>Flash-pass dynamic QR Meal Token</span>
+</li>
+<li class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[18px]">check_circle</span>
+<span>5-Star taste &amp; nutrition rating per meal</span>
+</li>
+<li class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[18px]">check_circle</span>
+<span>Photo-backed hygiene grievance tracking</span>
+</li>
+<li class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[18px]">check_circle</span>
+<span>Weekly menu advance polling &amp; requests</span>
+</li>
+</ul>
+</div>
+<a class="w-full flex items-center justify-center gap-space-xs bg-primary text-on-primary font-label-lg text-label-lg py-3 rounded-lg hover:bg-primary-container transition-colors shadow-sm" href="#">
+<span>Student Portal Login</span>
+<span class="material-symbols-outlined text-[18px]">login</span>
+</a>
+</div>
+<!-- 2. Mess Manager Card (Royal Blue Theme #2563EB / secondary) -->
+<div class="flex flex-col justify-between bg-surface-container-lowest rounded-2xl p-space-lg shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+<div class="absolute top-0 left-0 right-0 h-1.5 bg-secondary"></div>
+<div>
+<div class="flex items-center justify-between mb-space-md">
+<div class="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[28px]">skillet</span>
+</div>
+<span class="bg-secondary/10 text-secondary font-label-sm text-label-sm font-bold px-space-sm py-1 rounded-full">
+                Operations
+              </span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface font-semibold mb-space-xs">Mess Manager</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-space-md leading-relaxed">
+              Real-time kitchen attendance forecasts, inventory demand tracking, recipe logs, and instant issue response console.
+            </p>
+<!-- Feature Pills -->
+<ul class="space-y-space-xs mb-space-lg font-body-sm text-body-sm text-on-surface">
+<li class="flex items-center gap-space-xs">
+<span class="material-outlined material-symbols-outlined text-secondary text-[18px]">check_circle</span>
+<span>Predictive head-count based on token claims</span>
+</li>
+<li class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-[18px]">check_circle</span>
+<span>Instant grievance triage with photo reply</span>
+</li>
+<li class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-[18px]">check_circle</span>
+<span>Procurement logs &amp; cold storage audit checklist</span>
+</li>
+<li class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-[18px]">check_circle</span>
+<span>Staff biometric shift &amp; sanitation sign-off</span>
+</li>
+</ul>
+</div>
+<a class="w-full flex items-center justify-center gap-space-xs bg-secondary text-on-secondary font-label-lg text-label-lg py-3 rounded-lg hover:bg-secondary-container transition-colors shadow-sm" href="#">
+<span>Mess Manager Login</span>
+<span class="material-symbols-outlined text-[18px]">speed</span>
+</a>
+</div>
+<!-- 3. Higher Authority Card (Warm Amber #D97706 / tertiary) -->
+<div class="flex flex-col justify-between bg-surface-container-lowest rounded-2xl p-space-lg shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+<div class="absolute top-0 left-0 right-0 h-1.5 bg-tertiary-container"></div>
+<div>
+<div class="flex items-center justify-between mb-space-md">
+<div class="w-12 h-12 rounded-xl bg-tertiary-fixed flex items-center justify-center text-tertiary-container">
+<span class="material-symbols-outlined text-[28px]">shield_person</span>
+</div>
+<span class="bg-tertiary-fixed text-on-tertiary-fixed-variant font-label-sm text-label-sm font-bold px-space-sm py-1 rounded-full">
+                Hostel Warden / Dean
+              </span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface font-semibold mb-space-xs">Higher Authority</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-space-md leading-relaxed">
+              Supervisory analytics, audit logs, unaddressed complaint escalation matrix, and contractor compliance scores.
+            </p>
+<!-- Feature Pills -->
+<ul class="space-y-space-xs mb-space-lg font-body-sm text-body-sm text-on-surface">
+<li class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-tertiary-container text-[18px]">check_circle</span>
+<span>Automatic 12-hour ticket escalation alerts</span>
+</li>
+<li class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-tertiary-container text-[18px]">check_circle</span>
+<span>Contractor monthly food quality index</span>
+</li>
+<li class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-tertiary-container text-[18px]">check_circle</span>
+<span>Campus-wide hygiene surprise audit recorder</span>
+</li>
+<li class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-tertiary-container text-[18px]">check_circle</span>
+<span>Financial deduction calculator for SLA violations</span>
+</li>
+</ul>
+</div>
+<a class="w-full flex items-center justify-center gap-space-xs bg-tertiary-container text-on-tertiary font-label-lg text-label-lg py-3 rounded-lg hover:opacity-90 transition-opacity shadow-sm" href="#">
+<span>Authority Login</span>
+<span class="material-symbols-outlined text-[18px]">security</span>
+</a>
+</div>
+</div>
+</div>
+</section>
+<!-- Interactive Live Features Showcase (4-item layout + Live Terminal) -->
+<section class="w-full py-space-2xl bg-surface-container-low" id="interactive-preview">
+<div class="max-w-7xl mx-auto px-space-lg flex flex-col gap-space-xl">
+<div class="max-w-3xl">
+<span class="font-label-sm text-label-sm font-semibold tracking-wider uppercase text-primary">Mission-Critical Architecture</span>
+<h2 class="font-headline-lg text-headline-lg text-on-surface font-bold mt-1">Built to eliminate food wastage &amp; dining friction</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2">
+          From the dining hall entrance to executive review boards, every touchpoint is logged with cryptographic timestamps and verifiable photographic evidence.
+        </p>
+</div>
+<!-- 4-Item Feature Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-lg">
+<!-- Feature 1 -->
+<div class="bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex flex-col justify-between">
+<div class="flex flex-col gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[24px]">qr_code_scanner</span>
+</div>
+<h3 class="font-headline-md text-headline-md font-semibold text-on-surface">QR Attendance &amp; Meal Pass</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+              Dynamic time-sensitive QR tokens refreshed every 60 seconds prevent token sharing and duplicate dining. Validates student meal subscription status in under 200 milliseconds.
+            </p>
+</div>
+<div class="mt-space-md p-space-sm bg-surface-container rounded-lg flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Token Fraud Shield:</span>
+<span class="font-label-sm text-label-sm text-primary font-bold">100% Zero-Replay Cryptographic Nonce</span>
+</div>
+</div>
+<!-- Feature 2 -->
+<div class="bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex flex-col justify-between">
+<div class="flex flex-col gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-error/10 flex items-center justify-center text-error">
+<span class="material-symbols-outlined text-[24px]">add_a_photo</span>
+</div>
+<h3 class="font-headline-md text-headline-md font-semibold text-on-surface">Complaint Tracking with Evidence</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+              Students capture and tag photos of hygiene issues or unpalatable items. Each ticket generates a time-stamped SLA countdown visible to both kitchen supervisors and wardens.
+            </p>
+</div>
+<div class="mt-space-md p-space-sm bg-surface-container rounded-lg flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Resolution SLA:</span>
+<span class="font-label-sm text-label-sm text-error font-bold">Guaranteed Response Under 2 Hours</span>
+</div>
+</div>
+<!-- Feature 3 -->
+<div class="bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex flex-col justify-between">
+<div class="flex flex-col gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[24px]">insights</span>
+</div>
+<h3 class="font-headline-md text-headline-md font-semibold text-on-surface">Daily Ratings &amp; Taste Insights</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+              Meal-by-meal sentiment analytics. Automatically flags repetitive kitchen shortcomings (e.g., cold bread, oversalted dal) so chefs can recalibrate prep before the next slot.
+            </p>
+</div>
+<div class="mt-space-md p-space-sm bg-surface-container rounded-lg flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Analytics Depth:</span>
+<span class="font-label-sm text-label-sm text-secondary font-bold">Real-time Taste Heatmaps</span>
+</div>
+</div>
+<!-- Feature 4 -->
+<div class="bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex flex-col justify-between">
+<div class="flex flex-col gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-tertiary-fixed flex items-center justify-center text-tertiary-container">
+<span class="material-symbols-outlined text-[24px]">notification_important</span>
+</div>
+<h3 class="font-headline-md text-headline-md font-semibold text-on-surface">Escalation Matrix &amp; Audit</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+              Unaddressed issues trigger automatic escalation to Chief Wardens and University Dining Committees after 12 hours, complete with audit penalty calculations for caterers.
+            </p>
+</div>
+<div class="mt-space-md p-space-sm bg-surface-container rounded-lg flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Accountability:</span>
+<span class="font-label-sm text-label-sm text-tertiary-container font-bold">Automated Warden SMS &amp; Email Dispatch</span>
+</div>
+</div>
+</div>
+<!-- Live Interactive Feedback Simulator (Micro-interaction) -->
+<div class="bg-surface-container-lowest p-space-xl rounded-2xl shadow-md">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md pb-space-lg">
+<div>
+<span class="font-label-sm text-label-sm font-semibold text-primary uppercase">Try The Student Feedback Flow</span>
+<h3 class="font-headline-md text-headline-md font-bold text-on-surface">Rate Today's Lunch: Steamed Rice, Rajma &amp; Raita</h3>
+</div>
+<span class="bg-surface-container-high px-space-sm py-1 rounded text-label-sm font-label-sm text-on-surface-variant">Mess Dining Session: Hall 01</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-lg items-center">
+<div class="flex flex-col gap-space-md">
+<label class="font-label-md text-label-md text-on-surface-variant font-medium">How was the taste &amp; hygiene?</label>
+<div class="flex items-center gap-space-sm" id="rating-stars">
+<button class="star-btn p-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-outline transition-colors" data-val="1" onclick="setRating(1)" type="button">
+<span class="material-symbols-outlined text-[28px]">star</span>
+</button>
+<button class="star-btn p-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-outline transition-colors" data-val="2" onclick="setRating(2)" type="button">
+<span class="material-symbols-outlined text-[28px]">star</span>
+</button>
+<button class="star-btn p-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-outline transition-colors" data-val="3" onclick="setRating(3)" type="button">
+<span class="material-symbols-outlined text-[28px]">star</span>
+</button>
+<button class="star-btn p-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-outline transition-colors" data-val="4" onclick="setRating(4)" type="button">
+<span class="material-symbols-outlined text-[28px]">star</span>
+</button>
+<button class="star-btn p-2 rounded-lg bg-surface-container-high text-tertiary-container shadow-sm transition-colors" data-val="5" onclick="setRating(5)" type="button">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</button>
+</div>
+<div class="flex flex-wrap gap-space-xs pt-space-xs" id="quick-tags">
+<span class="px-3 py-1.5 rounded-full bg-surface-container text-body-sm font-body-sm text-on-surface-variant cursor-pointer hover:bg-surface-container-highest transition-colors select-none" onclick="toggleTag(this)">Fresh &amp; Hot</span>
+<span class="px-3 py-1.5 rounded-full bg-surface-container text-body-sm font-body-sm text-on-surface-variant cursor-pointer hover:bg-surface-container-highest transition-colors select-none" onclick="toggleTag(this)">Great Seasoning</span>
+<span class="px-3 py-1.5 rounded-full bg-surface-container text-body-sm font-body-sm text-on-surface-variant cursor-pointer hover:bg-surface-container-highest transition-colors select-none" onclick="toggleTag(this)">Needs More Salt</span>
+<span class="px-3 py-1.5 rounded-full bg-surface-container text-body-sm font-body-sm text-on-surface-variant cursor-pointer hover:bg-surface-container-highest transition-colors select-none" onclick="toggleTag(this)">Short Quantity</span>
+</div>
+</div>
+<!-- Live Output Feed -->
+<div class="bg-surface-container-low p-space-md rounded-xl flex flex-col justify-between h-full">
+<div class="flex items-center justify-between pb-space-sm">
+<span class="font-label-sm text-label-sm font-bold text-on-surface">Telemetry Broadcast</span>
+<span class="font-label-sm text-label-sm text-primary flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-primary animate-ping"></span>
+                Connected to Mess Kitchen Console
+              </span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant py-2" id="live-feedback-status">
+              Ready to submit. Ratings automatically aggregate into the contractor's daily performance index.
+            </p>
+<button class="w-full bg-primary text-on-primary font-label-md text-label-md py-2.5 rounded-lg shadow-sm hover:bg-primary-container transition-all" id="submit-demo-btn" onclick="submitDemoFeedback()" type="button">
+              Simulate Instant Submission
+            </button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Institutional Governance & Trust Section -->
+<section class="w-full py-space-2xl bg-surface">
+<div class="max-w-7xl mx-auto px-space-lg">
+<div class="bg-surface-container-lowest rounded-3xl p-space-xl shadow-sm flex flex-col lg:flex-row items-center justify-between gap-space-xl">
+<div class="flex flex-col gap-space-sm max-w-xl">
+<div class="inline-flex items-center gap-space-xs text-primary font-label-sm text-label-sm font-bold uppercase tracking-wider">
+<span class="material-symbols-outlined text-[16px]">verified_user</span>
+<span>Campus Security &amp; Compliance Standards</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface font-bold">Standardized Across 40+ University Hostels</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">
+            FoodBuddy enforces end-to-end auditability. Caterers can no longer obscure sanitation lapses, while students experience verifiable accountability within hours.
+          </p>
+<div class="flex items-center gap-space-lg pt-space-xs">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[22px]">gavel</span>
+<span class="font-label-md text-label-md text-on-surface font-medium">Contractor SLA Binding</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[22px]">lock</span>
+<span class="font-label-md text-label-md text-on-surface font-medium">SSO University Login</span>
+</div>
+</div>
+</div>
+<!-- Call to Action Card -->
+<div class="bg-surface-container-high/60 p-space-lg rounded-2xl flex flex-col gap-space-md w-full lg:w-96">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">Deploy in your campus</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Zero hardware cost. Integrates seamlessly with existing hostel turnstiles and student ERP accounts.
+          </p>
+<a class="w-full text-center bg-primary text-on-primary font-label-lg text-label-lg py-3 rounded-lg shadow-sm hover:bg-primary-container transition-all" href="#roles">
+            Schedule Warden Briefing
+          </a>
+<span class="font-body-sm text-body-sm text-outline text-center">Typically deployed in under 48 hours</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Interactive JavaScript Logic -->
+<script>
+    let currentRating = 5;
+    function setRating(val) {
+      currentRating = val;
+      const stars = document.querySelectorAll('#rating-stars .star-btn');
+      stars.forEach((btn) => {
+        const starVal = parseInt(btn.getAttribute('data-val'));
+        const icon = btn.querySelector('.material-symbols-outlined');
+        if (starVal <= val) {
+          btn.classList.add('bg-surface-container-high', 'text-tertiary-container');
+          btn.classList.remove('bg-surface-container', 'text-outline');
+          icon.style.fontVariationSettings = "'FILL' 1";
+        } else {
+          btn.classList.remove('bg-surface-container-high', 'text-tertiary-container');
+          btn.classList.add('bg-surface-container', 'text-outline');
+          icon.style.fontVariationSettings = "'FILL' 0";
+        }
+      });
+      document.getElementById('live-feedback-status').innerText = 'Rating score ' + val + '/5 selected. Click below to verify real-time kitchen feed dispatch.';
+    }
+
+    function toggleTag(el) {
+      el.classList.toggle('bg-primary');
+      el.classList.toggle('text-on-primary');
+      el.classList.toggle('bg-surface-container');
+      el.classList.toggle('text-on-surface-variant');
+    }
+
+    function submitDemoFeedback() {
+      const btn = document.getElementById('submit-demo-btn');
+      const status = document.getElementById('live-feedback-status');
+      btn.innerText = 'Transmitting Token Hash...';
+      btn.classList.add('opacity-75');
+      setTimeout(() => {
+        btn.innerText = 'Submitted Successfully!';
+        btn.classList.remove('bg-primary', 'opacity-75');
+        btn.classList.add('bg-primary-container');
+        status.innerHTML = '<span class="text-primary font-bold">Feedback verified on ledger!</span> Caterer rating updated. Issue ticket automatically flagged: None.';
+        setTimeout(() => {
+          btn.innerText = 'Simulate Instant Submission';
+          btn.classList.add('bg-primary');
+          btn.classList.remove('bg-primary-container');
+        }, 4000);
+      }, 750);
+    }
+  </script>
+</div></main><footer class="w-full bg-surface-container-low py-space-lg"><div class="max-w-7xl mx-auto px-space-lg flex flex-col sm:flex-row items-center justify-between gap-space-sm text-on-surface-variant font-body-sm text-body-sm"><span>© 2025 FoodBuddy Institutional Dining Management Systems.</span><div class="flex items-center gap-space-md"><span class="hover:text-on-surface cursor-pointer">Hostel Code of Conduct</span><span class="hover:text-on-surface cursor-pointer">Nutrition Standards</span><span class="hover:text-on-surface cursor-pointer">Help Desk</span></div></div></footer></body></html>

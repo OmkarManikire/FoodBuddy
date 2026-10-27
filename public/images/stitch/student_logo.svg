@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none">
+  <defs>
+    <linearGradient id="studGrad" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#047857"/>
+      <stop offset="100%" stop-color="#064e3b"/>
+    </linearGradient>
+    <linearGradient id="studAccent" x1="18" y1="18" x2="46" y2="46" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+  </defs>
+  <!-- Card background -->
+  <rect x="6" y="6" width="52" height="52" rx="16" fill="url(#studGrad)" stroke="#34d399" stroke-width="2"/>
+  
+  <!-- Graduation cap & dining combination -->
+  <!-- Mortarboard / Student Cap top -->
+  <path d="M32 16L48 24L32 32L16 24L32 16Z" fill="#10b981" fill-opacity="0.35" stroke="#6ee7b7" stroke-width="2.2" stroke-linejoin="round"/>
+  <!-- Cap skull cap -->
+  <path d="M22 27.5V35C22 38 26.5 41 32 41C37.5 41 42 38 42 35V27.5" stroke="#6ee7b7" stroke-width="2" stroke-linecap="round"/>
+  <!-- Tassel -->
+  <path d="M44 26V35C44 36.5 45.5 37 45.5 37" stroke="#a7f3d0" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Crossed fork & spoon or meal badge at bottom -->
+  <circle cx="32" cy="46" r="8" fill="#065f46" stroke="#34d399" stroke-width="1.8"/>
+  <!-- Fork & Knife silhouette inside circle -->
+  <path d="M29 42V50M27.5 42H30.5M35 42C35 44 33.8 45 33.8 46V50" stroke="#f0fdf4" stroke-width="1.5" stroke-linecap="round"/>
+</svg>

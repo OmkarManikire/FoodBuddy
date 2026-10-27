@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      "colors": {
+        "on-primary": "#ffffff",
+        "tertiary-fixed": "#ffdcc3",
+        "on-error": "#ffffff",
+        "surface-container": "#eaedff",
+        "primary-fixed-dim": "#68dba9",
+        "on-tertiary-container": "#fffbff",
+        "surface-dim": "#d2d9f4",
+        "inverse-on-surface": "#eef0ff",
+        "error-container": "#ffdad6",
+        "inverse-primary": "#68dba9",
+        "on-primary-fixed-variant": "#005137",
+        "primary": "#006948",
+        "surface-variant": "#dae2fd",
+        "outline-variant": "#bccac0",
+        "secondary-fixed-dim": "#b4c5ff",
+        "outline": "#6d7a72",
+        "on-tertiary-fixed": "#2f1500",
+        "on-tertiary-fixed-variant": "#6e3900",
+        "on-primary-container": "#f5fff7",
+        "surface-bright": "#faf8ff",
+        "tertiary": "#8d4b00",
+        "secondary-container": "#316bf3",
+        "background": "#faf8ff",
+        "error": "#ba1a1a",
+        "on-secondary": "#ffffff",
+        "surface-container-low": "#f2f3ff",
+        "tertiary-container": "#b15f00",
+        "inverse-surface": "#283044",
+        "on-secondary-fixed": "#00174b",
+        "surface-container-high": "#e2e7ff",
+        "on-background": "#131b2e",
+        "secondary": "#0051d5",
+        "on-primary-fixed": "#002114",
+        "on-surface": "#131b2e",
+        "on-tertiary": "#ffffff",
+        "primary-fixed": "#85f8c4",
+        "surface-container-lowest": "#ffffff",
+        "on-secondary-container": "#fefcff",
+        "surface-container-highest": "#dae2fd",
+        "primary-container": "#00855d",
+        "surface": "#faf8ff",
+        "on-surface-variant": "#3d4a42",
+        "on-secondary-fixed-variant": "#003ea8",
+        "secondary-fixed": "#dbe1ff",
+        "tertiary-fixed-dim": "#ffb77d",
+        "on-error-container": "#93000a",
+        "surface-tint": "#006c4a"
+      },
+      "borderRadius": {
+        "DEFAULT": "0.25rem",
+        "lg": "0.5rem",
+        "xl": "0.75rem",
+        "full": "9999px"
+      },
+      "spacing": {
+        "gutter-desktop": "1.5rem",
+        "space-xl": "2rem",
+        "space-base": "1rem",
+        "margin": "1rem",
+        "space-2xl": "3rem",
+        "margin-desktop": "2rem",
+        "margin-tablet": "1.5rem",
+        "space-lg": "1.5rem",
+        "space-xxs": "0.125rem",
+        "space-sm": "0.5rem",
+        "space-xs": "0.25rem",
+        "space-md": "0.75rem",
+        "gutter": "1rem"
+      },
+      "fontFamily": {
+        "display-lg": [
+          "Inter"
+        ],
+        "headline-md": [
+          "Inter"
+        ],
+        "display-lg-mobile": [
+          "Inter"
+        ],
+        "label-sm": [
+          "Inter"
+        ],
+        "metric-number": [
+          "Inter"
+        ],
+        "headline-sm": [
+          "Inter"
+        ],
+        "headline-lg": [
+          "Inter"
+        ],
+        "body-lg": [
+          "Inter"
+        ],
+        "label-md": [
+          "Inter"
+        ],
+        "label-lg": [
+          "Inter"
+        ],
+        "body-md": [
+          "Inter"
+        ],
+        "body-sm": [
+          "Inter"
+        ]
+      },
+      "fontSize": {
+        "display-lg": [
+          "32px",
+          {
+            "lineHeight": "40px",
+            "letterSpacing": "-0.02em",
+            "fontWeight": "700"
+          }
+        ],
+        "headline-md": [
+          "20px",
+          {
+            "lineHeight": "28px",
+            "letterSpacing": "-0.01em",
+            "fontWeight": "600"
+          }
+        ],
+        "display-lg-mobile": [
+          "24px",
+          {
+            "lineHeight": "32px",
+            "letterSpacing": "-0.015em",
+            "fontWeight": "700"
+          }
+        ],
+        "label-sm": [
+          "11px",
+          {
+            "lineHeight": "14px",
+            "letterSpacing": "0.02em",
+            "fontWeight": "600"
+          }
+        ],
+        "metric-number": [
+          "28px",
+          {
+            "lineHeight": "32px",
+            "letterSpacing": "-0.02em",
+            "fontWeight": "600"
+          }
+        ],
+        "headline-sm": [
+          "16px",
+          {
+            "lineHeight": "24px",
+            "letterSpacing": "-0.005em",
+            "fontWeight": "600"
+          }
+        ],
+        "headline-lg": [
+          "24px",
+          {
+            "lineHeight": "32px",
+            "letterSpacing": "-0.015em",
+            "fontWeight": "600"
+          }
+        ],
+        "body-lg": [
+          "16px",
+          {
+            "lineHeight": "24px",
+            "fontWeight": "400"
+          }
+        ],
+        "label-md": [
+          "12px",
+          {
+            "lineHeight": "16px",
+            "fontWeight": "500"
+          }
+        ],
+        "label-lg": [
+          "14px",
+          {
+            "lineHeight": "20px",
+            "fontWeight": "500"
+          }
+        ],
+        "body-md": [
+          "14px",
+          {
+            "lineHeight": "20px",
+            "fontWeight": "400"
+          }
+        ],
+        "body-sm": [
+          "12px",
+          {
+            "lineHeight": "16px",
+            "fontWeight": "400"
+          }
+        ]
+      }
+    }
+  }
+}</script></head><body class="bg-background font-body-md text-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-[260px] bg-surface-container-lowest z-50 flex flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col flex-1 overflow-y-auto"><div class="h-16 px-space-base flex items-center gap-space-sm"><div class="w-9 h-9 rounded-lg bg-secondary flex items-center justify-center text-on-secondary shadow-[0_1px_2px_0_rgba(15,23,42,0.05)]"><span class="material-symbols-outlined text-[20px]">restaurant_menu</span></div><div class="flex flex-col"><span class="font-headline-sm text-headline-sm tracking-tight text-on-surface">FoodBuddy</span><span class="font-label-sm text-label-sm text-secondary font-semibold uppercase tracking-wider">Operations Lead</span></div></div><div class="px-space-base py-space-xs"><div class="rounded-lg bg-surface-container-low px-space-sm py-space-xs flex items-center gap-space-xs"><span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span><span class="font-label-sm text-label-sm text-on-surface-variant truncate">South Mess • Shift 1 Active</span></div></div><nav class="flex-1 px-space-sm py-space-sm space-y-space-md" data-active-classes="bg-secondary-container text-on-secondary-container font-semibold shadow-[0_1px_2px_0_rgba(15,23,42,0.05)]"><div class="space-y-space-xxs"><div class="px-space-sm py-space-xs font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Overview</div><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="overview" href="#"><span class="material-symbols-outlined text-[18px]">space_dashboard</span><span class="font-label-lg text-label-lg">Overview</span></a></div><div class="space-y-space-xxs"><div class="px-space-sm py-space-xs font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Operations</div><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="attendance" href="#"><span class="material-symbols-outlined text-[18px]">how_to_reg</span><span class="font-label-lg text-label-lg">Attendance</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="live-qr" href="#"><span class="material-symbols-outlined text-[18px]">qr_code_scanner</span><span class="font-label-lg text-label-lg">Live QR</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="menu-management" href="#"><span class="material-symbols-outlined text-[18px]">menu_book</span><span class="font-label-lg text-label-lg">Menu Management</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="pre-meal-checklist" href="#"><span class="material-symbols-outlined text-[18px]">fact_check</span><span class="font-label-lg text-label-lg">Pre-Meal Checklist</span></a></div><div class="space-y-space-xxs"><div class="px-space-sm py-space-xs font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Feedback</div><a aria-current="page" class="flex items-center justify-between px-space-sm py-space-xs rounded-lg transition-colors bg-secondary-container text-on-secondary-container font-semibold shadow-[0_1px_2px_0_rgba(15,23,42,0.05)]" data-path="complaints-queue" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px]">inbox</span><span class="font-label-lg text-label-lg">Complaints Queue</span></div><span class="px-space-xs py-space-xxs rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold">5</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="ratings-and-analytics" href="#"><span class="material-symbols-outlined text-[18px]">insights</span><span class="font-label-lg text-label-lg">Ratings &amp; Analytics</span></a></div><div class="space-y-space-xxs"><div class="px-space-sm py-space-xs font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Communication</div><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="post-notice" href="#"><span class="material-symbols-outlined text-[18px]">campaign</span><span class="font-label-lg text-label-lg">Post Notice</span></a></div></nav></div><div class="p-space-sm"><div class="rounded-xl bg-surface-container-low p-space-sm flex items-center gap-space-sm"><div class="w-9 h-9 rounded-full bg-secondary flex items-center justify-center text-on-secondary shrink-0"><span class="material-symbols-outlined text-[18px]">badge</span></div><div class="flex flex-col min-w-0"><span class="font-label-md text-label-md font-semibold text-on-surface truncate">Rajesh Sharma</span><span class="font-label-sm text-label-sm text-on-surface-variant truncate">Operations Lead</span><span class="font-label-sm text-label-sm text-outline truncate">South Mess Block</span></div></div></div></aside><div class="pl-[260px]"><header class="fixed top-0 left-[260px] right-0 h-16 bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-gutter-desktop"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs text-on-surface-variant font-label-md text-label-md"><span class="hover:text-on-surface cursor-pointer">Operations</span><span class="material-symbols-outlined text-[16px] text-outline">chevron_right</span><span class="text-on-surface font-semibold">Control Center</span></div><div class="hidden lg:flex items-center gap-space-xs px-space-sm py-space-xs rounded-full bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm"><span class="w-2 h-2 rounded-full bg-primary"></span><span class="font-medium text-on-surface">Central Dining Hall 01</span><span class="text-outline">•</span><span class="text-primary font-semibold">Shift Active</span></div></div><div class="flex items-center gap-space-base"><div class="relative hidden sm:block"><span class="material-symbols-outlined absolute left-space-sm top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span><input class="w-64 pl-9 pr-space-sm py-space-xs rounded-lg bg-surface-container-low font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest shadow-[0_1px_2px_0_rgba(15,23,42,0.05)]" placeholder="Search token, student ID, item..." type="text"/></div><button aria-label="Notifications" class="relative w-9 h-9 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-error"></span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><main class="relative pt-16 bg-background w-full min-h-screen px-gutter-desktop py-space-lg"><div class="flex flex-col w-full">
+<!-- Top Command & Action Bar -->
+<div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-space-md mb-space-lg">
+<div>
+<div class="flex items-center gap-space-xs mb-space-xxs">
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-wider font-semibold">Triage &amp; Escalation Desk</span>
+<span class="w-1.5 h-1.5 rounded-full bg-outline-variant"></span>
+<span class="font-label-sm text-label-sm text-primary font-semibold flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+          Live Ingestion Active
+        </span>
+</div>
+<h1 class="font-display-lg text-display-lg text-on-surface tracking-tight">Complaints &amp; Grievance Triage</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">
+        Manage student-reported meal incidents, quality defects, and counter issues under 12-hour resolution SLA.
+      </p>
+</div>
+<div class="flex items-center gap-space-sm shrink-0">
+<button class="flex items-center gap-space-xs px-space-base py-space-xs rounded-lg bg-surface-container-lowest text-on-surface font-label-lg text-label-lg shadow-sm hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[18px] text-outline">tune</span>
+<span>Filter Presets</span>
+</button>
+<button class="flex items-center gap-space-xs px-space-base py-space-xs rounded-lg bg-surface-container-lowest text-on-surface font-label-lg text-label-lg shadow-sm hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[18px] text-outline">file_download</span>
+<span>Export Incident Log</span>
+</button>
+<button class="flex items-center gap-space-xs px-space-base py-space-xs rounded-lg bg-secondary text-on-secondary font-label-lg text-label-lg shadow-sm hover:bg-secondary-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">add_alert</span>
+<span>Manual Incident</span>
+</button>
+</div>
+</div>
+<!-- Operational Filter Strip -->
+<div class="bg-surface-container-lowest rounded-xl p-space-base shadow-sm mb-space-lg flex flex-col gap-space-base">
+<!-- Category Chips -->
+<div class="flex flex-wrap items-center gap-space-xs">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold mr-space-xs">Category:</span>
+<button class="px-space-sm py-1 rounded-full bg-secondary text-on-secondary font-label-md text-label-md">All (5)</button>
+<button class="px-space-sm py-1 rounded-full bg-surface-container-low text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-high transition-colors flex items-center gap-1">
+        Food Quality <span class="w-4 h-4 rounded-full bg-tertiary-fixed text-on-tertiary-fixed text-[10px] flex items-center justify-center font-bold">2</span>
+</button>
+<button class="px-space-sm py-1 rounded-full bg-surface-container-low text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-high transition-colors flex items-center gap-1">
+        Hygiene <span class="w-4 h-4 rounded-full bg-surface-container-highest text-on-surface-variant text-[10px] flex items-center justify-center font-bold">1</span>
+</button>
+<button class="px-space-sm py-1 rounded-full bg-surface-container-low text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-high transition-colors flex items-center gap-1">
+        Service Speed <span class="w-4 h-4 rounded-full bg-surface-container-highest text-on-surface-variant text-[10px] flex items-center justify-center font-bold">1</span>
+</button>
+<button class="px-space-sm py-1 rounded-full bg-surface-container-low text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-high transition-colors flex items-center gap-1">
+        Infrastructure <span class="w-4 h-4 rounded-full bg-surface-container-highest text-on-surface-variant text-[10px] flex items-center justify-center font-bold">1</span>
+</button>
+<button class="px-space-sm py-1 rounded-full bg-surface-container-low text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-high transition-colors">Other</button>
+</div>
+<!-- Secondary Parameter Controls -->
+<div class="flex flex-wrap items-center justify-between gap-space-base pt-space-xs bg-surface-container-lowest">
+<div class="flex flex-wrap items-center gap-space-base">
+<!-- Date Filter Segment -->
+<div class="flex items-center gap-space-xs">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Time:</span>
+<div class="bg-surface-container-low p-1 rounded-lg flex items-center gap-1">
+<button class="px-space-sm py-1 rounded-md bg-surface-container-lowest shadow-sm text-on-surface font-label-sm text-label-sm font-semibold">Today</button>
+<button class="px-space-sm py-1 rounded-md text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm">Past 24 Hours</button>
+<button class="px-space-sm py-1 rounded-md text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm">Past 7 Days</button>
+</div>
+</div>
+<!-- Urgency Switch -->
+<div class="flex items-center gap-space-xs">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Urgency:</span>
+<div class="flex items-center gap-1">
+<span class="inline-flex items-center gap-1 px-space-sm py-1 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">warning</span> Critical / Severe Alert
+            </span>
+<span class="inline-flex items-center gap-1 px-space-sm py-1 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
+              Standard
+            </span>
+</div>
+</div>
+</div>
+<!-- Status Quick Filter -->
+<div class="flex items-center gap-space-xs">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Status:</span>
+<div class="flex items-center gap-1 overflow-x-auto">
+<span class="px-space-sm py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm font-semibold">All</span>
+<span class="px-space-sm py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold">Pending (2)</span>
+<span class="px-space-sm py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm font-semibold">Under Review (1)</span>
+<span class="px-space-sm py-0.5 rounded-full bg-surface-container text-on-surface font-label-sm text-label-sm">In Progress (1)</span>
+<span class="px-space-sm py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm font-semibold">Resolved (14)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Workspace Area: Table with Integrated Slide-Over Drawer -->
+<div class="relative flex flex-col xl:flex-row items-start gap-space-lg w-full">
+<!-- Main Incident Log Table (Fluid Column) -->
+<div class="w-full xl:flex-1 bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden min-w-0">
+<div class="px-space-base py-space-md bg-surface-container-low flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="font-headline-sm text-headline-sm text-on-surface">Live Ticket Feed</span>
+<span class="font-label-sm text-label-sm px-2 py-0.5 rounded bg-surface-container-highest text-on-surface-variant font-medium">4 active view records</span>
+</div>
+<div class="flex items-center gap-space-xs text-outline font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px]">sync</span> Auto-refreshes every 30s
+        </div>
+</div>
+<div class="overflow-x-auto w-full">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">
+<th class="py-space-sm px-space-base font-semibold">Ticket ID</th>
+<th class="py-space-sm px-space-sm font-semibold">Media</th>
+<th class="py-space-sm px-space-base font-semibold">Category</th>
+<th class="py-space-sm px-space-base font-semibold">Reporter</th>
+<th class="py-space-sm px-space-base font-semibold">Timestamp / Meal</th>
+<th class="py-space-sm px-space-sm font-semibold">Urgency</th>
+<th class="py-space-sm px-space-base font-semibold">Status</th>
+<th class="py-space-sm px-space-sm text-right pr-space-base font-semibold">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-low font-body-sm text-body-sm">
+<!-- Row 1: Selected Item (FB-2026-00123) -->
+<tr class="bg-surface-container-high transition-colors cursor-pointer font-medium">
+<td class="py-space-md px-space-base">
+<div class="flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-label-md text-label-md font-semibold text-secondary">FB-2026-00123</span>
+</div>
+</td>
+<td class="py-space-md px-space-sm">
+<div class="w-10 h-10 rounded-lg overflow-hidden relative shadow-sm shrink-0 bg-surface-dim">
+<img class="w-full h-full object-cover" data-alt="Close up high quality photo of a stainless steel mess tray with cooked paneer curry and rice, showing firm undercooked center in paneer cubes under bright cafeteria fluorescent lighting with natural depth" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxEXc2oU0BZ0IYF8N4IalaPu5LB4QN_4KITL_fwNafENcp9y5N0biusC6-liKuM6GCJHodUVLQAEc_4-kqNprb33ErmpVnZTJrtkskLFMmaKIXzpu6y3MJH0Tr_aTqwb3XggS20ysyl73w8xsYaAJ4GzB4tOxrGcDWsLAGSumD_aoqapWjedxJurmyT3-UcBFcQthYzIfSKWutV36vHtLcSgxfXiENlQya2em9JJ5PO1Mt7UDDqCBd"/>
+<span class="absolute bottom-0.5 right-0.5 bg-on-background/70 text-on-primary rounded p-0.5 flex items-center justify-center">
+<span class="material-symbols-outlined text-[10px]">photo_camera</span>
+</span>
+</div>
+</td>
+<td class="py-space-md px-space-base">
+<span class="px-space-xs py-0.5 rounded bg-surface-container-lowest text-on-surface font-label-sm text-label-sm font-semibold shadow-sm">
+                  Food Quality
+                </span>
+</td>
+<td class="py-space-md px-space-base">
+<div class="flex flex-col min-w-0">
+<span class="font-label-md text-label-md font-semibold text-on-surface truncate">Aarav Patel</span>
+<span class="font-label-sm text-label-sm text-outline truncate">#2024CSB1042 • Host B-314</span>
+</div>
+</td>
+<td class="py-space-md px-space-base">
+<div class="flex flex-col">
+<span class="text-on-surface font-medium">Lunch • Today</span>
+<span class="font-label-sm text-label-sm text-outline">12:45 PM (48m ago)</span>
+</div>
+</td>
+<td class="py-space-md px-space-sm">
+<span class="inline-flex items-center gap-1 px-space-xs py-0.5 rounded bg-error-container text-on-error-container font-label-sm text-label-sm font-bold animate-pulse">
+<span class="material-symbols-outlined text-[12px]">error</span> Severe
+                </span>
+</td>
+<td class="py-space-md px-space-base">
+<span class="inline-flex items-center gap-1 px-space-sm py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold">
+                  Under Review
+                </span>
+</td>
+<td class="py-space-md px-space-sm text-right pr-space-base">
+<button class="p-1.5 rounded-lg bg-surface-container-lowest text-secondary shadow-sm hover:bg-surface-container">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</td>
+</tr>
+<!-- Row 2: FB-2026-00121 -->
+<tr class="hover:bg-surface-container-low transition-colors cursor-pointer bg-surface-container-lowest">
+<td class="py-space-md px-space-base">
+<span class="font-label-md text-label-md font-semibold text-on-surface">FB-2026-00121</span>
+</td>
+<td class="py-space-md px-space-sm">
+<div class="w-10 h-10 rounded-lg overflow-hidden relative shadow-sm shrink-0 bg-surface-dim">
+<img class="w-full h-full object-cover" data-alt="Industrial dining hall water dispenser station showing water leak puddles on light gray tiled cafeteria floor with safety warning sign in soft institutional lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDlj-qlVTnKGoIHCIVTPr2HZKN_vJ4DxD9wifD2hQKk7jdJajV2EkFSoheZb2fOhtfifqu3cnV8LT2rgBBKaCCxSDzkuTf54ORZb_31sWC7g7G56rx99wvAaxUBgVhaVVmCe76IVIYTuo5ld17d_F_e_F80qbMyyfIzMCQCKbjWtCXyRjMiqrFXDgXgWxVSv5jB0XhiIYYlHZ8Vok0IqqOn1oGG26gnrnINqaEczeND2fJsaR0XztXq"/>
+<span class="absolute bottom-0.5 right-0.5 bg-on-background/70 text-on-primary rounded p-0.5 flex items-center justify-center">
+<span class="material-symbols-outlined text-[10px]">photo_camera</span>
+</span>
+</div>
+</td>
+<td class="py-space-md px-space-base">
+<span class="px-space-xs py-0.5 rounded bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm">
+                  Infrastructure
+                </span>
+</td>
+<td class="py-space-md px-space-base">
+<div class="flex flex-col min-w-0">
+<span class="font-label-md text-label-md font-medium text-on-surface truncate">Priya Nair</span>
+<span class="font-label-sm text-label-sm text-outline truncate">#2023ECE0512</span>
+</div>
+</td>
+<td class="py-space-md px-space-base">
+<div class="flex flex-col">
+<span class="text-on-surface">Today, 10:30 AM</span>
+<span class="font-label-sm text-label-sm text-outline">Counter 2 Line</span>
+</div>
+</td>
+<td class="py-space-md px-space-sm">
+<span class="inline-flex items-center px-space-xs py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
+                  Standard
+                </span>
+</td>
+<td class="py-space-md px-space-base">
+<span class="inline-flex items-center gap-1 px-space-sm py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold">
+                  Pending
+                </span>
+</td>
+<td class="py-space-md px-space-sm text-right pr-space-base">
+<button class="p-1.5 rounded-lg text-outline hover:text-on-surface hover:bg-surface-container-low">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</td>
+</tr>
+<!-- Row 3: FB-2026-00118 -->
+<tr class="hover:bg-surface-container-low transition-colors cursor-pointer bg-surface-container-lowest">
+<td class="py-space-md px-space-base">
+<span class="font-label-md text-label-md font-semibold text-on-surface">FB-2026-00118</span>
+</td>
+<td class="py-space-md px-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-outline shrink-0">
+<span class="material-symbols-outlined text-[20px]">no_photography</span>
+</div>
+</td>
+<td class="py-space-md px-space-base">
+<span class="px-space-xs py-0.5 rounded bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm">
+                  Service Speed
+                </span>
+</td>
+<td class="py-space-md px-space-base">
+<div class="flex flex-col min-w-0">
+<span class="font-label-md text-label-md font-medium text-on-surface truncate">Rohan M.</span>
+<span class="font-label-sm text-label-sm text-outline truncate">#2022ME1009</span>
+</div>
+</td>
+<td class="py-space-md px-space-base">
+<div class="flex flex-col">
+<span class="text-on-surface">Today, 09:15 AM</span>
+<span class="font-label-sm text-label-sm text-outline">Breakfast Session</span>
+</div>
+</td>
+<td class="py-space-md px-space-sm">
+<span class="inline-flex items-center px-space-xs py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
+                  Standard
+                </span>
+</td>
+<td class="py-space-md px-space-base">
+<span class="inline-flex items-center gap-1 px-space-sm py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold">
+                  Pending
+                </span>
+</td>
+<td class="py-space-md px-space-sm text-right pr-space-base">
+<button class="p-1.5 rounded-lg text-outline hover:text-on-surface hover:bg-surface-container-low">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</td>
+</tr>
+<!-- Row 4: FB-2026-00098 -->
+<tr class="hover:bg-surface-container-low transition-colors cursor-pointer bg-surface-container-lowest">
+<td class="py-space-md px-space-base">
+<span class="font-label-md text-label-md font-semibold text-on-surface">FB-2026-00098</span>
+</td>
+<td class="py-space-md px-space-sm">
+<div class="w-10 h-10 rounded-lg overflow-hidden relative shadow-sm shrink-0 bg-surface-dim">
+<img class="w-full h-full object-cover" data-alt="Sanitized clean stainless steel dishwashing rack and sparkling dining cutlery drying on spotless counter in commercial kitchen facility" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuDgKqABoxPYBRH30Bb15tSnRcxOI85b-yLrQoyDQ24rA5cG1xZ3D3QLZOqgTKXTbb4f8SyRHYe6srYiSS4PTMzWzRnkWy298WrdPz58BYwbPuOe2INJlODqs_I0NU0UGl-pPxwRe9T7XsnL5RXPbux_ckzrm_ikPvz-Dp8uB7WCQkyiaPj5ZqEZ6X8DkBIjkDEBToEeQKQ-EOF_E6cB2upSIJFKNrJo7_TThcXF77geGYmw2zhrAE"/>
+<span class="absolute bottom-0.5 right-0.5 bg-on-background/70 text-on-primary rounded p-0.5 flex items-center justify-center">
+<span class="material-symbols-outlined text-[10px]">photo_camera</span>
+</span>
+</div>
+</td>
+<td class="py-space-md px-space-base">
+<span class="px-space-xs py-0.5 rounded bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm">
+                  Hygiene
+                </span>
+</td>
+<td class="py-space-md px-space-base">
+<div class="flex flex-col min-w-0">
+<span class="font-label-md text-label-md font-medium text-on-surface truncate">Kabir Das</span>
+<span class="font-label-sm text-label-sm text-outline truncate">#2025CHE0201</span>
+</div>
+</td>
+<td class="py-space-md px-space-base">
+<div class="flex flex-col">
+<span class="text-on-surface">Yesterday</span>
+<span class="font-label-sm text-label-sm text-outline">Dinner Session</span>
+</div>
+</td>
+<td class="py-space-md px-space-sm">
+<span class="inline-flex items-center px-space-xs py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
+                  Standard
+                </span>
+</td>
+<td class="py-space-md px-space-base">
+<span class="inline-flex items-center gap-1 px-space-sm py-1 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">check</span> Resolved
+                </span>
+</td>
+<td class="py-space-md px-space-sm text-right pr-space-base">
+<button class="p-1.5 rounded-lg text-outline hover:text-on-surface hover:bg-surface-container-low">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination and Quick SLA Stats Footer -->
+<div class="p-space-base bg-surface-container-lowest flex flex-col sm:flex-row items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-md text-on-surface-variant font-label-sm text-label-sm">
+<span>Showing <strong>1-4</strong> of 19 total complaints</span>
+<span class="w-1 h-1 rounded-full bg-outline"></span>
+<span class="text-primary font-semibold">94.2% within 12h SLA this week</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<button class="px-space-sm py-1 rounded bg-surface-container-low text-outline font-label-md text-label-md cursor-not-allowed">Previous</button>
+<button class="px-space-sm py-1 rounded bg-secondary text-on-secondary font-label-md text-label-md font-semibold">1</button>
+<button class="px-space-sm py-1 rounded bg-surface-container-low text-on-surface font-label-md text-label-md hover:bg-surface-container">2</button>
+<button class="px-space-sm py-1 rounded bg-surface-container-low text-on-surface font-label-md text-label-md hover:bg-surface-container">Next</button>
+</div>
+</div>
+</div>
+<!-- Right Side Drawer (460px on Desktop, Focused on Ticket FB-2026-00123) -->
+<div class="w-full xl:w-[460px] shrink-0 bg-surface-container-lowest rounded-xl shadow-xl flex flex-col overflow-hidden relative" id="side-drawer">
+<!-- Drawer Top Bar -->
+<div class="px-space-base py-space-md bg-surface-container-low flex items-center justify-between">
+<div class="flex items-center gap-space-xs min-w-0">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary shrink-0"></span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface truncate">Ticket Details: FB-2026-00123</h2>
+</div>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-outline hover:text-on-surface hover:bg-surface-container transition-colors shrink-0" id="close-drawer-btn">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<!-- SLA Countdown Urgent Banner -->
+<div class="px-space-base py-space-xs bg-error-container text-on-error-container flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px]">timer</span>
+<span class="font-label-sm text-label-sm font-bold tracking-tight">SLA Target Breach: 3h 12m left</span>
+</div>
+<span class="font-label-sm text-label-sm bg-on-error/20 px-1.5 py-0.5 rounded font-semibold">Warden Escalation at 04:00 PM</span>
+</div>
+<!-- Drawer Content Scroll Body -->
+<div class="p-space-base flex flex-col gap-space-lg overflow-y-auto max-h-[calc(100vh-280px)]">
+<!-- Incident Summary Card -->
+<div class="rounded-xl bg-surface-container-low p-space-base flex flex-col gap-space-xs">
+<div class="flex items-center justify-between text-outline font-label-sm text-label-sm">
+<span class="uppercase tracking-wider font-semibold">Incident Summary</span>
+<span class="text-on-surface font-medium">Lunch Service • Counter #3</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Undercooked paneer in lunch curry</h3>
+<div class="mt-space-xs p-space-sm rounded-lg bg-surface-container-lowest text-on-surface-variant font-body-sm text-body-sm italic relative">
+<span class="text-outline font-serif text-lg leading-none absolute -top-1 left-1.5">“</span>
+<p class="pl-2">
+              The paneer cubes in the Shahi Paneer gravy were completely cold and raw in the center during second batch refill. Multiple students at Table 8 noticed the rubbery texture and pungent dairy smell. Please review the batch before dinner.
+            </p>
+</div>
+<div class="flex items-center gap-space-sm mt-space-xs pt-space-xs text-on-surface-variant font-label-sm text-label-sm">
+<div class="w-6 h-6 rounded-full bg-secondary flex items-center justify-center text-on-secondary font-bold text-xs">AP</div>
+<span class="font-medium text-on-surface">Aarav Patel</span>
+<span class="text-outline">•</span>
+<span>B-Tech CSE '24</span>
+<span class="text-outline">•</span>
+<span>Token #L-492</span>
+</div>
+</div>
+<!-- Attached Photo Evidence -->
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Attached Visual Evidence (1)</span>
+<span class="font-label-sm text-label-sm text-primary font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">verified</span> Geo-Tagged Hall 3
+            </span>
+</div>
+<div class="relative group rounded-xl overflow-hidden bg-surface-dim shadow-sm cursor-zoom-in">
+<div class="h-52 w-full overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="High resolution detailed macro photo of a mess food plate showing curry with halved paneer cube revealing raw unmarinated center texture taken under indoor institutional lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuANXLVjLwfGn0NztBSMM3PVBGracxrRLzj68OiLGysPHTCwMToh8_wYx6vEf2P8wL5lx7OoTI-ozl-6KXQFTT2OPbeDEjSM-eALfDM2VZ-pdFarFhqVW-KuCg6Bt6jLeQJ0DLYiWWxzCIb6u2ft_FchPc3KOL_CWY-vb20akvtVGKmxuwhWf-CdlS_P5yAgdSs-WTUrvm95AKQsuQ92f8S4FQxBwGOuLT551M_uwP7phkVygnhMQCD8"/>
+</div>
+<div class="absolute inset-0 bg-on-background/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-space-sm text-on-primary">
+<span class="flex items-center gap-1 px-space-sm py-1 rounded-full bg-on-background/70 font-label-sm text-label-sm backdrop-blur-sm">
+<span class="material-symbols-outlined text-[16px]">zoom_in</span> Click to Inspect Full Resolution
+              </span>
+</div>
+</div>
+<div class="flex items-center justify-between text-outline font-label-sm text-label-sm px-1">
+<span>IMG_20260329_124419.jpg • 1.4 MB</span>
+<span>Camera: Hall 3 Sensor Logged</span>
+</div>
+</div>
+<!-- Interactive Action Form -->
+<div class="rounded-xl bg-surface-container p-space-base flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm text-on-surface">Kitchen Response &amp; Action</span>
+<span class="font-label-sm text-label-sm text-secondary font-semibold">Required for Resolution</span>
+</div>
+<!-- Status Dropdown Picker -->
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">Update Ticket Status</label>
+<div class="relative">
+<select class="w-full px-space-sm py-space-xs rounded-lg bg-surface-container-lowest text-on-surface font-body-md text-body-md shadow-sm appearance-none focus:outline-none cursor-pointer" id="ticket-status-select">
+<option value="pending">Pending Review</option>
+<option selected="" value="under_review">Under Review (Kitchen Inspection Initiated)</option>
+<option value="in_progress">In Progress (Vendor Action / Stock Replaced)</option>
+<option value="resolved">Resolved (Replacement Batch Verified)</option>
+</select>
+<span class="material-symbols-outlined absolute right-space-sm top-1/2 -translate-y-1/2 text-outline pointer-events-none text-[18px]">expand_more</span>
+</div>
+</div>
+<!-- Required Resolution Note -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<label class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">Resolution Note &amp; Action Log</label>
+<span class="font-label-sm text-label-sm text-outline">Visible to Student &amp; Warden</span>
+</div>
+<textarea class="w-full p-space-sm rounded-lg bg-surface-container-lowest text-on-surface font-body-sm text-body-sm placeholder:text-outline shadow-sm focus:outline-none" id="resolution-textarea" rows="3">Batch #4B was inspected. Catering team replaced the cooked stock at 1:25 PM. Fresh marinated batch served. Final inspection report will be logged.</textarea>
+</div>
+<!-- Action Button Group -->
+<div class="flex flex-col sm:flex-row gap-space-xs pt-space-xs">
+<button class="flex-1 py-space-xs px-space-sm rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md font-semibold shadow-sm hover:bg-surface-container-high transition-colors flex items-center justify-center gap-1" id="save-note-btn">
+<span class="material-symbols-outlined text-[16px]">save</span>
+              Save Note
+            </button>
+<button class="flex-1 py-space-xs px-space-sm rounded-lg bg-primary text-on-primary font-label-md text-label-md font-semibold shadow-sm hover:bg-primary-container transition-colors flex items-center justify-center gap-1" id="resolve-btn">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+              Mark Resolved
+            </button>
+<button class="py-space-xs px-space-sm rounded-lg bg-surface-container-lowest text-error font-label-md text-label-md font-semibold shadow-sm hover:bg-error-container transition-colors flex items-center justify-center" title="Escalate directly to Chief Warden">
+<span class="material-symbols-outlined text-[18px]">warning</span>
+</button>
+</div>
+</div>
+<!-- History Timeline Audit Trail -->
+<div class="flex flex-col gap-space-sm pt-space-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Incident Audit Trail</span>
+<span class="font-label-sm text-label-sm text-outline">3 logged events</span>
+</div>
+<div class="space-y-space-md relative pl-6 before:content-[''] before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-surface-container-high">
+<!-- Event 1 -->
+<div class="relative flex flex-col gap-0.5">
+<span class="absolute -left-6 top-1 w-2.5 h-2.5 rounded-full bg-secondary"></span>
+<div class="flex items-center gap-space-xs">
+<span class="font-label-md text-label-md font-semibold text-on-surface">Ticket Submitted</span>
+<span class="text-outline text-xs">12:45 PM</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                Submitted by Aarav Patel with photo evidence and Hall 3 geotag.
+              </p>
+</div>
+<!-- Event 2 -->
+<div class="relative flex flex-col gap-0.5">
+<span class="absolute -left-6 top-1 w-2.5 h-2.5 rounded-full bg-surface-container-highest"></span>
+<div class="flex items-center gap-space-xs">
+<span class="font-label-md text-label-md font-semibold text-on-surface">Viewed by Kitchen Manager</span>
+<span class="text-outline text-xs">01:10 PM</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                Rajesh Sharma opened ticket; automated notification dispatched to counter supervisor.
+              </p>
+</div>
+<!-- Event 3 -->
+<div class="relative flex flex-col gap-0.5">
+<span class="absolute -left-6 top-1 w-2.5 h-2.5 rounded-full bg-secondary-container"></span>
+<div class="flex items-center gap-space-xs">
+<span class="font-label-md text-label-md font-semibold text-secondary">Status Changed to Under Review</span>
+<span class="text-outline text-xs">01:30 PM</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                Kitchen stock recall initiated for Batch #4B; inspection in progress.
+              </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Drawer Footer -->
+<div class="p-space-base bg-surface-container-low flex items-center justify-between text-outline font-label-sm text-label-sm">
+<span>Logged by Campus Dining Safety System</span>
+<button class="text-secondary font-semibold hover:underline flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">print</span> Print Ticket Docket
+        </button>
+</div>
+</div>
+</div>
+</div>
+<script>
+  (function initTriageDrawer() {
+    const closeBtn = document.getElementById('close-drawer-btn');
+    const drawer = document.getElementById('side-drawer');
+    const resolveBtn = document.getElementById('resolve-btn');
+    const saveNoteBtn = document.getElementById('save-note-btn');
+    const statusSelect = document.getElementById('ticket-status-select');
+    const noteTextarea = document.getElementById('resolution-textarea');
+
+    if (closeBtn && drawer) {
+      closeBtn.addEventListener('click', () => {
+        drawer.classList.toggle('hidden');
+      });
+    }
+
+    if (resolveBtn && statusSelect) {
+      resolveBtn.addEventListener('click', () => {
+        statusSelect.value = 'resolved';
+        resolveBtn.innerHTML = '<span class="material-symbols-outlined text-[16px]">check</span> Resolved!';
+        resolveBtn.classList.remove('bg-primary');
+        resolveBtn.classList.add('bg-primary-container');
+        setTimeout(() => {
+          resolveBtn.innerHTML = '<span class="material-symbols-outlined text-[16px]">check_circle</span> Mark Resolved';
+          resolveBtn.classList.add('bg-primary');
+          resolveBtn.classList.remove('bg-primary-container');
+        }, 2200);
+      });
+    }
+
+    if (saveNoteBtn && noteTextarea) {
+      saveNoteBtn.addEventListener('click', () => {
+        const originalText = saveNoteBtn.innerHTML;
+        saveNoteBtn.innerHTML = '<span class="material-symbols-outlined text-[16px]">done</span> Saved';
+        setTimeout(() => {
+          saveNoteBtn.innerHTML = originalText;
+        }, 1800);
+      });
+    }
+  })();
+</script></main></div></body></html>

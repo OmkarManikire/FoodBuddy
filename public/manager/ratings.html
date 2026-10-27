@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meal Sentiment & Staff Ratings — Food Buddy (Mess Manager)</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  
+  <!-- Supabase JS -->
+  <script src="/js/vendor/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- App Styles & Shell -->
+  <link rel="stylesheet" href="/css/main.css" />
+  <script src="/js/supabase-client.js"></script>
+  <script type="module" src="/js/auth.js"></script>
+  <script type="module" src="/js/app-shell.js"></script>
+
+  <style>
+    /* Ratings & Analytics specific styling */
+    .metric-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+    .metric-score {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1;
+      margin: 8px 0;
+    }
+    .star-row {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      color: #F59E0B;
+    }
+
+    /* Trend Chart Card */
+    .chart-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .chart-container {
+      position: relative;
+      width: 100%;
+      height: 240px;
+      margin-top: 16px;
+      background: #F8FAFC;
+      border-radius: 12px;
+      padding: 16px 12px 28px 12px;
+    }
+
+    /* Comments Stream */
+    .comment-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: var(--shadow-xs);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .comment-card:hover {
+      box-shadow: var(--shadow-sm);
+    }
+    .comment-card.critical-card {
+      border-left: 4px solid #DC2626;
+      background: #FEF2F2/30;
+    }
+    .comment-card.positive-card {
+      border-left: 4px solid #059669;
+    }
+
+    /* Filter button pill */
+    .filter-btn {
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      background: transparent;
+      color: var(--text-muted);
+      transition: all 0.15s ease;
+    }
+    .filter-btn.active {
+      background: #FFFFFF;
+      color: var(--text-main);
+      box-shadow: var(--shadow-xs);
+    }
+  </style>
+</head>
+<body class="theme-manager">
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="app-sidebar"></aside>
+
+    <!-- Main Content Area -->
+    <div class="app-main">
+      <!-- Topbar -->
+      <header class="app-topbar"></header>
+
+      <!-- Page Content -->
+      <main class="content-container">
+      
+      <!-- Top Header -->
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+            <span class="badge" style="background: #EFF6FF; color: #2563EB; font-weight: 700; font-size: 12px; padding: 4px 10px; border-radius: 999px;">
+              <span class="material-symbols-outlined" style="font-size: 14px; vertical-align: middle;">insights</span>
+              Quality Assurance Desk
+            </span>
+            <span style="font-size: 13px; color: var(--text-muted);">• Student Sentiment & Kitchen Metrics</span>
+          </div>
+          <h1 style="font-size: 24px; font-weight: 800; color: var(--text-main); margin: 0;">Meal Sentiment & Staff Ratings</h1>
+          <p style="font-size: 14px; color: var(--text-muted); margin: 4px 0 0 0;">
+            Track daily taste ratings, hygiene benchmarks, and staff service metrics across breakfast, lunch, snacks, and dinner.
+          </p>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <button id="refreshRatingsBtn" class="btn btn-secondary" style="font-size: 13px; padding: 8px 14px;">
+            <span class="material-symbols-outlined" style="font-size: 16px;">refresh</span>
+            Refresh Analytics
+          </button>
+        </div>
+      </div>
+
+      <!-- Top 4 KPI Metric Cards -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; margin-bottom: 24px;">
+        
+        <!-- Card 1: Today's Food Rating -->
+        <div class="metric-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Today's Food Rating</span>
+            <span class="badge" style="background: #DCFCE7; color: #166534; font-size: 11px; font-weight: 700; padding: 2px 6px; border-radius: 6px;">Daily</span>
+          </div>
+          <div class="metric-score" id="todayFoodScore">4.2 <span style="font-size: 16px; font-weight: 500; color: var(--text-muted);">/ 5.0</span></div>
+          <div class="star-row" id="todayFoodStars">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1; font-size: 18px;">star</span>
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1; font-size: 18px;">star</span>
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1; font-size: 18px;">star</span>
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1; font-size: 18px;">star</span>
+            <span class="material-symbols-outlined" style="font-size: 18px;">star_half</span>
+          </div>
+          <div style="margin-top: 12px; padding-top: 8px; border-top: 1px solid #F1F5F9; font-size: 12px; color: var(--text-muted);">
+            Logged across verified diner check-ins
+          </div>
+        </div>
+
+        <!-- Card 2: 30-Day Food Quality Average -->
+        <div class="metric-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Weekly Food Average</span>
+            <span class="badge" style="background: #EFF6FF; color: #2563EB; font-size: 11px; font-weight: 700; padding: 2px 6px; border-radius: 6px;">30-Day</span>
+          </div>
+          <div class="metric-score" id="overallFoodScore">4.1 <span style="font-size: 16px; font-weight: 500; color: var(--text-muted);">/ 5.0</span></div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">
+            <strong id="totalReviewsCount" style="color: var(--text-main);">0</strong> total verified reviews
+          </div>
+          <div style="background: #E2E8F0; height: 6px; border-radius: 999px; overflow: hidden;">
+            <div id="foodQualityBar" style="height: 100%; width: 82%; background: #2563EB; border-radius: 999px;"></div>
+          </div>
+        </div>
+
+        <!-- Card 3: Staff Service Rating -->
+        <div class="metric-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Staff Demeanor</span>
+            <span class="badge" style="background: #FEF3C7; color: #92400E; font-size: 11px; font-weight: 700; padding: 2px 6px; border-radius: 6px;">Service</span>
+          </div>
+          <div class="metric-score" style="color: #059669;" id="staffScore">4.7 <span style="font-size: 16px; font-weight: 500; color: var(--text-muted);">/ 5.0</span></div>
+          <div class="star-row" style="color: #059669;" id="staffStars">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1; font-size: 18px;">star</span>
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1; font-size: 18px;">star</span>
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1; font-size: 18px;">star</span>
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1; font-size: 18px;">star</span>
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1; font-size: 18px;">star</span>
+          </div>
+          <div style="margin-top: 12px; padding-top: 8px; border-top: 1px solid #F1F5F9; font-size: 12px; color: var(--text-muted);">
+            Above campus benchmark of 4.5★
+          </div>
+        </div>
+
+        <!-- Card 4: Hygiene & Cleanliness -->
+        <div class="metric-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Hygiene Standard</span>
+            <span class="badge" style="background: #F1F5F9; color: #475569; font-size: 11px; font-weight: 700; padding: 2px 6px; border-radius: 6px;">Hall</span>
+          </div>
+          <div class="metric-score" id="hygieneScore">4.5 <span style="font-size: 16px; font-weight: 500; color: var(--text-muted);">/ 5.0</span></div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">
+            Cleanliness of tables & washing bays
+          </div>
+          <div style="background: #E2E8F0; height: 6px; border-radius: 999px; overflow: hidden;">
+            <div id="hygieneBar" style="height: 100%; width: 90%; background: #059669; border-radius: 999px;"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bento Grid: 7-Day Trend Chart (8 cols) + Star Distribution (4 cols) -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; margin-bottom: 32px; align-items: stretch;">
+        
+        <!-- 7-Day Trend Chart -->
+        <div class="chart-card" style="grid-column: span 2;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="material-symbols-outlined" style="color: #2563EB; font-size: 20px;">show_chart</span>
+                <h2 style="font-size: 16px; font-weight: 700; color: var(--text-main); margin: 0;">7-Day Rating Trend Tracking</h2>
+              </div>
+              <p style="font-size: 12px; color: var(--text-muted); margin: 2px 0 0 0;">
+                Food quality vs. staff service performance with university 3.5★ baseline SLA cutoff.
+              </p>
+            </div>
+            
+            <div style="display: flex; align-items: center; gap: 14px; font-size: 12px; font-weight: 600;">
+              <span style="display: inline-flex; align-items: center; gap: 6px; color: #2563EB;">
+                <span style="width: 12px; height: 3px; background: #2563EB; border-radius: 2px;"></span>
+                Food Quality
+              </span>
+              <span style="display: inline-flex; align-items: center; gap: 6px; color: #059669;">
+                <span style="width: 12px; height: 3px; background: #059669; border-radius: 2px;"></span>
+                Staff Service
+              </span>
+              <span style="display: inline-flex; align-items: center; gap: 6px; color: #DC2626;">
+                <span style="width: 12px; height: 1px; background: #DC2626; border-top: 1px dashed #DC2626;"></span>
+                3.5 Cutoff
+              </span>
+            </div>
+          </div>
+
+          <!-- Dynamic SVG Trend Canvas -->
+          <div class="chart-container">
+            <svg id="trendSvg" style="width: 100%; height: 100%; overflow: visible;" viewBox="0 0 650 180" preserveAspectRatio="none">
+              <!-- Gridlines and paths drawn by JS -->
+            </svg>
+            <div id="trendDatesRow" style="display: flex; justify-content: space-between; padding: 6px 12px 0 12px; font-size: 11px; font-weight: 600; color: var(--text-muted);">
+              <!-- Dates loaded by JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Star Breakdown Card -->
+        <div class="chart-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <div>
+              <h2 style="font-size: 16px; font-weight: 700; color: var(--text-main); margin: 0;">Rating Breakdown</h2>
+              <p style="font-size: 12px; color: var(--text-muted); margin: 2px 0 0 0;">Food taste distribution</p>
+            </div>
+            <span class="badge" style="background: #F1F5F9; color: var(--text-main); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px;">30 Days</span>
+          </div>
+
+          <!-- 5 Star Bars -->
+          <div style="display: flex; flex-direction: column; gap: 10px;" id="starBarsContainer">
+            <div style="display: flex; align-items: center; gap: 10px; font-size: 12px;">
+              <span style="width: 45px; font-weight: 600; color: var(--text-main);">5 Stars</span>
+              <div style="flex: 1; height: 8px; background: #F1F5F9; border-radius: 999px; overflow: hidden;">
+                <div id="barStar5" style="height: 100%; width: 0%; background: #059669; border-radius: 999px; transition: width 0.5s;"></div>
+              </div>
+              <span id="countStar5" style="width: 35px; text-align: right; color: var(--text-muted); font-weight: 600;">0</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px; font-size: 12px;">
+              <span style="width: 45px; font-weight: 600; color: var(--text-main);">4 Stars</span>
+              <div style="flex: 1; height: 8px; background: #F1F5F9; border-radius: 999px; overflow: hidden;">
+                <div id="barStar4" style="height: 100%; width: 0%; background: #2563EB; border-radius: 999px; transition: width 0.5s;"></div>
+              </div>
+              <span id="countStar4" style="width: 35px; text-align: right; color: var(--text-muted); font-weight: 600;">0</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px; font-size: 12px;">
+              <span style="width: 45px; font-weight: 600; color: var(--text-main);">3 Stars</span>
+              <div style="flex: 1; height: 8px; background: #F1F5F9; border-radius: 999px; overflow: hidden;">
+                <div id="barStar3" style="height: 100%; width: 0%; background: #F59E0B; border-radius: 999px; transition: width 0.5s;"></div>
+              </div>
+              <span id="countStar3" style="width: 35px; text-align: right; color: var(--text-muted); font-weight: 600;">0</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px; font-size: 12px;">
+              <span style="width: 45px; font-weight: 600; color: var(--text-main);">2 Stars</span>
+              <div style="flex: 1; height: 8px; background: #F1F5F9; border-radius: 999px; overflow: hidden;">
+                <div id="barStar2" style="height: 100%; width: 0%; background: #EA580C; border-radius: 999px; transition: width 0.5s;"></div>
+              </div>
+              <span id="countStar2" style="width: 35px; text-align: right; color: var(--text-muted); font-weight: 600;">0</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px; font-size: 12px;">
+              <span style="width: 45px; font-weight: 600; color: var(--text-main);">1 Star</span>
+              <div style="flex: 1; height: 8px; background: #F1F5F9; border-radius: 999px; overflow: hidden;">
+                <div id="barStar1" style="height: 100%; width: 0%; background: #DC2626; border-radius: 999px; transition: width 0.5s;"></div>
+              </div>
+              <span id="countStar1" style="width: 35px; text-align: right; color: var(--text-muted); font-weight: 600;">0</span>
+            </div>
+          </div>
+
+          <div style="margin-top: 20px; padding: 12px; background: #F8FAFC; border-radius: 10px; font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 8px;">
+            <span class="material-symbols-outlined" style="color: #059669; font-size: 18px;">verified</span>
+            <span>Over 80% satisfaction index meets hostel charter goal.</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Student Feedback & Comments Ledger -->
+      <div class="card" style="padding: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 20px;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="material-symbols-outlined" style="color: #2563EB; font-size: 20px;">chat</span>
+              <h2 style="font-size: 17px; font-weight: 700; color: var(--text-main); margin: 0;">Student Feedback & Comment Stream</h2>
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted); margin: 2px 0 0 0;">
+              Real comments left by residents after marking attendance.
+            </p>
+          </div>
+
+          <!-- Comment Filter Tabs -->
+          <div style="background: #F1F5F9; padding: 4px; border-radius: 10px; display: inline-flex; gap: 4px;">
+            <button class="filter-btn active" data-filter="all">All Feedback</button>
+            <button class="filter-btn" data-filter="critical">Needs Attention (&lt;3★)</button>
+            <button class="filter-btn" data-filter="positive">Positive (4-5★)</button>
+          </div>
+        </div>
+
+        <!-- Comments Grid -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px;" id="commentsGrid">
+          <div style="grid-column: 1 / -1; text-align: center; padding: 36px; color: var(--text-muted);">
+            <span class="material-symbols-outlined" style="font-size: 28px; animation: spin 1s linear infinite;">sync</span>
+            <p style="margin-top: 6px;">Loading comments...</p>
+          </div>
+        </div>
+      </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script>
+    let analyticsData = null;
+    let commentFilter = 'all';
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      const user = await window.requireAuth?.('mess_manager');
+      if (!user) return;
+      await window.initAppShell?.({
+        activeNav: 'ratings',
+        user: {
+          name: user.profile?.name || user.profile?.full_name || 'Rameshwar Kumar',
+          role: 'mess_manager',
+          hostel_block: 'Mess 1 • Vikramshila & Mithila'
+        }
+      });
+
+      setupEvents();
+      loadRatingsAnalytics();
+    });
+
+    function setupEvents() {
+      document.getElementById('refreshRatingsBtn').addEventListener('click', loadRatingsAnalytics);
+
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          commentFilter = btn.dataset.filter;
+          renderComments();
+        });
+      });
+    }
+
+    async function loadRatingsAnalytics() {
+      try {
+        const { data, error } = await supabaseClient.rpc('get_manager_ratings_analytics');
+        if (error) throw error;
+
+        analyticsData = data || {};
+        renderOverviewMetrics();
+        renderTrendChart();
+        renderStarBreakdown();
+        renderComments();
+      } catch (err) {
+        console.error('Failed to load ratings analytics:', err);
+        showAppNotification(`Error loading analytics: ${err.message}`, 'error');
+      }
+    }
+
+    function renderOverviewMetrics() {
+      const overall = analyticsData?.overall || {};
+      
+      const foodScore = Number(overall.food || 4.2).toFixed(1);
+      const staffScore = Number(overall.staff || 4.7).toFixed(1);
+      const hygieneScore = Number(overall.hygiene || 4.5).toFixed(1);
+      const totalCount = overall.total_reviews || 0;
+
+      document.getElementById('todayFoodScore').innerHTML = `${foodScore} <span style="font-size: 16px; font-weight: 500; color: var(--text-muted);">/ 5.0</span>`;
+      document.getElementById('overallFoodScore').innerHTML = `${foodScore} <span style="font-size: 16px; font-weight: 500; color: var(--text-muted);">/ 5.0</span>`;
+      document.getElementById('staffScore').innerHTML = `${staffScore} <span style="font-size: 16px; font-weight: 500; color: var(--text-muted);">/ 5.0</span>`;
+      document.getElementById('hygieneScore').innerHTML = `${hygieneScore} <span style="font-size: 16px; font-weight: 500; color: var(--text-muted);">/ 5.0</span>`;
+      document.getElementById('totalReviewsCount').textContent = totalCount;
+
+      const foodPct = Math.min(100, Math.round((foodScore / 5) * 100));
+      const hygienePct = Math.min(100, Math.round((hygieneScore / 5) * 100));
+      document.getElementById('foodQualityBar').style.width = `${foodPct}%`;
+      document.getElementById('hygieneBar').style.width = `${hygienePct}%`;
+    }
+
+    function renderTrendChart() {
+      const trend = analyticsData?.daily_trend || [];
+      const svg = document.getElementById('trendSvg');
+      const datesRow = document.getElementById('trendDatesRow');
+
+      if (!trend.length) {
+        svg.innerHTML = `<text x="325" y="90" text-anchor="middle" fill="#94A3B8" font-size="12">No 7-day data recorded yet</text>`;
+        datesRow.innerHTML = '';
+        return;
+      }
+
+      const width = 650;
+      const height = 180;
+      const padLeft = 30;
+      const padRight = 30;
+      const usableWidth = width - padLeft - padRight;
+
+      // Y Scale: 2.0 to 5.0
+      const minY = 2.0;
+      const maxY = 5.0;
+      const scaleY = (val) => height - 30 - ((val - minY) / (maxY - minY)) * (height - 50);
+
+      // Grid lines
+      let svgHtml = `
+        <defs>
+          <linearGradient id="foodGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#2563EB" stop-opacity="0.25"/>
+            <stop offset="100%" stop-color="#2563EB" stop-opacity="0.0"/>
+          </linearGradient>
+        </defs>
+        <!-- Horizontal gridlines -->
+        <line x1="${padLeft}" y1="${scaleY(5.0)}" x2="${width - padRight}" y2="${scaleY(5.0)}" stroke="#E2E8F0" stroke-dasharray="3,3" />
+        <text x="5" y="${scaleY(5.0) + 4}" fill="#94A3B8" font-size="10">5.0</text>
+        <line x1="${padLeft}" y1="${scaleY(4.0)}" x2="${width - padRight}" y2="${scaleY(4.0)}" stroke="#E2E8F0" stroke-dasharray="3,3" />
+        <text x="5" y="${scaleY(4.0) + 4}" fill="#94A3B8" font-size="10">4.0</text>
+        <line x1="${padLeft}" y1="${scaleY(3.5)}" x2="${width - padRight}" y2="${scaleY(3.5)}" stroke="#DC2626" stroke-dasharray="4,4" stroke-width="1.2" />
+        <text x="5" y="${scaleY(3.5) + 4}" fill="#DC2626" font-size="10" font-weight="bold">3.5★</text>
+        <line x1="${padLeft}" y1="${scaleY(3.0)}" x2="${width - padRight}" y2="${scaleY(3.0)}" stroke="#E2E8F0" stroke-dasharray="3,3" />
+        <text x="5" y="${scaleY(3.0) + 4}" fill="#94A3B8" font-size="10">3.0</text>
+      `;
+
+      const step = trend.length > 1 ? usableWidth / (trend.length - 1) : 0;
+      const foodPoints = [];
+      const staffPoints = [];
+      const dateLabels = [];
+
+      trend.forEach((item, index) => {
+        const x = padLeft + (index * step);
+        const yFood = scaleY(Number(item.avg_food || 4.0));
+        const yStaff = scaleY(Number(item.avg_staff || 4.5));
+
+        foodPoints.push(`${x},${yFood}`);
+        staffPoints.push(`${x},${yStaff}`);
+
+        const d = new Date(item.date);
+        const dayLabel = d.toLocaleDateString('en-US', { weekday: 'short', month: 'numeric', day: 'numeric' });
+        dateLabels.push(`<span>${dayLabel}</span>`);
+      });
+
+      // Area fill for food
+      const firstX = padLeft;
+      const lastX = padLeft + (trend.length - 1) * step;
+      const groundY = height - 30;
+      const areaPoints = `${firstX},${groundY} ${foodPoints.join(' ')} ${lastX},${groundY}`;
+
+      svgHtml += `
+        <polygon points="${areaPoints}" fill="url(#foodGrad)" />
+        <polyline points="${foodPoints.join(' ')}" fill="none" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+        <polyline points="${staffPoints.join(' ')}" fill="none" stroke="#059669" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+      `;
+
+      // Circles for nodes
+      trend.forEach((item, index) => {
+        const x = padLeft + (index * step);
+        const yFood = scaleY(Number(item.avg_food || 4.0));
+        const yStaff = scaleY(Number(item.avg_staff || 4.5));
+        svgHtml += `
+          <circle cx="${x}" cy="${yFood}" r="4" fill="#2563EB" stroke="#FFFFFF" stroke-width="1.5" />
+          <circle cx="${x}" cy="${yStaff}" r="4" fill="#059669" stroke="#FFFFFF" stroke-width="1.5" />
+        `;
+      });
+
+      svg.innerHTML = svgHtml;
+      datesRow.innerHTML = dateLabels.join('');
+    }
+
+    function renderStarBreakdown() {
+      const stars = analyticsData?.star_distribution || {};
+      const s5 = Number(stars.star_5 || 0);
+      const s4 = Number(stars.star_4 || 0);
+      const s3 = Number(stars.star_3 || 0);
+      const s2 = Number(stars.star_2 || 0);
+      const s1 = Number(stars.star_1 || 0);
+
+      const total = s5 + s4 + s3 + s2 + s1 || 1;
+
+      document.getElementById('countStar5').textContent = s5;
+      document.getElementById('countStar4').textContent = s4;
+      document.getElementById('countStar3').textContent = s3;
+      document.getElementById('countStar2').textContent = s2;
+      document.getElementById('countStar1').textContent = s1;
+
+      document.getElementById('barStar5').style.width = `${Math.round((s5 / total) * 100)}%`;
+      document.getElementById('barStar4').style.width = `${Math.round((s4 / total) * 100)}%`;
+      document.getElementById('barStar3').style.width = `${Math.round((s3 / total) * 100)}%`;
+      document.getElementById('barStar2').style.width = `${Math.round((s2 / total) * 100)}%`;
+      document.getElementById('barStar1').style.width = `${Math.round((s1 / total) * 100)}%`;
+    }
+
+    function renderComments() {
+      const container = document.getElementById('commentsGrid');
+      const allComments = analyticsData?.recent_comments || [];
+
+      let filtered = allComments;
+      if (commentFilter === 'critical') {
+        filtered = allComments.filter(c => Number(c.food_rating) <= 2);
+      } else if (commentFilter === 'positive') {
+        filtered = allComments.filter(c => Number(c.food_rating) >= 4);
+      }
+
+      if (!filtered.length) {
+        container.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 48px; color: var(--text-muted);">
+            <span class="material-symbols-outlined" style="font-size: 32px; color: #94A3B8;">reviews</span>
+            <p style="margin-top: 8px;">No comments matching this filter.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(c => {
+        const rating = Number(c.food_rating || 4);
+        const isCritical = rating <= 2;
+        const isPositive = rating >= 4;
+        const cardClass = isCritical ? 'comment-card critical-card' : (isPositive ? 'comment-card positive-card' : 'comment-card');
+
+        return `
+          <div class="${cardClass}">
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <div style="display: flex; align-items: center; gap: 4px;">
+                  <span class="material-symbols-outlined" style="color: ${isCritical ? '#DC2626' : '#F59E0B'}; font-size: 16px; font-variation-settings: 'FILL' 1;">star</span>
+                  <span style="font-size: 13px; font-weight: 700; color: var(--text-main);">${rating}.0</span>
+                </div>
+                <span style="font-size: 11px; font-weight: 600; text-transform: uppercase; background: #F1F5F9; color: #475569; padding: 2px 6px; border-radius: 4px;">
+                  ${escapeHtml(c.meal_slot || 'Lunch')}
+                </span>
+              </div>
+              <p style="font-size: 13px; color: var(--text-main); margin: 0; line-height: 1.45;">
+                “${escapeHtml(c.comment)}”
+              </p>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--text-muted); pt-2; border-top: 1px dashed #E2E8F0; padding-top: 8px;">
+              <span>Student: <strong style="color: var(--text-main);">${escapeHtml(c.student_roll || 'Resident')}</strong></span>
+              <span>${new Date(c.created_at || c.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+  </script>
+</body>
+</html>

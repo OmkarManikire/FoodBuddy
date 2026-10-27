@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>Rate Today's Food — Food Buddy</title>
+  <link rel="stylesheet" href="/css/main.css"/>
+  <script src="/js/vendor/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    .star-rating {
+      display: inline-flex;
+      gap: 4px;
+      cursor: pointer;
+    }
+    .star-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 2px;
+      color: #CBD5E1;
+      font-size: 26px;
+      transition: color 0.15s ease, transform 0.1s ease;
+    }
+    .star-btn:hover {
+      transform: scale(1.15);
+    }
+    .star-btn.active {
+      color: #F59E0B;
+      font-variation-settings: 'FILL' 1;
+    }
+    .meal-rate-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: var(--shadow-xs);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .meal-rate-card.rated {
+      background: #F8FAFC;
+      border-color: #CBD5E1;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="app-sidebar"></aside>
+
+    <div class="app-main">
+      <header class="app-topbar"></header>
+
+      <main class="content-container">
+        <!-- Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <h1 style="font-size: 24px; font-weight: 700; color: var(--text-main);">Rate Today's Food</h1>
+            <p style="font-size: 14px; color: var(--text-muted); margin-top: 2px;" id="rateDateSub">
+              Anonymous quality, hygiene & staff ratings for today's meals
+            </p>
+          </div>
+          <div class="campus-chip">
+            <span class="material-symbols-outlined text-[16px] text-muted">calendar_today</span>
+            <span id="rateTodayDateBadge">Today</span>
+          </div>
+        </div>
+
+        <!-- 3 Meal Cards Grid -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
+          <!-- Meal 1: Breakfast -->
+          <div class="meal-rate-card" id="card-breakfast">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 36px; height: 36px; border-radius: 8px; background: #FEF3C7; color: #D97706; display: flex; align-items: center; justify-content: center;">
+                  <span class="material-symbols-outlined text-[20px]">bakery_dining</span>
+                </div>
+                <div>
+                  <h3 style="font-size: 16px; font-weight: 700; color: var(--text-main);">Breakfast</h3>
+                  <div style="font-size: 11px; color: var(--text-muted);">07:30 AM – 09:30 AM</div>
+                </div>
+              </div>
+              <span class="badge badge-pending" id="badge-breakfast">Pending</span>
+            </div>
+
+            <div style="padding: 10px; background: var(--bg-subtle); border-radius: 8px; font-size: 12px; color: var(--text-body);" id="menu-text-breakfast">
+              Idli Sambar, Medu Vada, Coconut Chutney, Tea & Coffee
+            </div>
+
+            <form id="form-breakfast" style="display: flex; flex-direction: column; gap: 14px;">
+              <!-- Criteria 1: Food Quality -->
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="form-label" style="font-size: 13px;">Food Taste & Quality</span>
+                <div class="star-rating" data-slot="breakfast" data-criteria="food">
+                  <span class="material-symbols-outlined star-btn" data-val="1">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="2">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="3">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="4">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="5">star</span>
+                </div>
+              </div>
+
+              <!-- Criteria 2: Hygiene -->
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="form-label" style="font-size: 13px;">Counter Hygiene</span>
+                <div class="star-rating" data-slot="breakfast" data-criteria="hygiene">
+                  <span class="material-symbols-outlined star-btn" data-val="1">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="2">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="3">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="4">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="5">star</span>
+                </div>
+              </div>
+
+              <!-- Criteria 3: Staff Behaviour -->
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="form-label" style="font-size: 13px;">Staff Courtesy</span>
+                <div class="star-rating" data-slot="breakfast" data-criteria="staff">
+                  <span class="material-symbols-outlined star-btn" data-val="1">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="2">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="3">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="4">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="5">star</span>
+                </div>
+              </div>
+
+              <textarea class="form-textarea" rows="2" placeholder="Optional comments on breakfast..." id="comment-breakfast"></textarea>
+
+              <button type="submit" class="btn btn-primary" style="width: 100%;">
+                <span>Submit Breakfast Rating</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- Meal 2: Lunch -->
+          <div class="meal-rate-card" id="card-lunch">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 36px; height: 36px; border-radius: 8px; background: #ECFDF5; color: #059669; display: flex; align-items: center; justify-content: center;">
+                  <span class="material-symbols-outlined text-[20px]">lunch_dining</span>
+                </div>
+                <div>
+                  <h3 style="font-size: 16px; font-weight: 700; color: var(--text-main);">Lunch</h3>
+                  <div style="font-size: 11px; color: var(--text-muted);">12:30 PM – 02:30 PM</div>
+                </div>
+              </div>
+              <span class="badge badge-pending" id="badge-lunch">Pending</span>
+            </div>
+
+            <div style="padding: 10px; background: var(--bg-subtle); border-radius: 8px; font-size: 12px; color: var(--text-body);" id="menu-text-lunch">
+              Paneer Butter Masala, Dal Makhani, Jeera Rice, Phulka, Gulab Jamun
+            </div>
+
+            <form id="form-lunch" style="display: flex; flex-direction: column; gap: 14px;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="form-label" style="font-size: 13px;">Food Taste & Quality</span>
+                <div class="star-rating" data-slot="lunch" data-criteria="food">
+                  <span class="material-symbols-outlined star-btn" data-val="1">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="2">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="3">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="4">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="5">star</span>
+                </div>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="form-label" style="font-size: 13px;">Counter Hygiene</span>
+                <div class="star-rating" data-slot="lunch" data-criteria="hygiene">
+                  <span class="material-symbols-outlined star-btn" data-val="1">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="2">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="3">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="4">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="5">star</span>
+                </div>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="form-label" style="font-size: 13px;">Staff Courtesy</span>
+                <div class="star-rating" data-slot="lunch" data-criteria="staff">
+                  <span class="material-symbols-outlined star-btn" data-val="1">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="2">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="3">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="4">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="5">star</span>
+                </div>
+              </div>
+
+              <textarea class="form-textarea" rows="2" placeholder="Optional comments on lunch..." id="comment-lunch"></textarea>
+
+              <button type="submit" class="btn btn-primary" style="width: 100%;">
+                <span>Submit Lunch Rating</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- Meal 3: Dinner -->
+          <div class="meal-rate-card" id="card-dinner">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 36px; height: 36px; border-radius: 8px; background: #EFF6FF; color: #2563EB; display: flex; align-items: center; justify-content: center;">
+                  <span class="material-symbols-outlined text-[20px]">dinner_dining</span>
+                </div>
+                <div>
+                  <h3 style="font-size: 16px; font-weight: 700; color: var(--text-main);">Dinner</h3>
+                  <div style="font-size: 11px; color: var(--text-muted);">07:45 PM – 09:45 PM</div>
+                </div>
+              </div>
+              <span class="badge badge-pending" id="badge-dinner">Pending</span>
+            </div>
+
+            <div style="padding: 10px; background: var(--bg-subtle); border-radius: 8px; font-size: 12px; color: var(--text-body);" id="menu-text-dinner">
+              Mixed Vegetable Kadai, Yellow Dal Tadka, Steamed Rice, Tawa Roti, Kheer
+            </div>
+
+            <form id="form-dinner" style="display: flex; flex-direction: column; gap: 14px;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="form-label" style="font-size: 13px;">Food Taste & Quality</span>
+                <div class="star-rating" data-slot="dinner" data-criteria="food">
+                  <span class="material-symbols-outlined star-btn" data-val="1">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="2">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="3">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="4">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="5">star</span>
+                </div>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="form-label" style="font-size: 13px;">Counter Hygiene</span>
+                <div class="star-rating" data-slot="dinner" data-criteria="hygiene">
+                  <span class="material-symbols-outlined star-btn" data-val="1">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="2">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="3">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="4">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="5">star</span>
+                </div>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="form-label" style="font-size: 13px;">Staff Courtesy</span>
+                <div class="star-rating" data-slot="dinner" data-criteria="staff">
+                  <span class="material-symbols-outlined star-btn" data-val="1">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="2">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="3">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="4">star</span>
+                  <span class="material-symbols-outlined star-btn" data-val="5">star</span>
+                </div>
+              </div>
+
+              <textarea class="form-textarea" rows="2" placeholder="Optional comments on dinner..." id="comment-dinner"></textarea>
+
+              <button type="submit" class="btn btn-primary" style="width: 100%;">
+                <span>Submit Dinner Rating</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { requireAuth } from '/js/auth.js';
+    import { initAppShell, showToast } from '/js/app-shell.js';
+    import { getSupabase } from '/js/supabase.js';
+
+    const authState = await requireAuth('student');
+    if (authState) {
+      await initAppShell('rate', authState.profile);
+      document.getElementById('topbarCurrentTitle').textContent = 'Rate Food';
+
+      const today = new Date();
+      const todayStr = today.toISOString().split('T')[0];
+      document.getElementById('rateTodayDateBadge').textContent = today.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' });
+
+      const supabase = getSupabase();
+      const ratingValues = {
+        breakfast: { food: 5, hygiene: 5, staff: 5 },
+        lunch: { food: 5, hygiene: 5, staff: 5 },
+        dinner: { food: 5, hygiene: 5, staff: 5 },
+      };
+
+      // Interactive Star Click Handlers
+      document.querySelectorAll('.star-rating').forEach(group => {
+        const slot = group.dataset.slot;
+        const criteria = group.dataset.criteria;
+        const stars = group.querySelectorAll('.star-btn');
+
+        // Initial default 5 stars
+        stars.forEach(s => s.classList.add('active'));
+
+        stars.forEach(star => {
+          star.addEventListener('click', (e) => {
+            e.preventDefault();
+            const val = parseInt(star.dataset.val, 10);
+            ratingValues[slot][criteria] = val;
+
+            stars.forEach(s => {
+              const sVal = parseInt(s.dataset.val, 10);
+              if (sVal <= val) {
+                s.classList.add('active');
+              } else {
+                s.classList.remove('active');
+              }
+            });
+          });
+        });
+      });
+
+      // Fetch today's menu titles
+      try {
+        const { data: menus } = await supabase
+          .from('menu')
+          .select('meal_slot, title, items')
+          .eq('date', todayStr);
+
+        if (menus) {
+          menus.forEach(m => {
+            const el = document.getElementById(`menu-text-${m.meal_slot}`);
+            if (el) {
+              const names = Array.isArray(m.items) ? m.items.map(i => i.name || i).join(', ') : m.title;
+              el.textContent = names;
+            }
+          });
+        }
+      } catch (e) {
+        console.error('Menu load error:', e);
+      }
+
+      // Check existing ratings for today
+      async function loadExistingRatings() {
+        try {
+          const { data: existingRatings, error } = await supabase
+            .from('ratings')
+            .select('*')
+            .eq('date', todayStr);
+
+          if (!error && existingRatings) {
+            existingRatings.forEach(r => {
+              const card = document.getElementById(`card-${r.meal_slot}`);
+              const badge = document.getElementById(`badge-${r.meal_slot}`);
+              const form = document.getElementById(`form-${r.meal_slot}`);
+
+              if (card && badge && form) {
+                card.classList.add('rated');
+                badge.className = 'badge badge-resolved';
+                badge.innerHTML = `<span class="material-symbols-outlined text-[14px]">check</span> Rated (${r.food_rating}★)`;
+
+                form.innerHTML = `
+                  <div style="padding: 12px; background: #ECFDF5; border: 1px solid #A7F3D0; border-radius: 8px; font-size: 13px; color: #065F46;">
+                    <div style="display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 4px;">
+                      <span>Your Feedback Submitted</span>
+                      <span>${r.food_rating}/5 Stars</span>
+                    </div>
+                    <div>${r.comment ? `"${r.comment}"` : 'Thank you for rating! Your feedback helps us improve meal quality.'}</div>
+                  </div>
+                `;
+              }
+            });
+          }
+        } catch (e) {
+          console.error('Rating load error:', e);
+        }
+      }
+
+      await loadExistingRatings();
+
+      // Form submission for each meal slot
+      ['breakfast', 'lunch', 'dinner'].forEach(slot => {
+        const form = document.getElementById(`form-${slot}`);
+        if (!form) return;
+
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const comment = document.getElementById(`comment-${slot}`).value.trim();
+          const vals = ratingValues[slot];
+
+          const submitBtn = form.querySelector('button[type="submit"]');
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = `<span>Saving rating...</span>`;
+
+          try {
+            const { error } = await supabase
+              .from('ratings')
+              .insert({
+                student_id: authState.user.id,
+                date: todayStr,
+                meal_slot: slot,
+                food_rating: vals.food,
+                hygiene_rating: vals.hygiene,
+                staff_rating: vals.staff,
+                comment: comment || null,
+              });
+
+            if (error) {
+              if (error.code === '23505') {
+                showToast(`You have already rated ${slot} for today.`, 'error');
+              } else {
+                showToast(`Failed to submit rating: ${error.message}`, 'error');
+              }
+              submitBtn.disabled = false;
+              submitBtn.innerHTML = `<span>Submit ${slot} Rating</span>`;
+            } else {
+              showToast(`Thank you! Your ${slot} rating was recorded.`, 'success');
+              await loadExistingRatings();
+            }
+          } catch (err) {
+            showToast(`Error: ${err.message}`, 'error');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = `<span>Submit ${slot} Rating</span>`;
+          }
+        });
+      });
+    }
+  </script>
+</body>
+</html>

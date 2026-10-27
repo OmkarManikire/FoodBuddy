@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dynamic QR Kiosk — Food Buddy Manager</title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/js/vendor/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- QRCode.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    .qr-kiosk-frame {
+      background: #FFFFFF;
+      border: 2px solid #E2E8F0;
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 520px;
+      width: 100%;
+      margin: 0 auto;
+      position: relative;
+    }
+    .qr-box-wrapper {
+      padding: 20px;
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 16px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+      position: relative;
+    }
+    .kiosk-fullscreen-mode .app-sidebar,
+    .kiosk-fullscreen-mode .app-topbar,
+    .kiosk-fullscreen-mode .mobile-tab-bar {
+      display: none !important;
+    }
+    .kiosk-fullscreen-mode .main-content-wrapper,
+    .kiosk-fullscreen-mode .app-main {
+      margin-left: 0 !important;
+      padding-top: 0 !important;
+      background: #F8FAFC !important;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body class="theme-manager">
+  <div class="app-layout">
+    <aside class="app-sidebar"></aside>
+
+    <div class="app-main">
+      <header class="app-topbar"></header>
+
+      <main class="content-container" style="display: flex; flex-direction: column;">
+        
+        <!-- Header & Controls -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+              <span class="badge badge-blue">Dynamic Turnstile</span>
+              <span style="font-size: 13px; color: var(--text-muted);">Counter Display Kiosk</span>
+            </div>
+            <h1 style="font-size: 24px; font-weight: 700; margin: 0;">Live Turnstile QR Kiosk</h1>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <!-- Meal Slot Selector -->
+            <div style="display: flex; background: #F1F5F9; padding: 3px; border-radius: 8px;">
+              <button onclick="setSlot('breakfast')" id="slotBtn-breakfast" class="btn btn-sm" style="font-size: 12px; padding: 4px 10px; border-radius: 6px;">Breakfast</button>
+              <button onclick="setSlot('lunch')" id="slotBtn-lunch" class="btn btn-sm active" style="font-size: 12px; padding: 4px 10px; border-radius: 6px; background: #2563EB; color: #fff;">Lunch</button>
+              <button onclick="setSlot('snacks')" id="slotBtn-snacks" class="btn btn-sm" style="font-size: 12px; padding: 4px 10px; border-radius: 6px;">Snacks</button>
+              <button onclick="setSlot('dinner')" id="slotBtn-dinner" class="btn btn-sm" style="font-size: 12px; padding: 4px 10px; border-radius: 6px;">Dinner</button>
+            </div>
+
+            <button onclick="toggleFullscreen()" class="btn btn-outline btn-sm" style="background: #fff; font-size: 12px;" title="Toggle Fullscreen Kiosk Mode">
+              <span class="material-symbols-outlined" style="font-size: 16px;">fullscreen</span>
+              <span id="fullscreenBtnText">Kiosk Mode</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Central Kiosk Card -->
+        <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px 0 30px 0;">
+          
+          <div class="qr-kiosk-frame">
+            <!-- Meal Slot & Live Time Header -->
+            <div style="text-align: center; margin-bottom: 20px; width: 100%;">
+              <div style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 20px; color: #1D4ED8; font-size: 12px; font-weight: 600; margin-bottom: 8px;">
+                <span class="material-symbols-outlined" style="font-size: 16px; color: #2563EB;">restaurant</span>
+                <span id="kioskMealTitle">Lunch Service</span>
+              </div>
+              <div style="font-size: 20px; font-weight: 700; color: var(--text-main);" id="kioskClock">--:--:--</div>
+              <div style="font-size: 12px; color: var(--text-muted);" id="kioskDateText">Today's Meal Access</div>
+            </div>
+
+            <!-- QR Code Canvas Display -->
+            <div class="qr-box-wrapper" style="margin-bottom: 16px;">
+              <div id="qrCodeContainer" style="width: 250px; height: 250px; display: flex; align-items: center; justify-content: center;">
+                <div style="color: var(--text-muted); font-size: 13px;">Generating Token...</div>
+              </div>
+            </div>
+
+            <!-- Token Text & Single-Scan Policy -->
+            <div style="text-align: center; margin-bottom: 20px;">
+              <div style="font-family: monospace; font-size: 15px; font-weight: 700; color: #1E40AF; letter-spacing: 1px; margin-bottom: 4px;" id="tokenDisplay">
+                QR-TOKEN-LOADING
+              </div>
+              <div style="font-size: 11px; color: #64748B; display: flex; align-items: center; justify-content: center; gap: 4px;">
+                <span class="material-symbols-outlined" style="font-size: 14px; color: #10B981;">verified_user</span>
+                <span>Anti-Passback Protected • Rotates Dynamically</span>
+              </div>
+            </div>
+
+            <!-- Countdown Bar -->
+            <div style="width: 100%; margin-bottom: 20px;">
+              <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-body);">
+                <span style="display: flex; align-items: center; gap: 4px;">
+                  <span class="material-symbols-outlined" style="font-size: 16px; color: #2563EB;">timer</span>
+                  <span id="countdownText">Refreshes in 2:30</span>
+                </span>
+                <button onclick="forceRefreshToken()" style="border: none; background: none; color: #2563EB; font-size: 12px; cursor: pointer; text-decoration: underline;">
+                  Refresh Now
+                </button>
+              </div>
+              <div style="height: 6px; background: #F1F5F9; border-radius: 4px; overflow: hidden;">
+                <div id="countdownProgressBar" style="height: 100%; width: 100%; background: #2563EB; transition: width 1s linear;"></div>
+              </div>
+            </div>
+
+            <!-- Scan Counter Badge inside Card -->
+            <div style="width: 100%; padding: 12px 16px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <div style="width: 10px; height: 10px; border-radius: 50%; background: #10B981; animation: pulse 2s infinite;"></div>
+                <span style="font-size: 13px; font-weight: 600; color: var(--text-main);">Live Turnstile Check-ins</span>
+              </div>
+              <div style="display: flex; align-items: baseline; gap: 4px;">
+                <span style="font-size: 20px; font-weight: 800; color: #2563EB;" id="liveScanCount">0</span>
+                <span style="font-size: 11px; color: var(--text-muted);">verified</span>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { requireAuth } from '/js/auth.js';
+    import { initAppShell, showToast } from '/js/app-shell.js';
+    import { getSupabase } from '/js/supabase.js';
+
+    const foodBuddySupabase = getSupabase();
+    let currentUser = null;
+
+    let selectedSlot = null; // null for auto-detect, or 'breakfast', 'lunch', 'snacks', 'dinner'
+    let currentToken = null;
+    let remainingSeconds = 150;
+    let totalDuration = 150;
+    let countdownInterval = null;
+    let clockInterval = null;
+    let qrcodeInstance = null;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      currentUser = await requireAuth('mess_manager');
+      if (!currentUser) return;
+
+      const opName = currentUser.profile?.name || currentUser.profile?.full_name || 'Rameshwar Kumar';
+      const opFacility = currentUser.profile?.hostel_block || 'Mess 1 (Vikramshila & Mithila)';
+
+      initAppShell({
+        activeNav: 'qr',
+        user: {
+          name: opName,
+          role: 'mess_manager',
+          hostel_block: opFacility,
+          email: currentUser.user?.email || currentUser.profile?.email,
+        }
+      });
+
+      startDigitalClock();
+      await fetchDynamicQR();
+
+      // Start Countdown Timer
+      startCountdownLoop();
+
+      // Realtime subscription on attendance
+      foodBuddySupabase
+        .channel('kiosk-attendance-live')
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'attendance' }, (payload) => {
+          const countEl = document.getElementById('liveScanCount');
+          const currentCount = parseInt(countEl.textContent, 10) || 0;
+          countEl.textContent = currentCount + 1;
+          showToast(`Student checked in: ${payload.new.student_id ? 'Pass Verified' : ''}`, 'info');
+        })
+        .subscribe();
+    });
+
+    function startDigitalClock() {
+      const clockEl = document.getElementById('kioskClock');
+      const dateEl = document.getElementById('kioskDateText');
+
+      function updateClock() {
+        const now = new Date();
+        clockEl.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        dateEl.textContent = now.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' });
+      }
+
+      updateClock();
+      clockInterval = setInterval(updateClock, 1000);
+    }
+
+    async function fetchDynamicQR() {
+      try {
+        const { data, error } = await foodBuddySupabase.rpc('get_current_qr', {
+          p_meal_slot: selectedSlot
+        });
+
+        if (error) throw error;
+
+        currentToken = data.token;
+        remainingSeconds = data.remaining_seconds || 150;
+        totalDuration = Math.max(remainingSeconds, 150);
+
+        document.getElementById('tokenDisplay').textContent = currentToken;
+        document.getElementById('liveScanCount').textContent = data.scan_count || 0;
+
+        const slotCapital = data.meal_slot.charAt(0).toUpperCase() + data.meal_slot.slice(1);
+        document.getElementById('kioskMealTitle').textContent = `${slotCapital} Service Check-in`;
+
+        // Update active slot pill
+        ['breakfast', 'lunch', 'snacks', 'dinner'].forEach(s => {
+          const btn = document.getElementById(`slotBtn-${s}`);
+          if (btn) {
+            if (s === data.meal_slot) {
+              btn.style.background = '#2563EB';
+              btn.style.color = '#fff';
+            } else {
+              btn.style.background = 'transparent';
+              btn.style.color = 'var(--text-body)';
+            }
+          }
+        });
+
+        renderQRCode(currentToken);
+        updateCountdownUI();
+
+      } catch (err) {
+        console.error('Error fetching dynamic QR:', err);
+        showToast(err.message || 'Error generating QR token', 'error');
+      }
+    }
+
+    function renderQRCode(text) {
+      const container = document.getElementById('qrCodeContainer');
+      container.innerHTML = '';
+
+      if (typeof QRCode !== 'undefined') {
+        qrcodeInstance = new QRCode(container, {
+          text: text,
+          width: 250,
+          height: 250,
+          colorDark: "#0F172A",
+          colorLight: "#FFFFFF",
+          correctLevel: QRCode.CorrectLevel.H
+        });
+      } else {
+        container.innerHTML = `<div style="font-family:monospace;font-size:16px;font-weight:700;">${text}</div>`;
+      }
+    }
+
+    function startCountdownLoop() {
+      if (countdownInterval) clearInterval(countdownInterval);
+
+      countdownInterval = setInterval(async () => {
+        remainingSeconds--;
+        if (remainingSeconds <= 0) {
+          await fetchDynamicQR();
+        } else {
+          updateCountdownUI();
+        }
+      }, 1000);
+    }
+
+    function updateCountdownUI() {
+      const m = Math.floor(remainingSeconds / 60);
+      const s = remainingSeconds % 60;
+      const timeStr = `${m}:${s < 10 ? '0' : ''}${s}`;
+
+      document.getElementById('countdownText').textContent = `Refreshes in ${timeStr}`;
+
+      const pct = Math.max(0, Math.min(100, (remainingSeconds / totalDuration) * 100));
+      const bar = document.getElementById('countdownProgressBar');
+      if (bar) {
+        bar.style.width = `${pct}%`;
+        if (remainingSeconds < 30) {
+          bar.style.background = '#EF4444';
+        } else {
+          bar.style.background = '#2563EB';
+        }
+      }
+    }
+
+    async function setSlot(slot) {
+      selectedSlot = slot;
+      await fetchDynamicQR();
+    }
+
+    async function forceRefreshToken() {
+      showToast('Rotating counter token...', 'info');
+      await fetchDynamicQR();
+    }
+
+    function toggleFullscreen() {
+      const isFs = document.body.classList.toggle('kiosk-fullscreen-mode');
+      const text = document.getElementById('fullscreenBtnText');
+      if (text) text.textContent = isFs ? 'Exit Kiosk' : 'Kiosk Mode';
+
+      if (isFs) {
+        if (document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        }
+      } else {
+        if (document.exitFullscreen && document.fullscreenElement) {
+          document.exitFullscreen().catch(() => {});
+        }
+      }
+    }
+
+    window.setSlot = setSlot;
+    window.forceRefreshToken = forceRefreshToken;
+    window.toggleFullscreen = toggleFullscreen;
+  </script>
+</body>
+</html>

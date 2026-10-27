@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{width:100vw;margin:0;padding:0;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-primary-container": "#f5fff7", "secondary-fixed": "#dbe1ff", "inverse-surface": "#283044", "primary-fixed": "#85f8c4", "surface": "#faf8ff", "on-secondary-container": "#fefcff", "on-secondary": "#ffffff", "surface-tint": "#006c4a", "primary": "#006948", "surface-container-low": "#f2f3ff", "on-tertiary": "#ffffff", "on-primary-fixed-variant": "#005137", "error-container": "#ffdad6", "outline-variant": "#bccac0", "surface-bright": "#faf8ff", "primary-fixed-dim": "#68dba9", "outline": "#6d7a72", "surface-container-high": "#e2e7ff", "on-secondary-fixed-variant": "#003ea8", "tertiary": "#8d4b00", "on-tertiary-container": "#fffbff", "primary-container": "#00855d", "on-error": "#ffffff", "background": "#faf8ff", "secondary": "#0051d5", "surface-container-lowest": "#ffffff", "surface-container": "#eaedff", "tertiary-container": "#b15f00", "surface-dim": "#d2d9f4", "on-tertiary-fixed": "#2f1500", "on-surface-variant": "#3d4a42", "surface-variant": "#dae2fd", "on-error-container": "#93000a", "secondary-container": "#316bf3", "tertiary-fixed": "#ffdcc3", "on-tertiary-fixed-variant": "#6e3900", "on-secondary-fixed": "#00174b", "error": "#ba1a1a", "on-background": "#131b2e", "secondary-fixed-dim": "#b4c5ff", "inverse-primary": "#68dba9", "surface-container-highest": "#dae2fd", "on-surface": "#131b2e", "on-primary-fixed": "#002114", "on-primary": "#ffffff", "inverse-on-surface": "#eef0ff", "tertiary-fixed-dim": "#ffb77d" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-xl": "2rem", "space-base": "1rem", "gutter-desktop": "1.5rem", "margin-tablet": "1.5rem", "space-lg": "1.5rem", "space-sm": "0.5rem", "margin-desktop": "2rem", "gutter": "1rem", "space-2xl": "3rem", "space-xxs": "0.125rem", "space-xs": "0.25rem", "margin": "1rem", "space-md": "0.75rem" }, "fontFamily": { "body-md": ["Inter"], "headline-sm": ["Inter"], "headline-md": ["Inter"], "body-sm": ["Inter"], "display-lg-mobile": ["Inter"], "body-lg": ["Inter"], "display-lg": ["Inter"], "headline-lg": ["Inter"], "label-sm": ["Inter"], "label-lg": ["Inter"], "metric-number": ["Inter"], "label-md": ["Inter"] }, "fontSize": { "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-sm": ["16px", { "lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600" }], "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }], "display-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "700" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "display-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "600" }], "label-lg": ["14px", { "lineHeight": "20px", "fontWeight": "500" }], "metric-number": ["28px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "500" }] } } } }</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface font-body-md text-body-md text-on-surface flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 pt-safe bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 px-gutter flex items-center justify-between"><div class="flex items-center gap-space-sm"><div class="w-10 h-10 rounded-xl bg-tertiary-fixed flex items-center justify-center text-tertiary shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><span class="material-symbols-outlined text-[24px]">restaurant</span></div><div class="flex flex-col"><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm text-on-surface tracking-tight">FoodBuddy</span><span class="px-space-xs py-space-xxs rounded bg-tertiary-fixed text-on-tertiary-fixed-variant font-label-sm text-label-sm uppercase tracking-wider">WARDEN</span></div><span class="font-label-sm text-label-sm text-on-surface-variant">Overview</span></div></div><div class="flex items-center gap-space-xs"><button aria-label="Alerts" class="relative w-11 h-11 flex items-center justify-center rounded-full text-on-surface-variant hover:text-on-surface transition-colors"><span class="material-symbols-outlined text-[24px]">notifications</span><span class="absolute top-2 right-2 min-w-[18px] h-[18px] px-1 rounded-full bg-error text-on-error font-label-sm text-[10px] flex items-center justify-center font-bold">5</span></button><div class="relative flex items-center justify-center pl-space-xs"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-primary ring-2 ring-surface"></span></div></div></div></header><main class="flex flex-col relative w-full pt-16 pb-24 bg-surface min-h-screen"><div class="flex flex-col w-full">
+<!-- Profile & Semester Context Header -->
+<div class="px-margin pt-space-sm pb-space-md">
+<div class="p-space-base rounded-xl bg-surface-container shadow-sm flex flex-col gap-space-xs relative overflow-hidden">
+<div class="absolute -right-4 -bottom-4 w-28 h-28 rounded-full bg-tertiary-fixed opacity-40 blur-xl pointer-events-none"></div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="font-label-sm text-label-sm text-primary font-bold uppercase tracking-wider">Fall 2026 Session</span>
+</div>
+<span class="px-space-xs py-space-xxs rounded-full bg-tertiary text-on-tertiary font-label-sm text-label-sm font-semibold">Mess Board #1</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Dr. K. Raman</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-space-xxs">
+<span class="material-symbols-outlined text-[16px] text-tertiary">verified_user</span>
+          Hostel Warden &amp; Dining Chair • Block A/B/C
+        </p>
+</div>
+</div>
+</div>
+<!-- Critical Overdue Escalations Callout Banner -->
+<div class="px-margin mb-space-base">
+<div class="p-space-base rounded-xl bg-error-container text-on-error-container shadow-sm flex flex-col gap-space-sm relative overflow-hidden">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-start gap-space-sm">
+<div class="w-9 h-9 rounded-lg bg-error text-on-error flex items-center justify-center flex-shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-sm text-headline-sm text-on-error-container font-bold">4 Grievances Overdue</span>
+<span class="px-space-xs py-space-xxs rounded bg-error text-on-error font-label-sm text-label-sm font-bold tracking-tight">&gt;48H SLA</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-error-container opacity-90 mt-space-xxs">
+              Vendor unresponsiveness detected in Hostel C Dining &amp; Water Filtration.
+            </p>
+</div>
+</div>
+</div>
+<a class="w-full h-11 px-space-base rounded-lg bg-error text-on-error font-label-lg text-label-lg flex items-center justify-between shadow-sm active:scale-[0.99] transition-transform" href="#escalated-queue">
+<span class="font-medium">Review Escalated Queue</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</a>
+</div>
+</div>
+<!-- Key Mobile Authority KPI Metrics (2x2 Grid) -->
+<div class="px-margin mb-space-base">
+<div class="grid grid-cols-2 gap-space-sm">
+<!-- Total Tickets -->
+<div class="p-space-base rounded-xl bg-surface-container shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wide">Total Tickets</span>
+<div class="w-7 h-7 rounded-md bg-surface-container-high text-on-surface flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px]">receipt_long</span>
+</div>
+</div>
+<div class="mt-space-sm">
+<div class="font-metric-number text-metric-number text-on-surface font-bold">142</div>
+<div class="flex items-center gap-space-xxs text-primary font-label-sm text-label-sm mt-space-xxs">
+<span class="material-symbols-outlined text-[14px]">trending_up</span>
+<span>+8% vs last wk</span>
+</div>
+</div>
+</div>
+<!-- Pending Triage -->
+<div class="p-space-base rounded-xl bg-surface-container shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wide">Pending Triage</span>
+<div class="w-7 h-7 rounded-md bg-tertiary-fixed text-on-tertiary-fixed-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px]">hourglass_top</span>
+</div>
+</div>
+<div class="mt-space-sm">
+<div class="font-metric-number text-metric-number text-on-surface font-bold">18</div>
+<div class="flex items-center gap-space-xxs text-tertiary font-label-sm text-label-sm mt-space-xxs">
+<span class="material-symbols-outlined text-[14px]">schedule</span>
+<span>Mess Secy review</span>
+</div>
+</div>
+</div>
+<!-- SLA Breaches -->
+<div class="p-space-base rounded-xl bg-surface-container shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wide">Escalated</span>
+<span class="px-space-xs py-space-xxs rounded bg-error text-on-error font-label-sm text-label-sm font-bold">SLA Breach</span>
+</div>
+<div class="mt-space-sm">
+<div class="font-metric-number text-metric-number text-error font-bold">4</div>
+<div class="flex items-center gap-space-xxs text-error font-label-sm text-label-sm mt-space-xxs">
+<span class="material-symbols-outlined text-[14px]">alarm_on</span>
+<span>Unaddressed &gt;48h</span>
+</div>
+</div>
+</div>
+<!-- Campus Avg Rating -->
+<div class="p-space-base rounded-xl bg-surface-container shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wide">Campus Rating</span>
+<div class="w-7 h-7 rounded-md bg-primary-fixed text-on-primary-fixed-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px]">hotel_class</span>
+</div>
+</div>
+<div class="mt-space-sm">
+<div class="flex items-baseline gap-space-xxs">
+<span class="font-metric-number text-metric-number text-on-surface font-bold">3.9</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Food ★</span>
+</div>
+<div class="flex items-center gap-space-xxs text-primary font-label-sm text-label-sm mt-space-xxs">
+<span class="font-label-sm text-label-sm font-bold text-on-surface">4.5★</span>
+<span class="text-on-surface-variant">Staff &amp; Hygiene</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Weekly Volume Trajectory Chart -->
+<div class="px-margin mb-space-base">
+<div class="p-space-base rounded-xl bg-surface-container shadow-sm flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Weekly Grievance Inflow</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Daily student filings across 3 messes</p>
+</div>
+<span class="px-space-xs py-space-xxs rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm font-medium">Last 7 Days</span>
+</div>
+<!-- Inline SVG Trajectory Bar Chart -->
+<div class="w-full pt-space-xs">
+<svg class="w-full h-32" fill="none" preserveaspectratio="none" viewbox="0 0 320 120">
+<!-- Horizontal Grid Lines -->
+<line opacity="0.35" stroke="#bccac0" stroke-dasharray="3 3" stroke-width="0.5" x1="0" x2="320" y1="20" y2="20"></line>
+<line opacity="0.35" stroke="#bccac0" stroke-dasharray="3 3" stroke-width="0.5" x1="0" x2="320" y1="60" y2="60"></line>
+<line opacity="0.5" stroke="#bccac0" stroke-width="0.5" x1="0" x2="320" y1="100" y2="100"></line>
+<!-- Monday -->
+<rect fill="#00855d" height="45" opacity="0.75" rx="4" width="24" x="18" y="55"></rect>
+<text fill="#3d4a42" font-family="Inter" font-size="10" text-anchor="middle" x="30" y="115">Mon</text>
+<text fill="#131b2e" font-family="Inter" font-size="10" font-weight="600" text-anchor="middle" x="30" y="48">16</text>
+<!-- Tuesday -->
+<rect fill="#00855d" height="55" opacity="0.75" rx="4" width="24" x="62" y="45"></rect>
+<text fill="#3d4a42" font-family="Inter" font-size="10" text-anchor="middle" x="74" y="115">Tue</text>
+<text fill="#131b2e" font-family="Inter" font-size="10" font-weight="600" text-anchor="middle" x="74" y="38">22</text>
+<!-- Wednesday -->
+<rect fill="#00855d" height="35" opacity="0.75" rx="4" width="24" x="106" y="65"></rect>
+<text fill="#3d4a42" font-family="Inter" font-size="10" text-anchor="middle" x="118" y="115">Wed</text>
+<text fill="#131b2e" font-family="Inter" font-size="10" font-weight="600" text-anchor="middle" x="118" y="58">12</text>
+<!-- Thursday -->
+<rect fill="#00855d" height="62" opacity="0.75" rx="4" width="24" x="150" y="38"></rect>
+<text fill="#3d4a42" font-family="Inter" font-size="10" text-anchor="middle" x="162" y="115">Thu</text>
+<text fill="#131b2e" font-family="Inter" font-size="10" font-weight="600" text-anchor="middle" x="162" y="31">28</text>
+<!-- Friday (Escalation Spike) -->
+<rect fill="#ba1a1a" height="76" rx="4" width="24" x="194" y="24"></rect>
+<text fill="#ba1a1a" font-family="Inter" font-size="10" font-weight="600" text-anchor="middle" x="206" y="115">Fri</text>
+<text fill="#ba1a1a" font-family="Inter" font-size="10" font-weight="700" text-anchor="middle" x="206" y="17">34</text>
+<!-- Saturday -->
+<rect fill="#00855d" height="48" opacity="0.75" rx="4" width="24" x="238" y="52"></rect>
+<text fill="#3d4a42" font-family="Inter" font-size="10" text-anchor="middle" x="250" y="115">Sat</text>
+<text fill="#131b2e" font-family="Inter" font-size="10" font-weight="600" text-anchor="middle" x="250" y="45">18</text>
+<!-- Sunday (Today) -->
+<rect fill="#b15f00" height="32" rx="4" width="24" x="282" y="68"></rect>
+<text fill="#b15f00" font-family="Inter" font-size="10" font-weight="600" text-anchor="middle" x="294" y="115">Sun</text>
+<text fill="#131b2e" font-family="Inter" font-size="10" font-weight="600" text-anchor="middle" x="294" y="61">12</text>
+</svg>
+</div>
+<div class="flex items-center justify-between pt-space-xs">
+<div class="flex items-center gap-space-xs font-body-sm text-body-sm text-on-surface-variant">
+<span class="w-2.5 h-2.5 rounded-sm bg-primary"></span>
+<span>Resolved</span>
+</div>
+<div class="flex items-center gap-space-xs font-body-sm text-body-sm text-on-surface-variant">
+<span class="w-2.5 h-2.5 rounded-sm bg-error"></span>
+<span>SLA Breach Peak (Fri)</span>
+</div>
+<div class="flex items-center gap-space-xs font-body-sm text-body-sm text-on-surface-variant">
+<span class="w-2.5 h-2.5 rounded-sm bg-tertiary"></span>
+<span>In Progress</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Top 2 Breached Tickets Preview -->
+<div class="px-margin mb-space-base" id="escalated-queue">
+<div class="flex items-center justify-between mb-space-sm">
+<div class="flex items-center gap-space-xs">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Breached Grievances</h3>
+<span class="w-5 h-5 rounded-full bg-error text-on-error font-label-sm text-[11px] flex items-center justify-center font-bold">2</span>
+</div>
+<a class="font-label-md text-label-md text-tertiary font-semibold flex items-center" href="#">
+        View All 4
+        <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</a>
+</div>
+<div class="flex flex-col gap-space-sm">
+<!-- Breached Item 1 -->
+<div class="p-space-base rounded-xl bg-surface-container shadow-sm flex flex-col gap-space-sm">
+<div class="flex items-start justify-between">
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">T-8942 • Insect in Dal</span>
+<span class="px-space-xs py-space-xxs rounded bg-error-container text-on-error-container font-label-sm text-label-sm font-bold">58h Elapsed</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-space-xxs">
+              Hostel C South Wing Dining • Lunch Service
+            </p>
+</div>
+</div>
+<div class="flex items-center justify-between p-space-xs rounded-lg bg-surface-container-high">
+<div class="flex items-center gap-space-xs">
+<div class="w-7 h-7 rounded-full bg-surface text-on-surface flex items-center justify-center font-label-sm text-label-sm font-bold">
+              AK
+            </div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-medium">Ananya K.</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Room C-312 • 4th Year EE</span>
+</div>
+</div>
+<span class="px-space-xs py-space-xxs rounded bg-error text-on-error font-label-sm text-label-sm font-semibold">Vendor Silent</span>
+</div>
+<div class="flex items-center gap-space-xs pt-space-xxs">
+<button class="flex-1 h-9 rounded-lg bg-tertiary text-on-tertiary font-label-md text-label-md font-semibold flex items-center justify-center gap-space-xxs active:scale-[0.98] transition-transform" onclick="handleIntervene('T-8942')">
+<span class="material-symbols-outlined text-[16px]">gavel</span>
+            Intervene &amp; Fine Vendor
+          </button>
+<button aria-label="Ticket details" class="w-9 h-9 rounded-lg bg-surface-container-high text-on-surface flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+</div>
+</div>
+<!-- Breached Item 2 -->
+<div class="p-space-base rounded-xl bg-surface-container shadow-sm flex flex-col gap-space-sm">
+<div class="flex items-start justify-between">
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">T-8919 • RO Purifier Leaking &amp; Muddy</span>
+<span class="px-space-xs py-space-xxs rounded bg-error-container text-on-error-container font-label-sm text-label-sm font-bold">51h Elapsed</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-space-xxs">
+              Hostel B Ground Floor Cooler No. 2
+            </p>
+</div>
+</div>
+<div class="flex items-center justify-between p-space-xs rounded-lg bg-surface-container-high">
+<div class="flex items-center gap-space-xs">
+<div class="w-7 h-7 rounded-full bg-surface text-on-surface flex items-center justify-center font-label-sm text-label-sm font-bold">
+              RV
+            </div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-medium">Rahul Verma</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Room B-108 • 2nd Year ME</span>
+</div>
+</div>
+<span class="px-space-xs py-space-xxs rounded bg-tertiary-fixed text-on-tertiary-fixed-variant font-label-sm text-label-sm font-semibold">Part Pending</span>
+</div>
+<div class="flex items-center gap-space-xs pt-space-xxs">
+<button class="flex-1 h-9 rounded-lg bg-tertiary text-on-tertiary font-label-md text-label-md font-semibold flex items-center justify-center gap-space-xxs active:scale-[0.98] transition-transform" onclick="handleIntervene('T-8919')">
+<span class="material-symbols-outlined text-[16px]">bolt</span>
+            Expedite Maintenance
+          </button>
+<button aria-label="Ticket details" class="w-9 h-9 rounded-lg bg-surface-container-high text-on-surface flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Executive Quick Authority Actions -->
+<div class="px-margin mb-space-base">
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-space-sm">Executive Governance Actions</h3>
+<div class="flex flex-col gap-space-xs">
+<!-- Action 1: Issue Directive -->
+<button class="w-full p-space-base rounded-xl bg-surface-container shadow-sm flex items-center justify-between text-left active:bg-surface-container-high transition-colors" onclick="openDirectiveModal()">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-tertiary text-on-tertiary flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-[20px]">campaign</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg text-on-surface font-semibold">Issue Emergency Directive</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Broadcast binding instructions to all 3 Mess Contractors</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">arrow_forward</span>
+</button>
+<!-- Action 2: Vendor Scorecards -->
+<a class="w-full p-space-base rounded-xl bg-surface-container shadow-sm flex items-center justify-between text-left active:bg-surface-container-high transition-colors" href="#">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high text-tertiary flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-[20px]">fact_check</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg text-on-surface font-semibold">View Vendor Scorecards</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Monthly compliance penalties, raw audits &amp; taste metrics</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">arrow_forward</span>
+</a>
+<!-- Action 3: Download Audit CSV -->
+<button class="w-full p-space-base rounded-xl bg-surface-container shadow-sm flex items-center justify-between text-left active:bg-surface-container-high transition-colors" onclick="triggerAuditDownload()">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high text-primary flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-[20px]">table_chart</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg text-on-surface font-semibold">Download Audit CSV</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Export tamper-evident governance ledger for Syndicate review</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">download</span>
+</button>
+</div>
+</div>
+<!-- Simple Modal Overlay for Emergency Directive -->
+<div class="fixed inset-0 z-50 bg-inverse-surface/40 backdrop-blur-sm hidden items-center justify-center p-margin" id="directive-modal">
+<div class="w-full max-w-sm rounded-xl bg-surface-container-lowest p-space-base shadow-xl flex flex-col gap-space-base">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs text-tertiary">
+<span class="material-symbols-outlined text-[22px]">campaign</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">Emergency Directive</span>
+</div>
+<button aria-label="Close" class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant" onclick="closeDirectiveModal()">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase">Directive Scope</label>
+<div class="p-space-xs rounded-lg bg-surface-container flex items-center gap-space-xs">
+<span class="px-space-xs py-space-xxs rounded bg-tertiary text-on-tertiary font-label-sm text-label-sm font-semibold">All Hostels</span>
+<span class="font-body-sm text-body-sm text-on-surface">Immediate Compliance Required</span>
+</div>
+</div>
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase">Directive Instructions</label>
+<textarea class="w-full p-space-xs rounded-lg bg-surface-container text-body-md font-body-md text-on-surface outline-none resize-none placeholder:text-on-surface-variant/60" placeholder="State clear operational action (e.g., Immediate kitchen pest sanitization, replace vendor butter batch)..." rows="3"></textarea>
+</div>
+<div class="flex items-center gap-space-xs">
+<button class="flex-1 h-10 rounded-lg bg-surface-container text-on-surface font-label-md text-label-md font-semibold" onclick="closeDirectiveModal()">
+          Cancel
+        </button>
+<button class="flex-1 h-10 rounded-lg bg-tertiary text-on-tertiary font-label-md text-label-md font-semibold" onclick="broadcastSuccess()">
+          Broadcast Now
+        </button>
+</div>
+</div>
+</div>
+<!-- Notification Toast Container -->
+<div class="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 hidden px-space-base py-space-xs rounded-full bg-inverse-surface text-inverse-on-surface font-label-md text-label-md shadow-lg flex items-center gap-space-xs" id="toast">
+<span class="material-symbols-outlined text-[18px] text-primary-fixed">check_circle</span>
+<span id="toast-text">Directive issued successfully</span>
+</div>
+</div>
+<script>
+  function openDirectiveModal() {
+    const modal = document.getElementById('directive-modal');
+    if (modal) {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+  }
+
+  function closeDirectiveModal() {
+    const modal = document.getElementById('directive-modal');
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+  }
+
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    const toastText = document.getElementById('toast-text');
+    if (toast && toastText) {
+      toastText.textContent = message;
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 3000);
+    }
+  }
+
+  function handleIntervene(ticketId) {
+    showToast('Authority Notice dispatched to Vendor for ' + ticketId);
+  }
+
+  function broadcastSuccess() {
+    closeDirectiveModal();
+    showToast('Emergency Directive published to all Mess Halls');
+  }
+
+  function triggerAuditDownload() {
+    showToast('Generating signed tamper-evident CSV report...');
+  }
+</script></main><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]" data-active-classes="text-tertiary font-label-md"><div class="flex justify-around items-center h-16 px-space-xs"><a aria-current="page" class="flex-1 flex flex-col items-center justify-center gap-space-xxs h-12 min-w-[44px] transition-colors text-tertiary font-label-md" data-path="overview" href="#"><span class="material-symbols-outlined text-[22px]">grid_view</span><span class="font-label-sm text-label-sm">Overview</span></a><a class="flex-1 flex flex-col items-center justify-center gap-space-xxs h-12 min-w-[44px] text-on-surface-variant transition-colors" data-path="escalations" href="#"><div class="relative flex items-center justify-center"><span class="material-symbols-outlined text-[22px]">error</span><span class="absolute -top-1 -right-2 px-1 min-w-[14px] h-[14px] rounded-full bg-error text-on-error font-label-sm text-[9px] flex items-center justify-center font-bold">4</span></div><span class="font-label-sm text-label-sm">Escalations</span></a><a class="flex-1 flex flex-col items-center justify-center gap-space-xxs h-12 min-w-[44px] text-on-surface-variant transition-colors" data-path="governance" href="#"><span class="material-symbols-outlined text-[22px]">shield</span><span class="font-label-sm text-label-sm">Governance</span></a><a class="flex-1 flex flex-col items-center justify-center gap-space-xxs h-12 min-w-[44px] text-on-surface-variant transition-colors" data-path="directives" href="#"><span class="material-symbols-outlined text-[22px]">campaign</span><span class="font-label-sm text-label-sm">Directives</span></a><a class="flex-1 flex flex-col items-center justify-center gap-space-xxs h-12 min-w-[44px] text-on-surface-variant transition-colors" data-path="more" href="#"><span class="material-symbols-outlined text-[22px]">more_horiz</span><span class="font-label-sm text-label-sm">More</span></a></div></nav></body></html>

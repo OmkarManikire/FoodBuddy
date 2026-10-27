@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Complaints & Grievance Triage — Food Buddy (Mess Manager)</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  
+  <!-- Supabase JS -->
+  <script src="/js/vendor/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- App Styles & Shell -->
+  <link rel="stylesheet" href="/css/main.css" />
+  <script src="/js/supabase-client.js"></script>
+  <script type="module" src="/js/auth.js"></script>
+  <script type="module" src="/js/app-shell.js"></script>
+
+  <style>
+    /* Complaints Triage Layout */
+    .triage-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    @media (min-width: 1200px) {
+      .triage-grid.drawer-open {
+        grid-template-columns: 1fr 460px;
+      }
+    }
+
+    /* Filter Chips */
+    .filter-chip {
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border-color);
+      background: #FFFFFF;
+      color: var(--text-muted);
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .filter-chip:hover {
+      background: #F8FAFC;
+      color: var(--text-main);
+    }
+    .filter-chip.active {
+      background: #2563EB;
+      color: #FFFFFF;
+      border-color: #2563EB;
+    }
+    .filter-chip .chip-count {
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.08);
+      font-size: 10px;
+    }
+    .filter-chip.active .chip-count {
+      background: rgba(255, 255, 255, 0.25);
+      color: #FFFFFF;
+    }
+
+    /* Table & Card Presentation */
+    .complaints-table-container {
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      overflow-x: auto;
+      box-shadow: var(--shadow-sm);
+    }
+    .complaints-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 860px;
+    }
+    .complaints-table th {
+      background: #F8FAFC;
+      color: #475569;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+      text-align: left;
+    }
+    .complaints-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #F1F5F9;
+      font-size: 13px;
+      color: var(--text-main);
+      vertical-align: middle;
+      cursor: pointer;
+    }
+    .complaints-table tr:hover td {
+      background: #F8FAFC;
+    }
+    .complaints-table tr.row-selected td {
+      background: #EFF6FF !important;
+    }
+
+    /* Thumbnail */
+    .media-thumb {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      background: #F1F5F9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid var(--border-color);
+      flex-shrink: 0;
+    }
+    .media-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Badges */
+    .urgency-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+    .urgency-severe {
+      background: #FEE2E2;
+      color: #B91C1C;
+      animation: pulseAlert 2s infinite;
+    }
+    .urgency-standard {
+      background: #F1F5F9;
+      color: #475569;
+    }
+    @keyframes pulseAlert {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.75; }
+    }
+
+    /* Side Drawer / Modal */
+    .triage-drawer {
+      display: none;
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      flex-direction: column;
+    }
+    .triage-drawer.active {
+      display: flex;
+    }
+
+    @media (max-width: 1199px) {
+      .triage-drawer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        max-height: 85vh;
+        z-index: 1050;
+        border-radius: 20px 20px 0 0;
+        box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.25);
+        animation: slideUp 0.25s ease-out;
+      }
+      .drawer-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.5);
+        backdrop-filter: blur(2px);
+        z-index: 1040;
+        display: none;
+      }
+      .drawer-backdrop.active {
+        display: block;
+      }
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    /* Audit Timeline */
+    .timeline-wrap {
+      position: relative;
+      padding-left: 20px;
+    }
+    .timeline-wrap::before {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 6px;
+      bottom: 6px;
+      width: 2px;
+      background: #E2E8F0;
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 14px;
+    }
+    .timeline-item:last-child {
+      margin-bottom: 0;
+    }
+    .timeline-dot {
+      position: absolute;
+      left: -20px;
+      top: 4px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #2563EB;
+      border: 2px solid #FFFFFF;
+      box-shadow: 0 0 0 2px #BFDBFE;
+    }
+  </style>
+</head>
+<body class="theme-manager">
+  <div id="drawerBackdrop" class="drawer-backdrop"></div>
+
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="app-sidebar"></aside>
+
+    <!-- Main Content Area -->
+    <div class="app-main">
+      <!-- Topbar -->
+      <header class="app-topbar"></header>
+
+      <!-- Page Content -->
+      <main class="content-container">
+      
+      <!-- Top Action Bar -->
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+            <span class="badge" style="background: #EFF6FF; color: #2563EB; font-weight: 700; font-size: 12px; padding: 4px 10px; border-radius: 999px;">
+              <span class="material-symbols-outlined" style="font-size: 14px; vertical-align: middle;">inbox</span>
+              Operations Lead Triage Desk
+            </span>
+            <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: #059669; font-weight: 600;">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: #059669;"></span>
+              Realtime Sync Active
+            </span>
+          </div>
+          <h1 style="font-size: 24px; font-weight: 800; color: var(--text-main); margin: 0;">Complaint Review Queue</h1>
+          <p style="font-size: 14px; color: var(--text-muted); margin: 4px 0 0 0;">
+            Review student grievances, examine photo evidence, update resolution notes, and audit SLA performance.
+          </p>
+        </div>
+
+        <!-- Quick Summary Stats -->
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+          <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: 12px; padding: 10px 16px; display: flex; align-items: center; gap: 12px;">
+            <div>
+              <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Needs Attention</div>
+              <div id="pendingStatCount" style="font-size: 20px; font-weight: 800; color: #DC2626;">0</div>
+            </div>
+            <div style="width: 1px; height: 28px; background: #E2E8F0;"></div>
+            <div>
+              <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Under Review</div>
+              <div id="reviewStatCount" style="font-size: 20px; font-weight: 800; color: #2563EB;">0</div>
+            </div>
+            <div style="width: 1px; height: 28px; background: #E2E8F0;"></div>
+            <div>
+              <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Resolved</div>
+              <div id="resolvedStatCount" style="font-size: 20px; font-weight: 800; color: #059669;">0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filters Strip -->
+      <div class="card" style="padding: 16px; margin-bottom: 20px;">
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          
+          <!-- Category Chips -->
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <span style="font-size: 12px; font-weight: 700; color: #475569; text-transform: uppercase; margin-right: 4px;">Category:</span>
+            <div class="filter-chip active" data-category="all">
+              <span>All Categories</span>
+              <span class="chip-count" id="catCountAll">0</span>
+            </div>
+            <div class="filter-chip" data-category="food_quality">
+              <span>Food Quality</span>
+              <span class="chip-count" id="catCountFood">0</span>
+            </div>
+            <div class="filter-chip" data-category="hygiene">
+              <span>Hygiene</span>
+              <span class="chip-count" id="catCountHygiene">0</span>
+            </div>
+            <div class="filter-chip" data-category="service">
+              <span>Service Speed</span>
+              <span class="chip-count" id="catCountService">0</span>
+            </div>
+            <div class="filter-chip" data-category="infrastructure">
+              <span>Infrastructure</span>
+              <span class="chip-count" id="catCountInfra">0</span>
+            </div>
+          </div>
+
+          <!-- Secondary Filter Bar -->
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; padding-top: 12px; border-top: 1px solid #F1F5F9;">
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+              <!-- Status Select -->
+              <select id="statusFilter" class="input-field" style="font-size: 13px; padding: 6px 12px;">
+                <option value="all">All Statuses</option>
+                <option value="active" selected>Active (Pending / Under Review / In Progress)</option>
+                <option value="submitted">Submitted (Pending)</option>
+                <option value="under_review">Under Review</option>
+                <option value="in_progress">In Progress</option>
+                <option value="resolved">Resolved</option>
+              </select>
+
+              <!-- Urgency Select -->
+              <select id="urgencyFilter" class="input-field" style="font-size: 13px; padding: 6px 12px;">
+                <option value="all">All Urgencies</option>
+                <option value="severe">Critical / Severe Only</option>
+                <option value="standard">Standard Priority</option>
+              </select>
+
+              <!-- Search -->
+              <div style="position: relative;">
+                <span class="material-symbols-outlined" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 16px; color: var(--text-muted);">search</span>
+                <input type="text" id="complaintSearchInput" class="input-field" placeholder="Search ticket, roll, issue..." style="padding-left: 32px; font-size: 13px; width: 220px;" />
+              </div>
+            </div>
+
+            <button id="refreshBtn" class="btn btn-secondary" style="font-size: 13px; padding: 6px 12px;">
+              <span class="material-symbols-outlined" style="font-size: 16px;">refresh</span>
+              Refresh
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Main Layout: Table + Side Drawer -->
+      <div class="triage-grid" id="triageGrid">
+        
+        <!-- Complaints Table Container -->
+        <div class="complaints-table-container">
+          <table class="complaints-table">
+            <thead>
+              <tr>
+                <th style="width: 140px;">Ticket ID</th>
+                <th style="width: 60px;">Evidence</th>
+                <th>Issue & Category</th>
+                <th>Student</th>
+                <th>Session</th>
+                <th>Urgency</th>
+                <th>Status</th>
+                <th style="text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="complaintsTableBody">
+              <tr>
+                <td colspan="8" style="text-align: center; padding: 48px; color: var(--text-muted);">
+                  <span class="material-symbols-outlined" style="font-size: 32px; animation: spin 1s linear infinite;">sync</span>
+                  <p style="margin-top: 8px;">Loading complaints queue...</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Side Drawer: Ticket Details, Evidence & Response -->
+        <div class="triage-drawer" id="sideDrawer">
+          
+          <!-- Drawer Header -->
+          <div style="padding: 16px 20px; background: #F8FAFC; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: #2563EB;"></span>
+              <h2 id="drawerTicketId" style="font-size: 16px; font-weight: 700; color: var(--text-main); margin: 0;">FB-2026-00000</h2>
+            </div>
+            <button id="closeDrawerBtn" style="background: none; border: none; cursor: pointer; color: var(--text-muted);" title="Close Drawer">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+
+          <!-- Drawer Body (Scrollable) -->
+          <div style="padding: 20px; overflow-y: auto; max-height: calc(100vh - 240px); display: flex; flex-direction: column; gap: 20px;">
+            
+            <!-- Student Issue Summary Card -->
+            <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 16px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span id="drawerCategoryBadge" class="badge" style="background: #EFF6FF; color: #2563EB; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px;">FOOD QUALITY</span>
+                <span id="drawerUrgencyBadge" class="urgency-badge urgency-severe">Severe</span>
+              </div>
+              <h3 id="drawerDescription" style="font-size: 14px; font-weight: 600; color: var(--text-main); margin: 0 0 10px 0; line-height: 1.45;">
+                Complaint description goes here...
+              </h3>
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted); pt-2; border-top: 1px dashed #CBD5E1; padding-top: 8px;">
+                <span class="material-symbols-outlined" style="font-size: 16px;">person</span>
+                <span id="drawerStudentInfo" style="font-weight: 600; color: var(--text-main);">Aarav Patel (2024CSB1042)</span>
+                <span>•</span>
+                <span id="drawerHostelInfo">Vikramshila B-314</span>
+              </div>
+              <div style="font-size: 11px; color: #64748B; margin-top: 6px;">
+                Session: <strong id="drawerMealSlot" style="color: var(--text-main);">Lunch</strong> • Logged: <span id="drawerCreatedAt">12:45 PM</span>
+              </div>
+            </div>
+
+            <!-- Evidence Section -->
+            <div id="drawerEvidenceSection">
+              <div style="font-size: 12px; font-weight: 700; color: #475569; text-transform: uppercase; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                <span>Visual Photo Evidence</span>
+                <span id="drawerEvidenceCount" style="font-size: 11px; color: var(--text-muted); font-weight: normal;">1 Photo</span>
+              </div>
+              <div id="drawerEvidenceGallery" style="display: flex; flex-direction: column; gap: 10px;">
+                <!-- Images inserted here -->
+              </div>
+            </div>
+
+            <!-- Official Authority Accountability Demand Banner -->
+            <div id="drawerAuthoritySection" style="display: none; background: #FFFBEB; border: 1px solid #FDE68A; border-left: 4px solid #D97706; border-radius: 12px; padding: 14px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                <div style="display: flex; align-items: center; gap: 6px;">
+                  <span class="material-symbols-outlined" style="color: #D97706; font-size: 18px;">gavel</span>
+                  <span style="font-size: 12px; font-weight: 800; color: #92400E; text-transform: uppercase; letter-spacing: 0.05em;">
+                    Higher Authority Directive
+                  </span>
+                </div>
+                <span id="drawerAuthorityBadge" class="badge" style="background: #FEE2E2; color: #991B1B; font-size: 10px; font-weight: 800;">
+                  ESCALATED &gt;48H
+                </span>
+              </div>
+              <div id="drawerAuthorityCommentsList" style="display: flex; flex-direction: column; gap: 8px;">
+                <!-- Comments rendered here -->
+              </div>
+            </div>
+
+            <!-- Kitchen Action & Response Box -->
+            <div style="background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 12px; padding: 18px;">
+              <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 12px;">
+                <span class="material-symbols-outlined" style="color: #2563EB; font-size: 18px;">restaurant</span>
+                <h4 style="font-size: 14px; font-weight: 700; color: #1E3A8A; margin: 0;">Kitchen Triage & Response</h4>
+              </div>
+
+              <!-- Status Dropdown -->
+              <div style="margin-bottom: 12px;">
+                <label for="drawerStatusSelect" style="display: block; font-size: 12px; font-weight: 600; color: #1E40AF; margin-bottom: 4px;">
+                  Update Status
+                </label>
+                <select id="drawerStatusSelect" class="input-field" style="width: 100%; font-size: 13px; font-weight: 600; background: #FFFFFF;">
+                  <option value="submitted">Submitted (Pending Review)</option>
+                  <option value="under_review">Under Review (Inspecting Kitchen Batch)</option>
+                  <option value="in_progress">In Progress (Corrective Action Taken)</option>
+                  <option value="resolved">Resolved (Kitchen Inspection Complete)</option>
+                  <option value="rejected">Rejected (Invalid/Duplicate)</option>
+                </select>
+              </div>
+
+              <!-- Resolution Note Textarea -->
+              <div style="margin-bottom: 14px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                  <label for="drawerResolutionNote" style="font-size: 12px; font-weight: 600; color: #1E40AF;">
+                    Resolution Note / Kitchen Action Log
+                  </label>
+                  <span style="font-size: 11px; color: #DC2626; font-weight: 600;">* Required for Resolved</span>
+                </div>
+                <textarea id="drawerResolutionNote" class="input-field" rows="3" placeholder="Explain the kitchen action taken (e.g. Cooked batch replaced, oil temperature recalibrated, vendor notified)..." style="width: 100%; font-size: 13px; background: #FFFFFF; font-family: inherit; line-height: 1.4;"></textarea>
+              </div>
+
+              <!-- Action Buttons -->
+              <div style="display: flex; gap: 8px;">
+                <button id="saveStatusBtn" class="btn btn-primary" style="flex: 1; font-size: 13px; background: #2563EB; border-color: #2563EB;">
+                  <span class="material-symbols-outlined" style="font-size: 16px;">save</span>
+                  Update Status
+                </button>
+                <button id="quickResolveBtn" class="btn btn-secondary" style="font-size: 13px; background: #FFFFFF; color: #059669; border-color: #A7F3D0; font-weight: 600;" title="Quick Fill Resolution and Mark Resolved">
+                  <span class="material-symbols-outlined" style="font-size: 16px;">check_circle</span>
+                  Resolve
+                </button>
+              </div>
+            </div>
+
+            <!-- History Audit Timeline -->
+            <div>
+              <div style="font-size: 12px; font-weight: 700; color: #475569; text-transform: uppercase; margin-bottom: 12px;">
+                Incident Audit Trail & History
+              </div>
+              <div class="timeline-wrap" id="drawerTimeline">
+                <!-- Timeline items loaded dynamically -->
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Drawer Footer -->
+          <div style="padding: 12px 20px; background: #F8FAFC; border-top: 1px solid var(--border-color); font-size: 11px; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center;">
+            <span>Audited under Campus Mess SLA Standard</span>
+            <span style="color: #059669; font-weight: 600;">Realtime Sync</span>
+          </div>
+
+        </div>
+
+      </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script>
+    let allComplaints = [];
+    let selectedCategory = 'all';
+    let activeComplaint = null;
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      const user = await window.requireAuth?.('mess_manager');
+      if (!user) return;
+      await window.initAppShell?.({
+        activeNav: 'complaints',
+        user: {
+          name: user.profile?.name || user.profile?.full_name || 'Rameshwar Kumar',
+          role: 'mess_manager',
+          hostel_block: 'Mess 1 • Vikramshila & Mithila'
+        }
+      });
+
+      setupEvents();
+      loadComplaints();
+      subscribeToRealtime();
+    });
+
+    function setupEvents() {
+      // Category filter chips
+      document.querySelectorAll('.filter-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          selectedCategory = chip.dataset.category;
+          renderComplaintsTable();
+        });
+      });
+
+      // Status & Urgency filters
+      document.getElementById('statusFilter').addEventListener('change', renderComplaintsTable);
+      document.getElementById('urgencyFilter').addEventListener('change', renderComplaintsTable);
+      document.getElementById('complaintSearchInput').addEventListener('input', renderComplaintsTable);
+      document.getElementById('refreshBtn').addEventListener('click', loadComplaints);
+
+      // Drawer close
+      document.getElementById('closeDrawerBtn').addEventListener('click', closeDrawer);
+      document.getElementById('drawerBackdrop').addEventListener('click', closeDrawer);
+
+      // Save status
+      document.getElementById('saveStatusBtn').addEventListener('click', handleUpdateStatus);
+      document.getElementById('quickResolveBtn').addEventListener('click', () => {
+        document.getElementById('drawerStatusSelect').value = 'resolved';
+        const note = document.getElementById('drawerResolutionNote');
+        if (!note.value.trim()) {
+          note.value = 'Batch inspected by Head Cook & Mess Manager. Fresh ingredients verified and corrective cooking procedure implemented.';
+        }
+        handleUpdateStatus();
+      });
+    }
+
+    async function loadComplaints() {
+      const tbody = document.getElementById('complaintsTableBody');
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="8" style="text-align: center; padding: 48px; color: var(--text-muted);">
+            <span class="material-symbols-outlined" style="font-size: 32px; animation: spin 1s linear infinite;">sync</span>
+            <p style="margin-top: 8px;">Loading complaints queue...</p>
+          </td>
+        </tr>
+      `;
+
+      try {
+        const { data, error } = await supabaseClient
+          .from('complaints')
+          .select(`
+            *,
+            profiles:student_id (name, student_id, hostel_block, room_no)
+          `)
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        allComplaints = data || [];
+
+        updateStats();
+        renderComplaintsTable();
+
+        // If active complaint is open, refresh it
+        if (activeComplaint) {
+          const fresh = allComplaints.find(c => c.id === activeComplaint.id);
+          if (fresh) openDrawer(fresh);
+        }
+      } catch (err) {
+        console.error('Error fetching complaints:', err);
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" style="text-align: center; padding: 36px; color: #DC2626;">
+              <span class="material-symbols-outlined" style="font-size: 32px;">error</span>
+              <p style="margin-top: 8px; font-weight: 600;">Failed to load complaints: ${err.message}</p>
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    function matchesCategory(complaintCat, selectedCat) {
+      if (selectedCat === 'all') return true;
+      const c = (complaintCat || '').toLowerCase().replace(/[\s_-]+/g, '');
+      const s = (selectedCat || '').toLowerCase().replace(/[\s_-]+/g, '');
+      if (s === 'service' && (c === 'staffbehaviour' || c === 'staffbehavior')) return true;
+      return c === s;
+    }
+
+    function updateStats() {
+      const pending = allComplaints.filter(c => c.status === 'submitted').length;
+      const review = allComplaints.filter(c => c.status === 'under_review' || c.status === 'in_progress').length;
+      const resolved = allComplaints.filter(c => c.status === 'resolved').length;
+
+      document.getElementById('pendingStatCount').textContent = pending;
+      document.getElementById('reviewStatCount').textContent = review;
+      document.getElementById('resolvedStatCount').textContent = resolved;
+
+      // Category counts
+      document.getElementById('catCountAll').textContent = allComplaints.length;
+      document.getElementById('catCountFood').textContent = allComplaints.filter(c => matchesCategory(c.category, 'food_quality')).length;
+      document.getElementById('catCountHygiene').textContent = allComplaints.filter(c => matchesCategory(c.category, 'hygiene')).length;
+      document.getElementById('catCountService').textContent = allComplaints.filter(c => matchesCategory(c.category, 'service')).length;
+      document.getElementById('catCountInfra').textContent = allComplaints.filter(c => matchesCategory(c.category, 'infrastructure')).length;
+    }
+
+    function renderComplaintsTable() {
+      const tbody = document.getElementById('complaintsTableBody');
+      const statusFilter = document.getElementById('statusFilter').value;
+      const urgencyFilter = document.getElementById('urgencyFilter').value;
+      const search = document.getElementById('complaintSearchInput').value.trim().toLowerCase();
+
+      let filtered = allComplaints.filter(c => {
+        // Category
+        if (!matchesCategory(c.category, selectedCategory)) return false;
+
+        // Status
+        if (statusFilter === 'active') {
+          if (c.status === 'resolved' || c.status === 'rejected') return false;
+        } else if (statusFilter !== 'all') {
+          if (c.status !== statusFilter) return false;
+        }
+
+        // Urgency
+        if (urgencyFilter === 'severe' && c.urgency !== 'severe' && c.urgency !== 'high') return false;
+        if (urgencyFilter === 'standard' && (c.urgency === 'severe' || c.urgency === 'high')) return false;
+
+        // Search
+        if (search) {
+          const matchTicket = c.tracking_id && c.tracking_id.toLowerCase().includes(search);
+          const matchDesc = c.description && c.description.toLowerCase().includes(search);
+          const matchRoll = c.profiles && c.profiles.student_id && c.profiles.student_id.toLowerCase().includes(search);
+          const matchName = c.profiles && c.profiles.name && c.profiles.name.toLowerCase().includes(search);
+          if (!matchTicket && !matchDesc && !matchRoll && !matchName) return false;
+        }
+
+        return true;
+      });
+
+      if (!filtered.length) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" style="text-align: center; padding: 48px; color: var(--text-muted);">
+              <span class="material-symbols-outlined" style="font-size: 36px; color: #94A3B8;">task_alt</span>
+              <p style="margin-top: 8px; font-weight: 600;">No complaints matching the selected filters.</p>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(c => {
+        const isSelected = activeComplaint && activeComplaint.id === c.id;
+        const studentName = c.profiles?.name || 'Anonymous Student';
+        const studentRoll = c.profiles?.student_id || 'Resident';
+        const isSevere = c.urgency === 'severe' || c.urgency === 'high';
+        const createdDate = new Date(c.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+        const mediaCount = (c.media_paths && Array.isArray(c.media_paths)) ? c.media_paths.length : 0;
+        const thumbHtml = mediaCount > 0 
+          ? `<div class="media-thumb" title="${mediaCount} photo(s) attached">
+               <span class="material-symbols-outlined" style="font-size: 20px; color: #2563EB;">photo_camera</span>
+               <span style="position: absolute; bottom: 2px; right: 2px; background: #2563EB; color: #fff; font-size: 9px; font-weight: 700; border-radius: 4px; padding: 0 3px;">${mediaCount}</span>
+             </div>`
+          : `<div class="media-thumb" style="color: #94A3B8;" title="No photo">
+               <span class="material-symbols-outlined" style="font-size: 18px;">no_photography</span>
+             </div>`;
+
+        return `
+          <tr class="${isSelected ? 'row-selected' : ''}" onclick="selectComplaint('${c.id}')">
+            <td>
+              <div style="font-family: monospace; font-weight: 700; color: #2563EB;">${escapeHtml(c.tracking_id || 'FB-TICKET')}</div>
+              <div style="font-size: 11px; color: var(--text-muted);">${formatTimeAgo(c.created_at)}</div>
+            </td>
+            <td>${thumbHtml}</td>
+            <td>
+              <div style="font-weight: 600; color: var(--text-main); margin-bottom: 2px; max-width: 260px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                ${escapeHtml(c.description)}
+              </div>
+              <span class="badge" style="background: #F1F5F9; color: #475569; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; text-transform: uppercase;">
+                ${escapeHtml(c.category || 'General')}
+              </span>
+            </td>
+            <td>
+              <div style="font-weight: 600; color: var(--text-main);">${escapeHtml(studentName)}</div>
+              <div style="font-size: 11px; color: var(--text-muted);">${escapeHtml(studentRoll)}</div>
+            </td>
+            <td>
+              <div style="font-weight: 500; text-transform: capitalize;">${escapeHtml(c.meal_slot || 'Meal')}</div>
+              <div style="font-size: 11px; color: var(--text-muted);">${createdDate}</div>
+            </td>
+            <td>
+              <span class="urgency-badge ${isSevere ? 'urgency-severe' : 'urgency-standard'}">
+                ${isSevere ? '<span class="material-symbols-outlined" style="font-size: 12px;">warning</span> Severe' : 'Standard'}
+              </span>
+            </td>
+            <td>${getStatusBadge(c.status)}</td>
+            <td style="text-align: right;">
+              <button class="btn btn-secondary" style="padding: 6px 10px; font-size: 12px; border-radius: 8px;">
+                <span class="material-symbols-outlined" style="font-size: 16px;">chevron_right</span>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function getStatusBadge(status) {
+      switch (status) {
+        case 'submitted':
+          return '<span class="badge" style="background: #FEF3C7; color: #92400E; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px;">Pending</span>';
+        case 'under_review':
+          return '<span class="badge" style="background: #EFF6FF; color: #2563EB; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px;">Under Review</span>';
+        case 'in_progress':
+          return '<span class="badge" style="background: #E0E7FF; color: #3730A3; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px;">In Progress</span>';
+        case 'resolved':
+          return '<span class="badge" style="background: #DCFCE7; color: #166534; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px;"><span class="material-symbols-outlined" style="font-size: 12px; vertical-align: middle;">check</span> Resolved</span>';
+        case 'rejected':
+          return '<span class="badge" style="background: #F1F5F9; color: #64748B; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px;">Rejected</span>';
+        default:
+          return `<span class="badge" style="background: #F1F5F9; color: #64748B; font-size: 11px;">${status}</span>`;
+      }
+    }
+
+    window.selectComplaint = function(id) {
+      const c = allComplaints.find(x => x.id === id);
+      if (c) openDrawer(c);
+    };
+
+    async function openDrawer(c) {
+      activeComplaint = c;
+      const drawer = document.getElementById('sideDrawer');
+      const grid = document.getElementById('triageGrid');
+      const backdrop = document.getElementById('drawerBackdrop');
+
+      grid.classList.add('drawer-open');
+      drawer.classList.add('active');
+      backdrop.classList.add('active');
+
+      // Populate Drawer Header & Meta
+      document.getElementById('drawerTicketId').textContent = c.tracking_id || 'Ticket Details';
+      document.getElementById('drawerDescription').textContent = c.description;
+      document.getElementById('drawerCategoryBadge').textContent = (c.category || 'General').toUpperCase();
+      
+      const isSevere = c.urgency === 'severe' || c.urgency === 'high';
+      const uBadge = document.getElementById('drawerUrgencyBadge');
+      uBadge.className = `urgency-badge ${isSevere ? 'urgency-severe' : 'urgency-standard'}`;
+      uBadge.innerHTML = isSevere ? '<span class="material-symbols-outlined" style="font-size: 12px;">warning</span> Severe' : 'Standard';
+
+      const sName = c.profiles?.name || 'Anonymous Student';
+      const sRoll = c.profiles?.student_id || 'Resident';
+      const sHostel = c.profiles?.hostel_block || 'Vikramshila';
+      const sRoom = c.profiles?.room_no || 'B-314';
+
+      document.getElementById('drawerStudentInfo').textContent = `${sName} (${sRoll})`;
+      document.getElementById('drawerHostelInfo').textContent = `${sHostel} ${sRoom}`;
+      document.getElementById('drawerMealSlot').textContent = (c.meal_slot || 'Lunch').toUpperCase();
+      document.getElementById('drawerCreatedAt').textContent = new Date(c.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', month: 'short', day: 'numeric' });
+
+      // Status selector and Resolution Note
+      document.getElementById('drawerStatusSelect').value = c.status || 'submitted';
+      document.getElementById('drawerResolutionNote').value = c.resolution_note || '';
+
+      // Load Evidence signed URLs
+      await loadEvidencePhotos(c);
+
+      // Load Timeline History
+      await loadComplaintTimeline(c.id);
+
+      // Load Authority Accountability Comments & Directives
+      await loadDrawerAccountability(c.id, c.escalated);
+
+      // Re-highlight table row
+      renderComplaintsTable();
+    }
+
+    async function loadDrawerAccountability(complaintId, isEscalated) {
+      const section = document.getElementById('drawerAuthoritySection');
+      const list = document.getElementById('drawerAuthorityCommentsList');
+      const badge = document.getElementById('drawerAuthorityBadge');
+
+      try {
+        const { data, error } = await supabaseClient
+          .from('accountability_comments')
+          .select('*, profiles:created_by(name, role)')
+          .eq('complaint_id', complaintId)
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        if ((data && data.length > 0) || isEscalated) {
+          section.style.display = 'block';
+          badge.style.display = isEscalated ? 'inline-block' : 'none';
+
+          if (data && data.length > 0) {
+            list.innerHTML = data.map(item => `
+              <div style="background: #FFFFFF; border: 1px solid #FDE68A; border-radius: 8px; padding: 10px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                  <span style="font-size: 11px; font-weight: 700; color: #92400E;">
+                    ${escapeHtml(item.profiles?.name || 'Higher Authority (Hostel Warden / Dean)')}
+                  </span>
+                  <span style="font-size: 10px; color: #78350F;">
+                    ${new Date(item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', month: 'short', day: 'numeric' })}
+                  </span>
+                </div>
+                <div style="font-size: 12px; color: #1E293B; line-height: 1.45;">
+                  ${escapeHtml(item.comment)}
+                </div>
+              </div>
+            `).join('');
+          } else {
+            list.innerHTML = `
+              <div style="font-size: 12px; color: #92400E; font-weight: 500;">
+                This grievance has exceeded the 48-hour resolution SLA threshold and is flagged under Higher Authority Escalation.
+              </div>
+            `;
+          }
+        } else {
+          section.style.display = 'none';
+        }
+      } catch (err) {
+        console.error('Error loading accountability comments for drawer:', err);
+        section.style.display = isEscalated ? 'block' : 'none';
+      }
+    }
+
+    function closeDrawer() {
+      activeComplaint = null;
+      document.getElementById('sideDrawer').classList.remove('active');
+      document.getElementById('triageGrid').classList.remove('drawer-open');
+      document.getElementById('drawerBackdrop').classList.remove('active');
+      renderComplaintsTable();
+    }
+
+    async function loadEvidencePhotos(c) {
+      const container = document.getElementById('drawerEvidenceGallery');
+      const countEl = document.getElementById('drawerEvidenceCount');
+      container.innerHTML = '';
+
+      const paths = (c.media_paths && Array.isArray(c.media_paths)) ? c.media_paths : [];
+      countEl.textContent = `${paths.length} Photo${paths.length === 1 ? '' : 's'}`;
+
+      if (!paths.length) {
+        container.innerHTML = `
+          <div style="padding: 16px; background: #F8FAFC; border: 1px dashed #CBD5E1; border-radius: 8px; text-align: center; color: var(--text-muted); font-size: 12px;">
+            <span class="material-symbols-outlined" style="font-size: 20px; color: #94A3B8;">no_photography</span>
+            <p style="margin: 4px 0 0 0;">No media attachments uploaded for this ticket.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = `<div style="font-size: 12px; color: var(--text-muted);">Generating secure signed preview URLs...</div>`;
+
+      try {
+        const imgElements = await Promise.all(paths.map(async path => {
+          // Request signed URL from private bucket
+          const { data, error } = await supabaseClient.storage
+            .from('complaint-media')
+            .createSignedUrl(path, 3600);
+
+          const url = (data && data.signedUrl) ? data.signedUrl : null;
+          if (!url) {
+            return `
+              <div style="padding: 12px; background: #F8FAFC; border-radius: 8px; font-size: 12px; color: #DC2626;">
+                Failed to load signed URL for ${escapeHtml(path)}
+              </div>
+            `;
+          }
+
+          return `
+            <div style="border-radius: 10px; overflow: hidden; border: 1px solid var(--border-color); background: #000; position: relative;">
+              <a href="${url}" target="_blank" title="Click to view full image in high resolution">
+                <img src="${url}" alt="Complaint Evidence" style="width: 100%; height: 200px; object-fit: cover; display: block; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'" />
+              </a>
+              <div style="position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.7); color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; display: flex; align-items: center; gap: 4px;">
+                <span class="material-symbols-outlined" style="font-size: 12px;">zoom_in</span> Open full
+              </div>
+            </div>
+          `;
+        }));
+
+        container.innerHTML = imgElements.join('');
+      } catch (err) {
+        console.error('Signed URL error:', err);
+        container.innerHTML = `<div style="color: #DC2626; font-size: 12px;">Failed to load evidence media.</div>`;
+      }
+    }
+
+    async function loadComplaintTimeline(complaintId) {
+      const container = document.getElementById('drawerTimeline');
+      container.innerHTML = `<div style="font-size: 12px; color: var(--text-muted);">Loading audit timeline...</div>`;
+
+      try {
+        const { data, error } = await supabaseClient
+          .from('complaint_history')
+          .select('*')
+          .eq('complaint_id', complaintId)
+          .order('changed_at', { ascending: false });
+
+        if (error) throw error;
+
+        if (!data || !data.length) {
+          container.innerHTML = `
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div style="font-size: 12px; font-weight: 600; color: var(--text-main);">Ticket Logged</div>
+              <div style="font-size: 11px; color: var(--text-muted);">Submitted via Student Portal</div>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = data.map(item => {
+          const time = new Date(item.changed_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', month: 'short', day: 'numeric' });
+          return `
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 12px; font-weight: 700; color: var(--text-main); text-transform: capitalize;">
+                  ${escapeHtml(item.status ? item.status.replace('_', ' ') : 'Status Updated')}
+                </span>
+                <span style="font-size: 11px; color: var(--text-muted);">${time}</span>
+              </div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+                ${escapeHtml(item.note || 'Action taken')}
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {
+        console.error('Timeline error:', err);
+        container.innerHTML = `<div style="color: #DC2626; font-size: 12px;">Failed to load timeline.</div>`;
+      }
+    }
+
+    async function handleUpdateStatus() {
+      if (!activeComplaint) return;
+      const saveBtn = document.getElementById('saveStatusBtn');
+      const newStatus = document.getElementById('drawerStatusSelect').value;
+      const note = document.getElementById('drawerResolutionNote').value.trim();
+
+      if (newStatus === 'resolved' && !note) {
+        showAppNotification('A resolution note is required when resolving a complaint.', 'error');
+        document.getElementById('drawerResolutionNote').focus();
+        return;
+      }
+
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 16px; animation: spin 1s linear infinite;">sync</span> Updating...';
+
+      try {
+        // Call RPC update_complaint_status
+        const { data, error } = await supabaseClient.rpc('update_complaint_status', {
+          p_complaint_id: activeComplaint.id,
+          p_status: newStatus,
+          p_note: note || `Status updated to ${newStatus} by Mess Manager`
+        });
+
+        if (error) throw error;
+
+        showAppNotification(`Ticket ${activeComplaint.tracking_id} updated to ${newStatus}!`, 'success');
+
+        // Refresh complaint list & drawer
+        await loadComplaints();
+        await loadComplaintTimeline(activeComplaint.id);
+      } catch (err) {
+        console.error('Update status error:', err);
+        showAppNotification(`Failed to update status: ${err.message}`, 'error');
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 16px;">save</span> Update Status';
+      }
+    }
+
+    function subscribeToRealtime() {
+      const channel = supabaseClient
+        .channel('manager-complaints-realtime')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'complaints' }, (payload) => {
+          loadComplaints();
+        })
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'complaint_history' }, (payload) => {
+          if (activeComplaint && payload.new && payload.new.complaint_id === activeComplaint.id) {
+            loadComplaintTimeline(activeComplaint.id);
+          }
+        })
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'accountability_comments' }, (payload) => {
+          if (activeComplaint && payload.new && payload.new.complaint_id === activeComplaint.id) {
+            loadDrawerAccountability(activeComplaint.id, activeComplaint.escalated);
+          }
+        })
+        .subscribe();
+    }
+
+    function formatTimeAgo(dateStr) {
+      if (!dateStr) return '';
+      const diff = Math.floor((new Date() - new Date(dateStr)) / 1000);
+      if (diff < 60) return 'Just now';
+      if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+      if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+      return `${Math.floor(diff / 86400)}d ago`;
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+  </script>
+</body>
+</html>

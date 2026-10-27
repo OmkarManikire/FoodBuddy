@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>404 Page Not Found — Food Buddy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/main.css" />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #FAFAF9;
+    }
+    .font-brand {
+      font-family: 'Outfit', sans-serif;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between text-[#0F172A] antialiased">
+  <!-- Minimal Header -->
+  <header class="w-full border-b border-[#E2E8F0] bg-white/80 backdrop-blur-md sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2.5 group">
+        <div class="w-9 h-9 rounded-xl bg-[#059669] flex items-center justify-center text-white font-black text-lg shadow-sm">
+          F
+        </div>
+        <div class="flex flex-col">
+          <span class="font-brand font-bold text-lg leading-tight tracking-tight text-[#0F172A]">Food Buddy</span>
+          <span class="text-[10px] font-medium text-[#64748B] uppercase tracking-wider">Campus Mess Operations</span>
+        </div>
+      </a>
+      <a href="/login.html" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-[#CBD5E1] bg-white hover:bg-[#F8FAFC] text-xs font-semibold text-[#334155] transition-all">
+        <span class="material-symbols-outlined text-sm">login</span>
+        <span>Sign In</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- 404 Main Content -->
+  <main class="flex-1 flex items-center justify-center px-4 py-16">
+    <div class="max-w-md w-full text-center">
+      <div class="w-20 h-20 rounded-2xl bg-[#ECFDF5] border border-[#A7F3D0] flex items-center justify-center mx-auto mb-6 shadow-sm">
+        <span class="material-symbols-outlined text-[#059669] text-4xl">wrong_location</span>
+      </div>
+
+      <span class="inline-block px-3 py-1 rounded-full bg-[#F1F5F9] text-[#475569] text-xs font-bold tracking-wide uppercase mb-3">
+        Error 404
+      </span>
+
+      <h1 class="font-brand text-3xl sm:text-4xl font-extrabold text-[#0F172A] tracking-tight mb-3">
+        Page Not Found
+      </h1>
+
+      <p class="text-sm text-[#64748B] leading-relaxed mb-8">
+        The dining link, portal path, or resource you are trying to access does not exist or has been relocated.
+      </p>
+
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+        <a href="/" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#059669] hover:bg-[#047857] text-white text-xs font-bold shadow-sm transition-all">
+          <span class="material-symbols-outlined text-base">home</span>
+          <span>Return Home</span>
+        </a>
+        <a href="/login.html" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-[#CBD5E1] bg-white hover:bg-[#F8FAFC] text-[#334155] text-xs font-bold shadow-sm transition-all">
+          <span class="material-symbols-outlined text-base">key</span>
+          <span>Portal Login</span>
+        </a>
+      </div>
+
+      <div class="mt-10 pt-6 border-t border-[#E2E8F0] flex flex-wrap justify-center gap-4 text-xs font-semibold text-[#64748B]">
+        <a href="/student/" class="hover:text-[#059669] transition-colors">Student Portal</a>
+        <span class="text-[#CBD5E1]">&bull;</span>
+        <a href="/manager/" class="hover:text-[#2563EB] transition-colors">Mess Manager OS</a>
+        <span class="text-[#CBD5E1]">&bull;</span>
+        <a href="/authority/" class="hover:text-[#D97706] transition-colors">Authority Desk</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full py-6 border-t border-[#E2E8F0] bg-white text-center text-xs text-[#94A3B8]">
+    Food Buddy &bull; Campus Hostel Mess Management & Feedback System
+  </footer>
+</body>
+</html>
