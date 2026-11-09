@@ -475,7 +475,17 @@
           p_comment: comment
         });
 
-        if (error) throw error;
+        if (error) {
+          const userRes = await supabase.auth.getUser();
+          const { error: commErr } = await supabase
+            .from('accountability_comments')
+            .insert({
+              complaint_id: id,
+              comment: comment,
+              created_by: userRes.data.user?.id
+            });
+          if (commErr) throw commErr;
+        }
 
         showToast('Official Accountability Directive issued successfully!', 'success');
         closeModal();

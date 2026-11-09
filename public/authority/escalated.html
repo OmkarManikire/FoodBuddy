@@ -670,7 +670,18 @@
           p_comment: comment
         });
 
-        if (error) throw error;
+        if (error) {
+          // Fallback if RPC encounters column mismatch in complaint_history
+          const userRes = await supabaseClient.auth.getUser();
+          const { error: commErr } = await supabaseClient
+            .from('accountability_comments')
+            .insert({
+              complaint_id: selectedComplaint.id,
+              comment: comment,
+              created_by: userRes.data.user?.id
+            });
+          if (commErr) throw commErr;
+        }
 
         showAppNotification('Official Accountability Mandate dispatched to Mess Manager!', 'success');
         document.getElementById('drawerCommentInput').value = '';

@@ -423,15 +423,16 @@
       try {
         const { data, error } = await supabaseClient
           .from('menu')
-          .select('*')
-          .gte('date', firstDay.dateStr)
-          .lte('date', lastDay.dateStr);
+          .select('*');
 
         if (error) throw error;
 
         (data || []).forEach(row => {
-          const key = `${row.date}_${row.meal_slot}`;
-          originalMenuMap[key] = row;
+          const matchingDay = weekDays.find(d => (row.day_of_week && d.dayName.toLowerCase() === row.day_of_week.toLowerCase()) || (row.date && d.dateStr === row.date));
+          if (matchingDay) {
+            const key = `${matchingDay.dateStr}_${row.meal_slot}`;
+            originalMenuMap[key] = { ...row, date: matchingDay.dateStr };
+          }
         });
 
         renderGrid();
@@ -632,25 +633,33 @@
       saveBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 18px; animation: spin 1s linear infinite;">sync</span> Saving...';
 
       try {
-        const rowsToUpsert = keys.map(k => {
+        for (const k of keys) {
           const item = modifiedMenuMap[k];
-          return {
-            date: item.date,
-            meal_slot: item.meal_slot,
-            title: item.title,
+          const updatePayload = {
             items: item.items,
-            calories: item.calories,
-            special: item.special,
-            timing: item.timing
+            calories: item.calories || null,
+            updated_at: new Date().toISOString()
           };
-        });
 
-        // Supabase upsert using unique constraint (date, meal_slot)
-        const { error } = await supabaseClient
-          .from('menu')
-          .upsert(rowsToUpsert, { onConflict: 'date,meal_slot' });
-
-        if (error) throw error;
+          if (item.id) {
+            const { error: updErr } = await supabaseClient
+              .from('menu')
+              .update(updatePayload)
+              .eq('id', item.id);
+            if (updErr) throw updErr;
+          } else {
+            const [dateStr, slot] = k.split('_');
+            const dayObj = weekDays.find(d => d.dateStr === dateStr);
+            if (dayObj) {
+              const { error: updErr } = await supabaseClient
+                .from('menu')
+                .update(updatePayload)
+                .eq('day_of_week', dayObj.dayName)
+                .eq('meal_slot', slot);
+              if (updErr) throw updErr;
+            }
+          }
+        }
 
         // Merge into original
         keys.forEach(k => {
@@ -661,7 +670,7 @@
         renderGrid();
         updateUnsavedState();
 
-        showAppNotification(`${rowsToUpsert.length} menu items saved and broadcasted to students live!`, 'success');
+        showAppNotification(`${keys.length} menu items saved and broadcasted to students live!`, 'success');
       } catch (err) {
         console.error('Save menu error:', err);
         showAppNotification(`Save failed: ${err.message}`, 'error');

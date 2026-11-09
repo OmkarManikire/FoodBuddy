@@ -1026,6 +1026,10 @@
           }
         })
         .subscribe();
+
+      window.addEventListener('beforeunload', () => {
+        try { supabaseClient.removeChannel(channel); } catch (e) {}
+      });
     }
 
     function formatTimeAgo(dateStr) {

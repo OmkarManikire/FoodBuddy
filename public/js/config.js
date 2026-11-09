@@ -1,5 +1,5 @@
 // Food Buddy Client Configuration
-// Generated during build: 2026-10-27T06:37:14.664Z
+// Generated during build: 2026-11-09T07:49:13.494Z
 export const SUPABASE_URL = 'https://iycdsjnvdnvayspgqaor.supabase.co';
 export const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml5Y2Rzam52ZG52YXlzcGdxYW9yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE3MzY4NDIsImV4cCI6MjEwNzMxMjg0Mn0.jfRSAMmW_QJahx0rOh1cXFZJp4SuqoHYxJ7IuutUQPs';
 

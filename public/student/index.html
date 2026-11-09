@@ -431,32 +431,42 @@
 
       // 3. Fetch Active Menu
       try {
-        const todayStr = new Date().toISOString().split('T')[0];
+        const dayOfWeek = new Date().toLocaleDateString('en-US', { weekday: 'long' });
         const { data: menuData } = await supabase
           .from('menu')
           .select('*')
-          .eq('date', todayStr)
+          .eq('day_of_week', dayOfWeek)
           .eq('meal_slot', activeSlot)
           .maybeSingle();
 
         const menuListEl = document.getElementById('menuItemsPreviewList');
         if (menuData) {
+          const slotTimings = {
+            breakfast: '07:30 AM – 09:30 AM',
+            lunch: '12:30 PM – 02:30 PM',
+            snacks: '05:00 PM – 06:15 PM',
+            dinner: '07:45 PM – 09:45 PM'
+          };
+          const slotDisplay = menuData.meal_slot.charAt(0).toUpperCase() + menuData.meal_slot.slice(1);
           document.getElementById('menuSlotBadge').textContent = menuData.meal_slot.toUpperCase();
-          document.getElementById('menuTitlePreview').textContent = menuData.title;
-          document.getElementById('menuTimingPreview').textContent = `Serving Window: ${menuData.timing} • ${menuData.calories || 600} kcal`;
+          document.getElementById('menuTitlePreview').textContent = menuData.title || `${menuData.day_of_week || 'Today'} ${slotDisplay} Feast`;
+          document.getElementById('menuTimingPreview').textContent = `Serving Window: ${menuData.timing || slotTimings[menuData.meal_slot] || 'Active'} • ${menuData.calories || 600} kcal`;
 
           menuListEl.innerHTML = '';
           const items = Array.isArray(menuData.items) ? menuData.items : [];
-          items.forEach(item => {
-            const isSpecial = item.type === 'special';
+          items.forEach(rawItem => {
+            const isSpecial = typeof rawItem === 'object' && rawItem?.type === 'special';
+            const itemName = typeof rawItem === 'object' && rawItem ? (rawItem.name || rawItem.title || '') : String(rawItem);
+            const calories = typeof rawItem === 'object' && rawItem?.calories ? rawItem.calories : null;
+
             const itemRow = document.createElement('div');
             itemRow.style.cssText = 'display:flex; align-items:center; justify-content:space-between; padding: 8px 12px; background: var(--bg-subtle); border-radius: 8px; font-size: 13px;';
             itemRow.innerHTML = `
               <div style="display:flex; align-items:center; gap: 8px;">
                 <span class="material-symbols-outlined text-[16px]" style="color: ${isSpecial ? '#D97706' : '#059669'};">${isSpecial ? 'stars' : 'check_circle'}</span>
-                <span style="font-weight: 500; color: var(--text-main);">${item.name || item}</span>
+                <span style="font-weight: 500; color: var(--text-main);">${escapeHtml(itemName)}</span>
               </div>
-              ${item.calories ? `<span style="font-size: 11px; color: var(--text-muted);">${item.calories} kcal</span>` : ''}
+              ${calories ? `<span style="font-size: 11px; color: var(--text-muted);">${calories} kcal</span>` : ''}
             `;
             menuListEl.appendChild(itemRow);
           });

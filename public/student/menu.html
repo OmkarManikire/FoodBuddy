@@ -495,6 +495,16 @@
       tea: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=600&auto=format&fit=crop&q=80'
     };
 
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
     function getDishImage(name) {
       const n = (name || '').toLowerCase();
       if (n.includes('paneer') || n.includes('chicken') || n.includes('kadai') || n.includes('chole')) return DISH_IMAGES.paneer;
@@ -611,14 +621,18 @@
 
     async function loadTodayMenu() {
       try {
-        const todayStr = new Date().toISOString().split('T')[0];
+        const today = new Date();
+        const todayStr = today.toISOString().split('T')[0];
+        const dayOfWeek = today.toLocaleDateString('en-US', { weekday: 'long' });
+
         const { data, error } = await foodBuddySupabase
           .from('menu')
-          .select('*')
-          .eq('date', todayStr);
+          .select('*');
 
         if (error) throw error;
-        todayMenus = data || [];
+        
+        const allMenus = data || [];
+        todayMenus = allMenus.filter(m => (m.day_of_week && m.day_of_week.toLowerCase() === dayOfWeek.toLowerCase()) || (m.date && m.date === todayStr));
         renderCurrentSlot();
       } catch (err) {
         console.error('Error loading today menu:', err);
@@ -633,9 +647,15 @@
 
       const menuData = todayMenus.find(m => m.meal_slot === currentSlot);
       const slotNameCapital = currentSlot.charAt(0).toUpperCase() + currentSlot.slice(1);
+      const slotTimings = {
+        breakfast: '07:30 AM – 09:30 AM',
+        lunch: '12:30 PM – 02:30 PM',
+        snacks: '05:00 PM – 06:15 PM',
+        dinner: '07:45 PM – 09:45 PM'
+      };
 
-      if (headerTitle) headerTitle.textContent = `${slotNameCapital} Menu — ${menuData?.title || 'Daily Specials'}`;
-      if (headerTiming) headerTiming.textContent = `Timing: ${menuData?.timing || 'Regular Hours'}`;
+      if (headerTitle) headerTitle.textContent = `${slotNameCapital} Menu — ${menuData?.title || (menuData?.day_of_week ? `${menuData.day_of_week} Special` : 'Daily Specials')}`;
+      if (headerTiming) headerTiming.textContent = `Timing: ${menuData?.timing || slotTimings[currentSlot] || 'Regular Hours'}`;
       if (specialNotice) specialNotice.style.display = menuData?.special ? 'inline-flex' : 'none';
 
       if (!menuData || !menuData.items || !menuData.items.length) {
@@ -650,7 +670,18 @@
         return;
       }
 
-      const items = Array.isArray(menuData.items) ? menuData.items : [];
+      const rawItems = Array.isArray(menuData.items) ? menuData.items : [];
+      const items = rawItems.map(it => {
+        if (typeof it === 'object' && it) {
+          return it;
+        }
+        return {
+          name: String(it),
+          type: String(it).toLowerCase().includes('chicken') || String(it).toLowerCase().includes('egg') ? 'nonveg' : 'veg',
+          calories: 150,
+          allergens: []
+        };
+      });
       updateNutritionCard(menuData, items);
 
       grid.innerHTML = items.map(item => {
@@ -731,19 +762,11 @@
       try {
         const today = new Date();
         const startOfWeek = new Date(today);
-        startOfWeek.setDate(today.getDate() - today.getDay() + 1); // Monday
-        const endOfWeek = new Date(startOfWeek);
-        endOfWeek.setDate(startOfWeek.getDate() + 6);
-
-        const startStr = startOfWeek.toISOString().split('T')[0];
-        const endStr = endOfWeek.toISOString().split('T')[0];
+        startOfWeek.setDate(today.getDate() - (today.getDay() === 0 ? 6 : today.getDay() - 1)); // Monday
 
         const { data, error } = await foodBuddySupabase
           .from('menu')
-          .select('*')
-          .gte('date', startStr)
-          .lte('date', endStr)
-          .order('date', { ascending: true });
+          .select('*');
 
         if (error) throw error;
         weekMenus = data || [];
@@ -767,7 +790,8 @@
         const dStr = d.toISOString().split('T')[0];
         const isToday = dStr === todayStr;
 
-        const dayMenus = weekMenus.filter(m => m.date === dStr);
+        const dayName = days[i];
+        const dayMenus = weekMenus.filter(m => (m.day_of_week && m.day_of_week.toLowerCase() === dayName.toLowerCase()) || (m.date && m.date === dStr));
         const breakfast = dayMenus.find(m => m.meal_slot === 'breakfast');
         const lunch = dayMenus.find(m => m.meal_slot === 'lunch');
         const snacks = dayMenus.find(m => m.meal_slot === 'snacks');
@@ -775,7 +799,8 @@
 
         function formatItemNames(m) {
           if (!m || !m.items || !m.items.length) return '<span style="color:#94A3B8;">Regular Hostel Menu</span>';
-          return m.items.map(it => it.name).slice(0, 3).join(', ') + (m.items.length > 3 ? '...' : '');
+          const names = m.items.map(it => (typeof it === 'object' && it ? (it.name || it.title || '') : String(it)));
+          return escapeHtml(names.slice(0, 3).join(', ')) + (names.length > 3 ? '...' : '');
         }
 
         html += `

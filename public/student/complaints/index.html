@@ -437,6 +437,7 @@
       });
 
       await loadComplaints();
+      setupRealtimeComplaints();
 
       // Check if a specific tracking ID is requested in the URL
       const params = new URLSearchParams(window.location.search);
@@ -512,6 +513,16 @@
       renderTable(filtered);
     }
 
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
     function renderTable(list) {
       const tbody = document.getElementById('complaintsTableBody');
       if (!list.length) {
@@ -555,11 +566,11 @@
               <strong style="color: var(--color-primary); font-family: monospace; font-size: 13px;">${c.tracking_id}</strong>
             </td>
             <td>
-              <span class="badge badge-gray" style="text-transform: capitalize;">${c.category.replace('_', ' ')}</span>
+              <span class="badge badge-gray" style="text-transform: capitalize;">${escapeHtml(c.category.replace('_', ' '))}</span>
             </td>
             <td>
               <div style="font-weight: 600; color: var(--text-main); max-width: 320px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                ${subject}
+                ${escapeHtml(subject)}
               </div>
               ${hasMedia ? `<span style="font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 3px; margin-top: 2px;"><span class="material-symbols-outlined" style="font-size: 13px;">attachment</span> ${c.media_paths.length} file(s) attached</span>` : ''}
             </td>
@@ -702,6 +713,32 @@
     function closeDrawer() {
       document.getElementById('drawerScrim').classList.remove('open');
       document.getElementById('complaintDrawer').classList.remove('open');
+    }
+
+    function setupRealtimeComplaints() {
+      try {
+        const channel = foodBuddySupabase
+          .channel('student-complaints-live')
+          .on(
+            'postgres_changes',
+            { event: '*', schema: 'public', table: 'complaints' },
+            async (payload) => {
+              await loadComplaints();
+              const openDrawerId = document.getElementById('drawerTrackingId')?.textContent;
+              if (openDrawerId && document.getElementById('complaintDrawer')?.classList.contains('open')) {
+                const updated = complaintsList.find(c => c.tracking_id === openDrawerId);
+                if (updated) openDrawer(updated);
+              }
+            }
+          )
+          .subscribe();
+
+        window.addEventListener('beforeunload', () => {
+          foodBuddySupabase.removeChannel(channel);
+        });
+      } catch (e) {
+        console.warn('Realtime subscription error:', e);
+      }
     }
 
     window.setFilter = setFilter;

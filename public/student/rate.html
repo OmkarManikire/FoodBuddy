@@ -309,16 +309,19 @@
 
       // Fetch today's menu titles
       try {
+        const dayOfWeek = today.toLocaleDateString('en-US', { weekday: 'long' });
         const { data: menus } = await supabase
           .from('menu')
-          .select('meal_slot, title, items')
-          .eq('date', todayStr);
+          .select('*')
+          .eq('day_of_week', dayOfWeek);
 
         if (menus) {
           menus.forEach(m => {
             const el = document.getElementById(`menu-text-${m.meal_slot}`);
             if (el) {
-              const names = Array.isArray(m.items) ? m.items.map(i => i.name || i).join(', ') : m.title;
+              const names = Array.isArray(m.items) 
+                ? m.items.map(i => (typeof i === 'object' && i ? (i.name || i.title || '') : String(i))).join(', ') 
+                : (m.title || 'Hostel Mess Menu');
               el.textContent = names;
             }
           });

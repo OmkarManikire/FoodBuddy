@@ -326,6 +326,16 @@
       }
     }
 
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
     function renderSuggestions(list) {
       const listEl = document.getElementById('suggestionsList');
       const countBadge = document.getElementById('sugCountBadge');
@@ -344,30 +354,32 @@
 
       const statusMap = {
         submitted: { label: 'Submitted', badge: 'badge-gray' },
+        under_review: { label: 'Under Review', badge: 'badge-yellow' },
         under_consideration: { label: 'Under Consideration', badge: 'badge-yellow' },
         accepted: { label: 'Accepted by Chef', badge: 'badge-green' },
         planned: { label: 'Planned for Menu', badge: 'badge-blue' }
       };
 
       listEl.innerHTML = list.map(item => {
-        const st = statusMap[item.status] || { label: item.status, badge: 'badge-gray' };
-        const dateStr = new Date(item.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const st = statusMap[item.status] || { label: item.status || 'Submitted', badge: 'badge-gray' };
+        const dateStr = item.created_at ? new Date(item.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+        const descText = item.description || item.suggestion || '';
 
         return `
           <div style="background: var(--bg-surface-secondary); border: 1px solid var(--border-color); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 8px;">
             <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
               <div>
-                <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--color-primary);">${item.category}</span>
-                <h3 style="font-size: 15px; font-weight: 700; color: var(--text-main); margin: 2px 0 0 0;">${item.title}</h3>
+                <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--color-primary);">${escapeHtml(item.category)}</span>
+                <h3 style="font-size: 15px; font-weight: 700; color: var(--text-main); margin: 2px 0 0 0;">${escapeHtml(item.title)}</h3>
               </div>
-              <span class="badge ${st.badge}">${st.label}</span>
+              <span class="badge ${st.badge}">${escapeHtml(st.label)}</span>
             </div>
-            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.4; margin: 0; white-space: pre-wrap;">${item.suggestion}</p>
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.4; margin: 0; white-space: pre-wrap;">${escapeHtml(descText)}</p>
             <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 6px; font-size: 11px; color: var(--text-muted);">
               <span>Submitted on ${dateStr}</span>
               <span style="display: flex; align-items: center; gap: 4px; font-weight: 600; color: #059669;">
                 <span class="material-symbols-outlined" style="font-size: 14px;">thumb_up</span>
-                ${item.votes || 0} votes
+                Status: ${escapeHtml(st.label)}
               </span>
             </div>
           </div>
@@ -397,17 +409,19 @@
       try {
         const fullSuggestionText = `${rawDetails}\n\n[Preferences: Oil: ${oilVal}, Spice: ${spiceVal}]`;
 
+        const studentId = currentUser.user?.id || currentUser.session?.user?.id || currentUser.profile?.id;
+        const payload = {
+          student_id: studentId,
+          category: category,
+          title: title,
+          description: fullSuggestionText,
+        };
+
         const { data, error } = await foodBuddySupabase
           .from('suggestions')
-          .insert({
-            student_id: currentUser.user?.id || currentUser.id || currentUser.profile?.id,
-            category: category,
-            title: title,
-            suggestion: fullSuggestionText,
-            votes: 1
-          })
+          .insert(payload)
           .select()
-          .single();
+          .maybeSingle();
 
         if (error) throw error;
 

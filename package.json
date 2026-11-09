@@ -9,7 +9,12 @@
     "seed": "node scripts/seed.mjs",
     "test:rls": "node scripts/test-rls.mjs",
     "test:student": "node scripts/test-student-rls.mjs",
-    "check": "node scripts/verify_syntax.mjs"
+    "test:manager": "node scripts/test-manager-rls.mjs",
+    "test:authority": "node scripts/test-authority-complete.mjs",
+    "test:features": "node scripts/test-phase3-features.mjs",
+    "test:security": "node scripts/test-phase4-security.mjs",
+    "test": "npm run check && npm run test:rls && npm run test:student && npm run test:manager && npm run test:authority && npm run test:features && npm run test:security",
+    "check": "node --experimental-vm-modules scripts/verify_syntax.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.1",

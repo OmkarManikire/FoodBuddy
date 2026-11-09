@@ -581,6 +581,16 @@
       renderFileList();
     }
 
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
     function renderFileList() {
       const listEl = document.getElementById('uploadedFilesList');
       if (!selectedFiles.length) {
@@ -596,7 +606,7 @@
           }
           <div style="flex: 1; min-width: 0;">
             <div style="font-size: 13px; font-weight: 600; color: var(--text-main); text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
-              ${item.name}
+              ${escapeHtml(item.name)}
             </div>
             <div style="font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; margin-top: 2px;">
               <span>${item.size}</span>
@@ -640,8 +650,8 @@
         // 1. Upload files to private bucket complaint-media under {auth.uid()}/
         const mediaPaths = [];
         for (const item of selectedFiles) {
-          const fileExt = item.name.split('.').pop() || 'dat';
           const studentUid = currentUser.user?.id || currentUser.id || currentUser.profile?.id;
+          const cleanName = (item.name || 'media').replace(/[^a-zA-Z0-9._-]/g, '_');
           const filePath = `${studentUid}/${Date.now()}_${cleanName}`;
 
           const { data: uploadData, error: uploadErr } = await foodBuddySupabase.storage
