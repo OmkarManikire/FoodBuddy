@@ -9,10 +9,14 @@
 ALTER TABLE public.complaint_history 
 ADD COLUMN IF NOT EXISTS actor_role text not null default 'student';
 
--- 2. Expand notices priority check to allow 'high' in addition to 'urgent'
+-- 2. Normalize and expand notices priority check
+UPDATE public.notices 
+SET priority = 'special' 
+WHERE priority NOT IN ('low', 'normal', 'urgent', 'critical', 'special', 'high', 'announcement');
+
 ALTER TABLE public.notices DROP CONSTRAINT IF EXISTS notices_priority_check;
 ALTER TABLE public.notices ADD CONSTRAINT notices_priority_check 
-  CHECK (priority IN ('low', 'normal', 'urgent', 'critical', 'special', 'high'));
+  CHECK (priority IN ('low', 'normal', 'urgent', 'critical', 'special', 'high', 'announcement'));
 
 -- 3. Update record_governance_action RPC
 CREATE OR REPLACE FUNCTION public.record_governance_action(
@@ -141,3 +145,4 @@ BEGIN
     );
 END;
 $$;
+
