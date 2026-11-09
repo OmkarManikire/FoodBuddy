@@ -235,8 +235,9 @@
   </main>
 
   <script type="module">
-    import { signInStep1, signInWithGoogle } from '/js/auth.js';
+    import { signInStep1, signInWithGoogle, quickDemoLogin } from '/js/auth.js';
     import { renderDemoBanner, showToast } from '/js/app-shell.js';
+    import { isLocalDev } from '/js/config.js';
 
     let currentRole = 'student';
 
@@ -249,6 +250,7 @@
         hoverColor: '#047857',
         gradient: 'from-[#005137] via-[#006948] to-[#002114]',
         defaultEmail: isLocalDev ? 'student@foodbuddy.test' : 'student@campus.edu',
+        defaultPassword: 'Student@Pass2025',
         description: "Sign in to check today's dynamic menu, reserve meal slots, and manage dining passes.",
         showRegister: true,
         registerText: 'New student? Register for mess access',
@@ -262,6 +264,7 @@
         hoverColor: '#1d4ed8',
         gradient: 'from-[#1e3a8a] via-[#1d4ed8] to-[#172554]',
         defaultEmail: isLocalDev ? 'manager@foodbuddy.test' : 'manager@campus.edu',
+        defaultPassword: 'Manager@Pass2025',
         description: "Kitchen operations desk: turnstile pass scanner, meal scheduling, and inventory tracking.",
         showRegister: true,
         registerText: 'Register new Mess Manager / Operator',
@@ -275,6 +278,7 @@
         hoverColor: '#b45309',
         gradient: 'from-[#78350f] via-[#b45309] to-[#451a03]',
         defaultEmail: isLocalDev ? 'authority@foodbuddy.test' : 'authority@campus.edu',
+        defaultPassword: 'Authority@Pass2025',
         description: "Supervisory oversight: hostel hygiene benchmarks, SLA breach escalations, and contractor reviews.",
         showRegister: true,
         registerText: 'Register new Campus Warden / Authority',
@@ -292,6 +296,7 @@
       ['student', 'manager', 'authority'].forEach((r) => {
         const tabKey = r === 'manager' ? 'mess_manager' : r;
         const btn = document.getElementById(`tab-${r}`);
+        if (!btn) return;
         if (tabKey === role) {
           btn.className = `flex-1 py-2 px-2 rounded-lg text-xs font-semibold text-white shadow-sm transition-all flex items-center justify-center gap-1.5`;
           btn.style.backgroundColor = conf.accentColor;
@@ -302,32 +307,55 @@
       });
 
       // Update UI elements
-      document.getElementById('brand-monogram').style.backgroundColor = conf.accentColor;
+      const brandMonogram = document.getElementById('brand-monogram');
+      if (brandMonogram) brandMonogram.style.backgroundColor = conf.accentColor;
+      
       const pill = document.getElementById('role-pill-badge');
-      pill.textContent = conf.badge;
-      pill.className = `badge ${conf.badgeClass}`;
+      if (pill) {
+        pill.textContent = conf.badge;
+        pill.className = `badge ${conf.badgeClass}`;
+      }
 
-      document.getElementById('portal-description').textContent = conf.description;
-      document.getElementById('submit-btn').style.backgroundColor = conf.accentColor;
-      document.getElementById('link-forgot-pwd').style.color = conf.accentColor;
+      const portalDesc = document.getElementById('portal-description');
+      if (portalDesc) portalDesc.textContent = conf.description;
+      
+      const submitBtn = document.getElementById('submit-btn');
+      if (submitBtn) submitBtn.style.backgroundColor = conf.accentColor;
+      
+      const forgotLink = document.getElementById('link-forgot-pwd');
+      if (forgotLink) forgotLink.style.color = conf.accentColor;
 
       const regLink = document.getElementById('register-link');
-      if (conf.showRegister) {
-        regLink.style.display = 'inline-flex';
-        regLink.style.color = conf.accentColor;
-        regLink.href = conf.registerUrl || '/register.html';
-        const label = regLink.querySelector('span:first-child');
-        if (label) label.textContent = conf.registerText || 'Register new account';
-      } else {
-        regLink.style.display = 'none';
+      if (regLink) {
+        if (conf.showRegister) {
+          regLink.style.display = 'inline-flex';
+          regLink.style.color = conf.accentColor;
+          regLink.href = conf.registerUrl || '/register.html';
+          const label = regLink.querySelector('span:first-child');
+          if (label) label.textContent = conf.registerText || 'Register new account';
+        } else {
+          regLink.style.display = 'none';
+        }
       }
 
       // Update right panel gradient
       const brandPanel = document.getElementById('brand-panel');
-      brandPanel.className = `lg:col-span-6 xl:col-span-7 relative p-8 sm:p-12 lg:p-16 flex flex-col justify-between overflow-hidden bg-gradient-to-br ${conf.gradient} text-white`;
+      if (brandPanel) {
+        brandPanel.className = `lg:col-span-6 xl:col-span-7 relative p-8 sm:p-12 lg:p-16 flex flex-col justify-between overflow-hidden bg-gradient-to-br ${conf.gradient} text-white`;
+      }
 
-      // Pre-fill demo email placeholder
-      document.getElementById('email').placeholder = conf.defaultEmail;
+      // Pre-fill demo email placeholder & credentials if in local dev
+      const emailInput = document.getElementById('email');
+      const pwdInput = document.getElementById('password');
+      if (emailInput) {
+        emailInput.placeholder = conf.defaultEmail;
+        if (isLocalDev) {
+          emailInput.value = conf.defaultEmail;
+        }
+      }
+      if (pwdInput && isLocalDev) {
+        pwdInput.value = conf.defaultPassword || '';
+      }
 
       // Clear any prior errors
       hideError();
@@ -443,22 +471,45 @@
       }
     });
 
-    // Setup Local Demo Banner with Autofill buttons
-    renderDemoBanner('Food Buddy Local Dev Active. Quick autofill test accounts available:', () => {
-      const emailInput = document.getElementById('email');
-      const pwdInput = document.getElementById('password');
-      if (currentRole === 'student') {
-        emailInput.value = 'student@foodbuddy.test';
-        pwdInput.value = 'Student@Pass2025';
-      } else if (currentRole === 'mess_manager') {
-        emailInput.value = 'manager@foodbuddy.test';
-        pwdInput.value = 'Manager@Pass2025';
-      } else if (currentRole === 'authority') {
-        emailInput.value = 'authority@foodbuddy.test';
-        pwdInput.value = 'Authority@Pass2025';
+    // Explicit tab click listeners
+    document.getElementById('tab-student')?.addEventListener('click', () => switchRole('student'));
+    document.getElementById('tab-manager')?.addEventListener('click', () => switchRole('mess_manager'));
+    document.getElementById('tab-authority')?.addEventListener('click', () => switchRole('authority'));
+
+    // Setup Local Demo Banner with Autofill buttons & direct Quick Login
+    if (isLocalDev) {
+      renderDemoBanner('Food Buddy Local Dev Active. Test accounts ready:', () => {
+        const conf = roleConfigs[currentRole] || roleConfigs.student;
+        const emailInput = document.getElementById('email');
+        const pwdInput = document.getElementById('password');
+        if (emailInput) emailInput.value = conf.defaultEmail;
+        if (pwdInput) pwdInput.value = conf.defaultPassword;
+        showToast(`Autofilled credentials for ${conf.badge}!`, 'info');
+      }, 'Autofill Credentials');
+
+      // Also add Quick 1-Click Login buttons to demo banner if present
+      const actions = document.getElementById('demo-banner-actions');
+      if (actions) {
+        const directBtn = document.createElement('button');
+        directBtn.type = 'button';
+        directBtn.id = 'btn-quick-login-direct';
+        directBtn.style.cssText = 'padding: 4px 12px; font-size: 11px; font-weight: 700; background: #2563EB; color: #FFFFFF; border: none; border-radius: 999px; cursor: pointer; display: flex; align-items: center; gap: 4px;';
+        directBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px;">bolt</span><span>Instant 1-Click Login</span>';
+        directBtn.addEventListener('click', async (e) => {
+          e.preventDefault();
+          directBtn.disabled = true;
+          directBtn.textContent = 'Logging in...';
+          try {
+            await quickDemoLogin(currentRole);
+          } catch (err) {
+            directBtn.disabled = false;
+            directBtn.textContent = 'Instant 1-Click Login';
+            showError(err.message || 'Quick login failed');
+          }
+        });
+        actions.appendChild(directBtn);
       }
-      showToast(`Autofilled credentials for ${currentRole.replace('_', ' ')}!`, 'info');
-    });
+    }
   </script>
 </body>
 </html>

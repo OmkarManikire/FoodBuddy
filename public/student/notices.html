@@ -204,6 +204,7 @@
       });
 
       await loadNotices();
+      setupRealtimeNotices();
     });
 
     function setNoticeFilter(type) {
@@ -223,7 +224,6 @@
     async function loadNotices() {
       try {
         // Fetch active notices (not archived and not expired)
-        const now = new Date().toISOString();
         const { data: noticeData, error: noticeErr } = await foodBuddySupabase
           .from('notices')
           .select('*')
@@ -253,7 +253,7 @@
       const container = document.getElementById('noticesListContainer');
       const filtered = notices.filter(n => {
         if (currentFilter === 'all') return true;
-        const isAuth = n.posted_by === 'authority' || n.posted_by === 'Authority' || n.posted_by === 'Higher Authority';
+        const isAuth = n.posted_by === 'authority' || n.posted_by === 'Authority' || n.posted_by === 'Higher Authority' || n.posted_by_role === 'authority';
         if (currentFilter === 'authority') return isAuth;
         if (currentFilter === 'manager') return !isAuth;
         return n.posted_by === currentFilter;
@@ -272,10 +272,17 @@
 
       container.innerHTML = filtered.map(n => {
         const isRead = readNoticeIds.has(n.id);
-        const isAuthority = n.posted_by === 'authority' || n.posted_by === 'Authority' || n.posted_by === 'Higher Authority';
+        const isAuthority = n.posted_by === 'authority' || n.posted_by === 'Authority' || n.posted_by === 'Higher Authority' || n.posted_by_role === 'authority';
         const dateStr = new Date(n.created_at).toLocaleString('en-US', {
           month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'
         });
+
+        let priorityBadge = '';
+        if (n.priority === 'urgent') {
+          priorityBadge = '<span style="font-size: 10px; font-weight: 700; background: #FEF2F2; color: #DC2626; border: 1px solid #FCA5A5; padding: 1px 7px; border-radius: 999px;">URGENT</span>';
+        } else if (n.priority === 'special' || n.priority === 'announcement') {
+          priorityBadge = '<span style="font-size: 10px; font-weight: 700; background: #FEF3C7; color: #92400E; border: 1px solid #FDE68A; padding: 1px 7px; border-radius: 999px;">FEAST</span>';
+        }
 
         return `
           <article class="notice-card ${!isRead ? 'unread' : ''} ${isAuthority ? 'authority-card' : ''}" onclick="onNoticeClicked('${n.id}')">
@@ -283,8 +290,9 @@
               <div style="display: flex; align-items: center; gap: 8px;">
                 ${isAuthority 
                   ? `<span class="authority-badge"><span class="material-symbols-outlined" style="font-size: 13px;">verified</span> Authority</span>`
-                  : `<span class="manager-badge"><span class="material-symbols-outlined" style="font-size: 13px;">restaurant</span> Posted by Mess Manager</span>`
+                  : `<span class="manager-badge"><span class="material-symbols-outlined" style="font-size: 13px;">restaurant</span> ${escapeHtml(n.author_name || 'Mess Manager')}</span>`
                 }
+                ${priorityBadge}
                 ${!isRead ? `<span style="font-size: 10px; font-weight: 700; background: #059669; color: #fff; padding: 1px 6px; border-radius: 4px;">NEW</span>` : ''}
               </div>
               <span style="font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 4px;">
@@ -295,10 +303,10 @@
 
             <div>
               <h2 style="font-size: 17px; font-weight: 700; color: var(--text-main); margin: 0 0 6px 0; line-height: 1.3;">
-                ${n.title}
+                ${escapeHtml(n.title)}
               </h2>
               <p style="font-size: 14px; color: var(--text-muted); line-height: 1.5; margin: 0; white-space: pre-wrap;">
-                ${n.body}
+                ${escapeHtml(n.body || n.content || '')}
               </p>
             </div>
 
@@ -339,6 +347,25 @@
       } catch (err) {
         console.error('Error marking notice as read:', err);
       }
+    }
+
+    function setupRealtimeNotices() {
+      try {
+        if (!foodBuddySupabase || typeof foodBuddySupabase.channel !== 'function') return;
+        foodBuddySupabase
+          .channel('student-notices-feed')
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'notices' }, () => {
+            loadNotices();
+          })
+          .subscribe();
+      } catch (e) {
+        console.warn('Realtime subscription error:', e);
+      }
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
 
     window.setNoticeFilter = setNoticeFilter;

@@ -77,12 +77,28 @@
 
         <!-- Student ID -->
         <div>
-          <label for="studentId" class="input-label">Official College Student ID / Roll Number</label>
+          <div class="flex items-center justify-between mb-1.5">
+            <label for="studentId" class="input-label mb-0">Official College Student ID / Roll Number</label>
+            <button type="button" id="btn-suggest-id" class="text-[11px] text-[#059669] hover:text-[#047857] font-semibold flex items-center gap-1 cursor-pointer">
+              <span class="material-symbols-outlined text-[13px]">auto_fix_high</span>
+              <span>Use STU-2026-006</span>
+            </button>
+          </div>
           <div class="relative">
             <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94a3b8] text-lg pointer-events-none">fingerprint</span>
-            <input id="studentId" type="text" required placeholder="e.g. STU-2024-002" class="input-field pl-10 uppercase tracking-wider font-mono font-medium" />
+            <input id="studentId" type="text" list="available-student-ids" required placeholder="e.g. STU-2026-006" class="input-field pl-10 uppercase tracking-wider font-mono font-medium" />
+            <datalist id="available-student-ids">
+              <option value="STU-2026-006">STU-2026-006 (Aryabhatta Block)</option>
+              <option value="STU-2026-007">STU-2026-007 (Mandakini Hostel)</option>
+              <option value="STU-2026-008">STU-2026-008 (Vikramshila Block)</option>
+              <option value="STU-2026-009">STU-2026-009 (Mithila Hostel)</option>
+              <option value="2025CSB1003">2025CSB1003 (Takshashila Hall)</option>
+              <option value="2025CSB1004">2025CSB1004 (Nalanda Block)</option>
+            </datalist>
           </div>
-          <p class="text-[11px] text-[#64748b] mt-1">Must match an unused Student ID registered in the campus roster.</p>
+          <p class="text-[11px] text-[#64748b] mt-1">
+            Registered campus roster IDs include <span class="font-mono font-bold text-[#0f172a]">STU-2026-006</span>, <span class="font-mono font-bold text-[#0f172a]">STU-2026-007</span>, <span class="font-mono font-bold text-[#0f172a]">2025CSB1003</span>...
+          </p>
         </div>
 
         <!-- Hostel Residence Grid -->
@@ -126,7 +142,8 @@
   <script type="module">
     import { getSupabase } from '/js/supabase.js';
     import { completeGoogleOnboarding, signOut } from '/js/auth.js';
-    import { showToast } from '/js/app-shell.js';
+    import { showToast, renderDemoBanner } from '/js/app-shell.js';
+    import { isLocalDev } from '/js/config.js';
 
     const supabase = getSupabase();
     const errorAlert = document.getElementById('onboarding-error-alert');
@@ -147,6 +164,28 @@
       const fullNameInput = document.getElementById('fullName');
       if (!fullNameInput.value) {
         fullNameInput.value = user.user_metadata?.full_name || user.user_metadata?.name || '';
+      }
+
+      function fillDemoDetails() {
+        const idInput = document.getElementById('studentId');
+        const blockSelect = document.getElementById('hostelBlock');
+        const roomInput = document.getElementById('roomNo');
+        if (idInput && !idInput.value) idInput.value = 'STU-2026-006';
+        if (blockSelect && !blockSelect.value) blockSelect.value = 'Aryabhatta Block';
+        if (roomInput && !roomInput.value) roomInput.value = 'B-201';
+      }
+
+      document.getElementById('btn-suggest-id')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        fillDemoDetails();
+        showToast('Filled available student ID STU-2026-006', 'info');
+      });
+
+      if (isLocalDev) {
+        renderDemoBanner('Google Authenticated. Finish your student mess onboarding:', () => {
+          fillDemoDetails();
+          showToast('Autofilled verified student enrollment credentials!', 'info');
+        }, 'Autofill Student Details');
       }
     }
 

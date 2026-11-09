@@ -381,21 +381,23 @@
   <script>
     let selectedPriority = 'normal';
     let allNotices = [];
+    let currentUser = null;
 
     window.addEventListener('DOMContentLoaded', async () => {
-      const user = await window.requireAuth?.('mess_manager');
-      if (!user) return;
+      currentUser = await window.requireAuth?.('mess_manager');
+      if (!currentUser) return;
       await window.initAppShell?.({
         activeNav: 'notices',
         user: {
-          name: user.profile?.name || user.profile?.full_name || 'Rameshwar Kumar',
+          name: currentUser.profile?.name || currentUser.profile?.full_name || 'Rameshwar Kumar',
           role: 'mess_manager',
           hostel_block: 'Mess 1 • Vikramshila & Mithila'
         }
       });
 
       setupNoticeEvents();
-      loadNotices();
+      await loadNotices();
+      setupRealtimeNotices();
     });
 
     function setupNoticeEvents() {
@@ -535,14 +537,14 @@
                 ${isAuthority ? '<span class="badge" style="background: #FEF3C7; color: #92400E; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px;">OFFICIAL DIRECTIVE</span>' : ''}
               </div>
               <div style="font-size: 12px; color: var(--text-muted); max-width: 320px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                ${escapeHtml(notice.body)}
+                ${escapeHtml(notice.body || notice.content || '')}
               </div>
             </td>
             <td>${priorityBadge}</td>
             <td>
               ${isAuthority 
                 ? '<span class="badge" style="background: #FEF3C7; color: #92400E; border: 1px solid #FDE68A; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; display: inline-flex; align-items: center; gap: 4px;"><span class="material-symbols-outlined" style="font-size: 13px;">verified</span> Authority</span>'
-                : `<span style="font-weight: 500; color: var(--text-main);">${escapeHtml(notice.posted_by || 'Mess Manager')}</span>`
+                : `<span style="font-weight: 500; color: var(--text-main);">${escapeHtml(notice.author_name || notice.posted_by || 'Mess Manager')}</span>`
               }
             </td>
             <td style="color: var(--text-muted); font-size: 12px;">${postedDate}</td>
@@ -576,7 +578,7 @@
     function getPriorityBadge(priority) {
       if (priority === 'urgent') {
         return '<span class="badge" style="background: #FEF2F2; color: #DC2626; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px;">Urgent</span>';
-      } else if (priority === 'special') {
+      } else if (priority === 'special' || priority === 'announcement') {
         return '<span class="badge" style="background: #FEF3C7; color: #92400E; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px;">Feast</span>';
       }
       return '<span class="badge" style="background: #EFF6FF; color: #2563EB; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px;">Normal</span>';
@@ -598,12 +600,16 @@
       submitBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 18px; animation: spin 1s linear infinite;">sync</span> Publishing...';
 
       try {
+        const priorityVal = selectedPriority === 'special' ? 'announcement' : selectedPriority;
+        const authorName = currentUser?.profile?.name || currentUser?.profile?.full_name || 'Mess Manager';
         const payload = {
           title,
           body,
-          priority: selectedPriority,
-          posted_by: 'Mess Manager',
-          author_name: 'Mess Manager',
+          content: body,
+          priority: priorityVal,
+          posted_by: 'mess_manager',
+          posted_by_role: 'mess_manager',
+          author_name: authorName,
           is_archived: false,
           expires_at: expiry ? new Date(expiry + 'T23:59:59Z').toISOString() : null
         };
@@ -635,10 +641,11 @@
       const notice = allNotices.find(n => n.id === noticeId);
       if (!notice) return;
 
+      const prio = (notice.priority === 'announcement') ? 'special' : (notice.priority || 'normal');
       document.getElementById('editNoticeId').value = notice.id;
       document.getElementById('editNoticeTitle').value = notice.title;
-      document.getElementById('editNoticePriority').value = notice.priority || 'normal';
-      document.getElementById('editNoticeBody').value = notice.body;
+      document.getElementById('editNoticePriority').value = prio;
+      document.getElementById('editNoticeBody').value = notice.body || notice.content || '';
       document.getElementById('editNoticeExpiry').value = notice.expires_at ? notice.expires_at.split('T')[0] : '';
 
       document.getElementById('editModal').classList.add('active');
@@ -661,12 +668,14 @@
       saveBtn.textContent = 'Saving...';
 
       try {
+        const priorityVal = priority === 'special' ? 'announcement' : priority;
         const { error } = await supabaseClient
           .from('notices')
           .update({
             title,
-            priority,
+            priority: priorityVal,
             body,
+            content: body,
             expires_at: expiry ? new Date(expiry + 'T23:59:59Z').toISOString() : null
           })
           .eq('id', id);
@@ -699,6 +708,20 @@
       } catch (err) {
         console.error('Archive error:', err);
         showAppNotification(`Action failed: ${err.message}`, 'error');
+      }
+    }
+
+    function setupRealtimeNotices() {
+      try {
+        if (!supabaseClient || typeof supabaseClient.channel !== 'function') return;
+        supabaseClient
+          .channel('manager-notices-feed')
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'notices' }, () => {
+            loadNotices();
+          })
+          .subscribe();
+      } catch (e) {
+        console.warn('Realtime notices subscription error:', e);
       }
     }
 

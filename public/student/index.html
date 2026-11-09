@@ -7,6 +7,44 @@
   <link rel="stylesheet" href="/css/main.css"/>
   <script src="/js/vendor/supabase.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    .dashboard-notice-card {
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+      cursor: pointer;
+      position: relative;
+    }
+    .dashboard-notice-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+    }
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 16px;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal-card {
+      background: #FFFFFF;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 600px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+      animation: modalSlideIn 0.2s ease-out;
+    }
+    @keyframes modalSlideIn {
+      from { transform: translateY(16px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  </style>
 </head>
 <body>
   <div class="app-layout">
@@ -227,6 +265,33 @@
           </div>
         </div>
 
+        <!-- 3.5. Official Mess Notices & Circulars Broadcast Section -->
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="width: 4px; height: 18px; background: #2563EB; border-radius: 9999px;"></span>
+              <h2 style="font-size: 18px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px; margin: 0;">
+                <span>📢 Mess Notices & Official Circulars</span>
+                <span id="dashboardNoticesBadge" style="display: none; font-size: 11px; font-weight: 700; background: #2563EB; color: #fff; padding: 2px 8px; border-radius: 9999px;"></span>
+              </h2>
+            </div>
+            <a href="/student/notices.html" style="font-size: 13px; font-weight: 600; color: #2563EB; text-decoration: none; display: flex; align-items: center; gap: 4px;">
+              View All Notices <span class="material-symbols-outlined" style="font-size: 16px;">arrow_forward</span>
+            </a>
+          </div>
+
+          <!-- Urgent Broadcast Alert Callout (Shown dynamically if urgent notice exists) -->
+          <div id="dashboardUrgentBanner" style="display: none; background: #FEF2F2; border: 1px solid #FCA5A5; border-radius: 12px; padding: 14px 18px; align-items: center; justify-content: space-between; gap: 14px;"></div>
+
+          <!-- Active Notices Grid -->
+          <div id="dashboardNoticesList" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px;">
+            <div class="card" style="padding: 24px; text-align: center; color: var(--text-muted); border: 1px dashed var(--border-color); grid-column: 1 / -1;">
+              <span class="material-symbols-outlined" style="font-size: 28px; animation: spin 1s linear infinite; color: #2563EB;">sync</span>
+              <p style="margin: 8px 0 0 0; font-size: 13px;">Checking for latest mess notices & circulars...</p>
+            </div>
+          </div>
+        </div>
+
         <!-- 4. Lower Split Section: Menu Preview & Recent Complaints -->
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 24px; align-items: start;">
           <!-- Left: Today's Menu Live Preview -->
@@ -265,6 +330,40 @@
           </div>
         </div>
       </main>
+    </div>
+  </div>
+
+  <!-- Notice View Modal -->
+  <div class="modal-overlay" id="noticeDetailModal">
+    <div class="modal-card">
+      <div style="padding: 18px 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: #F8FAFC;">
+        <div style="display: flex; align-items: center; gap: 8px;" id="modalNoticeBadges">
+          <!-- Populated dynamically -->
+        </div>
+        <button type="button" onclick="window.closeNoticeModal()" style="background: none; border: none; cursor: pointer; color: var(--text-muted); display: flex; align-items: center;">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div style="padding: 24px;">
+        <h2 id="modalNoticeTitle" style="font-size: 18px; font-weight: 700; color: var(--text-main); margin: 0 0 12px 0; line-height: 1.35;"></h2>
+        <div style="display: flex; align-items: center; gap: 12px; font-size: 12px; color: var(--text-muted); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color);">
+          <span id="modalNoticeAuthor" style="font-weight: 600; color: var(--text-main);"></span>
+          <span>•</span>
+          <span id="modalNoticeDate"></span>
+          <span>•</span>
+          <span id="modalNoticeExpiry"></span>
+        </div>
+        <div id="modalNoticeBody" style="font-size: 14px; line-height: 1.6; color: var(--text-main); white-space: pre-wrap; max-height: 360px; overflow-y: auto;"></div>
+      </div>
+      <div style="padding: 16px 24px; background: #F8FAFC; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+        <span id="modalNoticeStatus" style="font-size: 12px; color: var(--text-muted);"></span>
+        <div style="display: flex; gap: 10px;">
+          <button type="button" class="btn btn-secondary" onclick="window.closeNoticeModal()" style="font-size: 13px;">Close</button>
+          <button type="button" id="modalMarkReadBtn" class="btn btn-primary" onclick="window.markCurrentNoticeAsRead()" style="font-size: 13px; background: #2563EB; border-color: #2563EB;">
+            <span class="material-symbols-outlined" style="font-size: 16px;">done_all</span> Mark as Read
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -403,6 +502,286 @@
       } catch (e) {
         console.error('Recent complaints error:', e);
       }
+
+      // 5. Fetch and Render Notices & Announcements for Student Dashboard
+      let loadedDashboardNotices = [];
+      let studentReadNoticeIds = new Set();
+      let currentActiveNotice = null;
+
+      async function fetchDashboardNotices() {
+        const noticesContainer = document.getElementById('dashboardNoticesList');
+        const urgentBanner = document.getElementById('dashboardUrgentBanner');
+        const badgeEl = document.getElementById('dashboardNoticesBadge');
+
+        try {
+          const { data: noticesData, error: noticesErr } = await supabase
+            .from('notices')
+            .select('*')
+            .eq('is_archived', false)
+            .order('created_at', { ascending: false });
+
+          if (noticesErr) throw noticesErr;
+
+          const studentId = authState.user?.id || authState.id || profile?.id;
+          if (studentId) {
+            const { data: readData } = await supabase
+              .from('notice_reads')
+              .select('notice_id')
+              .eq('student_id', studentId);
+
+            if (readData) {
+              studentReadNoticeIds = new Set(readData.map(r => r.notice_id));
+            }
+          }
+
+          loadedDashboardNotices = (noticesData || []).filter(n => {
+            if (!n.expires_at) return true;
+            return new Date(n.expires_at) > new Date();
+          });
+
+          renderDashboardNotices();
+        } catch (err) {
+          console.error('Error fetching dashboard notices:', err);
+          if (noticesContainer) {
+            noticesContainer.innerHTML = `
+              <div class="card" style="padding: 24px; text-align: center; color: var(--text-muted); border: 1px dashed var(--border-color); grid-column: 1 / -1;">
+                <span class="material-symbols-outlined" style="font-size: 28px; color: #94A3B8;">info</span>
+                <p style="margin: 8px 0 0 0; font-size: 13px;">No active circulars at this moment.</p>
+              </div>
+            `;
+          }
+        }
+      }
+
+      function renderDashboardNotices() {
+        const noticesContainer = document.getElementById('dashboardNoticesList');
+        const urgentBanner = document.getElementById('dashboardUrgentBanner');
+        const badgeEl = document.getElementById('dashboardNoticesBadge');
+
+        if (!loadedDashboardNotices || loadedDashboardNotices.length === 0) {
+          if (badgeEl) badgeEl.style.display = 'none';
+          if (urgentBanner) urgentBanner.style.display = 'none';
+          if (noticesContainer) {
+            noticesContainer.innerHTML = `
+              <div class="card" style="padding: 32px 24px; text-align: center; color: var(--text-muted); border: 1px dashed var(--border-color); grid-column: 1 / -1; background: #FAFBFD;">
+                <span class="material-symbols-outlined" style="font-size: 36px; color: #94A3B8; margin-bottom: 8px;">campaign</span>
+                <h4 style="font-size: 15px; font-weight: 600; color: var(--text-main); margin: 0 0 4px 0;">All caught up! No active notices</h4>
+                <p style="font-size: 13px; margin: 0; color: var(--text-muted);">New circulars posted by the mess manager or hostel authorities will appear here instantly.</p>
+              </div>
+            `;
+          }
+          return;
+        }
+
+        // Unread count
+        const unreadList = loadedDashboardNotices.filter(n => !studentReadNoticeIds.has(n.id));
+        if (badgeEl) {
+          if (unreadList.length > 0) {
+            badgeEl.textContent = `${unreadList.length} New`;
+            badgeEl.style.display = 'inline-block';
+            badgeEl.style.background = '#2563EB';
+          } else {
+            badgeEl.textContent = `${loadedDashboardNotices.length} Active`;
+            badgeEl.style.display = 'inline-block';
+            badgeEl.style.background = '#64748B';
+          }
+        }
+
+        // Urgent Alert Banner
+        const urgentNotice = loadedDashboardNotices.find(n => n.priority === 'urgent');
+        if (urgentBanner) {
+          if (urgentNotice) {
+            urgentBanner.style.display = 'flex';
+            urgentBanner.innerHTML = `
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 38px; height: 38px; border-radius: 8px; background: #FEE2E2; color: #DC2626; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                  <span class="material-symbols-outlined" style="font-size: 22px;">notification_important</span>
+                </div>
+                <div>
+                  <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 2px;">
+                    <span style="font-size: 11px; font-weight: 800; background: #DC2626; color: #fff; padding: 1px 6px; border-radius: 4px; letter-spacing: 0.04em;">URGENT</span>
+                    <span style="font-size: 14px; font-weight: 700; color: #991B1B;">${escapeHtml(urgentNotice.title)}</span>
+                  </div>
+                  <div style="font-size: 13px; color: #B91C1C; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;">
+                    ${escapeHtml(urgentNotice.body || urgentNotice.content || '')}
+                  </div>
+                </div>
+              </div>
+              <button type="button" class="btn" onclick="window.openNoticeModal('${urgentNotice.id}')" style="background: #DC2626; color: #fff; border: none; font-size: 12px; font-weight: 600; padding: 6px 14px; white-space: nowrap; flex-shrink: 0; border-radius: 8px; cursor: pointer;">
+                Read Order
+              </button>
+            `;
+          } else {
+            urgentBanner.style.display = 'none';
+          }
+        }
+
+        // Render Cards (up to 4 most recent on dashboard)
+        const displayNotices = loadedDashboardNotices.slice(0, 4);
+        noticesContainer.innerHTML = displayNotices.map(n => {
+          const isRead = studentReadNoticeIds.has(n.id);
+          const isAuthority = n.posted_by === 'authority' || n.posted_by === 'Authority' || n.posted_by === 'Higher Authority' || n.posted_by_role === 'authority';
+          const postedDate = new Date(n.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+          const isUrgent = n.priority === 'urgent';
+          const isSpecial = n.priority === 'special' || n.priority === 'announcement';
+
+          let priorityPill = '';
+          let accentBorder = '#2563EB';
+          if (isUrgent) {
+            priorityPill = '<span style="font-size: 10px; font-weight: 800; background: #FEF2F2; color: #DC2626; border: 1px solid #FCA5A5; padding: 2px 7px; border-radius: 999px;">URGENT</span>';
+            accentBorder = '#DC2626';
+          } else if (isSpecial) {
+            priorityPill = '<span style="font-size: 10px; font-weight: 800; background: #FEF3C7; color: #92400E; border: 1px solid #FDE68A; padding: 2px 7px; border-radius: 999px;">FEAST</span>';
+            accentBorder = '#D97706';
+          } else {
+            priorityPill = '<span style="font-size: 10px; font-weight: 700; background: #EFF6FF; color: #2563EB; border: 1px solid #BFDBFE; padding: 2px 7px; border-radius: 999px;">CIRCULAR</span>';
+            accentBorder = '#2563EB';
+          }
+
+          const authorText = isAuthority ? 'Official Authority' : (n.author_name || 'Mess Manager');
+
+          return `
+            <article class="card dashboard-notice-card" onclick="window.openNoticeModal('${n.id}')" style="padding: 18px 20px; display: flex; flex-direction: column; justify-content: space-between; gap: 14px; border-left: 4px solid ${accentBorder}; background: ${!isRead ? '#FFFFFF' : '#FAFAFA'};">
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 6px;">
+                  <div style="display: flex; align-items: center; gap: 6px;">
+                    ${isAuthority 
+                      ? `<span class="badge" style="background: #FEF3C7; color: #92400E; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px; display: inline-flex; align-items: center; gap: 3px;"><span class="material-symbols-outlined" style="font-size: 12px;">verified</span> Authority</span>`
+                      : `<span class="badge" style="background: #F1F5F9; color: #334155; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px; display: inline-flex; align-items: center; gap: 3px;"><span class="material-symbols-outlined" style="font-size: 12px;">restaurant</span> ${escapeHtml(authorText)}</span>`
+                    }
+                    ${priorityPill}
+                    ${!isRead ? '<span style="font-size: 10px; font-weight: 800; background: #059669; color: #fff; padding: 1px 6px; border-radius: 4px;">NEW</span>' : ''}
+                  </div>
+                  <span style="font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 3px;">
+                    <span class="material-symbols-outlined" style="font-size: 13px;">schedule</span>
+                    ${postedDate}
+                  </span>
+                </div>
+
+                <h3 style="font-size: 15px; font-weight: 700; color: var(--text-main); margin: 0 0 6px 0; line-height: 1.35;">
+                  ${escapeHtml(n.title)}
+                </h3>
+
+                <p style="font-size: 13px; color: var(--text-muted); margin: 0; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                  ${escapeHtml(n.body || n.content || '')}
+                </p>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid var(--border-color); font-size: 12px;">
+                <span style="color: var(--text-muted); font-size: 11px;">
+                  ${n.expires_at ? `Valid till ${new Date(n.expires_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}` : 'Always Active'}
+                </span>
+                <span style="font-weight: 600; color: #2563EB; display: flex; align-items: center; gap: 2px; font-size: 12px;">
+                  Read Notice <span class="material-symbols-outlined" style="font-size: 14px;">arrow_forward</span>
+                </span>
+              </div>
+            </article>
+          `;
+        }).join('');
+      }
+
+      // Modal Handlers
+      window.openNoticeModal = function(noticeId) {
+        const notice = loadedDashboardNotices.find(n => n.id === noticeId);
+        if (!notice) return;
+
+        currentActiveNotice = notice;
+        const isRead = studentReadNoticeIds.has(notice.id);
+        const isAuthority = notice.posted_by === 'authority' || notice.posted_by === 'Authority' || notice.posted_by === 'Higher Authority' || notice.posted_by_role === 'authority';
+        const isUrgent = notice.priority === 'urgent';
+        const isSpecial = notice.priority === 'special' || notice.priority === 'announcement';
+
+        const badgesContainer = document.getElementById('modalNoticeBadges');
+        badgesContainer.innerHTML = `
+          ${isAuthority 
+            ? `<span class="badge" style="background: #FEF3C7; color: #92400E; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; display: inline-flex; align-items: center; gap: 4px;"><span class="material-symbols-outlined" style="font-size: 14px;">verified</span> Official Authority Directive</span>`
+            : `<span class="badge" style="background: #F1F5F9; color: #334155; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; display: inline-flex; align-items: center; gap: 4px;"><span class="material-symbols-outlined" style="font-size: 14px;">restaurant</span> Mess Management Circular</span>`
+          }
+          ${isUrgent ? '<span style="font-size: 11px; font-weight: 800; background: #FEF2F2; color: #DC2626; border: 1px solid #FCA5A5; padding: 2px 8px; border-radius: 999px;">URGENT</span>' : ''}
+          ${isSpecial ? '<span style="font-size: 11px; font-weight: 800; background: #FEF3C7; color: #92400E; border: 1px solid #FDE68A; padding: 2px 8px; border-radius: 999px;">FEAST</span>' : ''}
+        `;
+
+        document.getElementById('modalNoticeTitle').textContent = notice.title;
+        document.getElementById('modalNoticeAuthor').textContent = isAuthority ? 'Warden / Authority' : (notice.author_name || 'Mess Manager');
+        document.getElementById('modalNoticeDate').textContent = 'Posted: ' + new Date(notice.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        document.getElementById('modalNoticeExpiry').textContent = notice.expires_at ? `Expires: ${new Date(notice.expires_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}` : 'No Expiry';
+        document.getElementById('modalNoticeBody').textContent = notice.body || notice.content || '';
+
+        const markReadBtn = document.getElementById('modalMarkReadBtn');
+        const statusEl = document.getElementById('modalNoticeStatus');
+        if (isRead) {
+          statusEl.textContent = '✓ Already marked as read';
+          markReadBtn.style.display = 'none';
+        } else {
+          statusEl.textContent = 'Unread announcement';
+          markReadBtn.style.display = 'inline-flex';
+        }
+
+        document.getElementById('noticeDetailModal').classList.add('active');
+      };
+
+      window.closeNoticeModal = function() {
+        document.getElementById('noticeDetailModal').classList.remove('active');
+        currentActiveNotice = null;
+      };
+
+      window.markCurrentNoticeAsRead = async function() {
+        if (!currentActiveNotice) return;
+        const noticeId = currentActiveNotice.id;
+        const markReadBtn = document.getElementById('modalMarkReadBtn');
+        const statusEl = document.getElementById('modalNoticeStatus');
+
+        markReadBtn.disabled = true;
+        markReadBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 16px; animation: spin 1s linear infinite;">sync</span> Saving...';
+
+        try {
+          const { data, error } = await supabase.rpc('mark_notice_as_read', {
+            p_notice_id: noticeId
+          });
+
+          if (!error && data?.success) {
+            studentReadNoticeIds.add(noticeId);
+            statusEl.textContent = '✓ Marked as read';
+            markReadBtn.style.display = 'none';
+            renderDashboardNotices();
+
+            // Also update KPI counter
+            const kpiCountEl = document.getElementById('kpiNoticesCount');
+            if (kpiCountEl) {
+              const currentUnread = loadedDashboardNotices.filter(n => !studentReadNoticeIds.has(n.id)).length;
+              kpiCountEl.textContent = `${currentUnread} New`;
+            }
+
+            showToast?.('Notice marked as read', 'success');
+          }
+        } catch (err) {
+          console.error('Error marking as read:', err);
+        } finally {
+          markReadBtn.disabled = false;
+        }
+      };
+
+      function setupDashboardRealtimeNotices() {
+        try {
+          if (!supabase || typeof supabase.channel !== 'function') return;
+          supabase
+            .channel('dashboard-student-notices')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'notices' }, () => {
+              fetchDashboardNotices();
+            })
+            .subscribe();
+        } catch (e) {
+          console.warn('Realtime subscription error:', e);
+        }
+      }
+
+      function escapeHtml(text) {
+        if (!text) return '';
+        return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      }
+
+      await fetchDashboardNotices();
+      setupDashboardRealtimeNotices();
     }
   </script>
 </body>

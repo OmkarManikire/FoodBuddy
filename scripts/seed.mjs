@@ -40,7 +40,7 @@ const supabase = createClient(supabaseUrl, serviceRoleKey, {
 });
 
 async function runSeed() {
-  console.log('1. Ensuring 20 Valid Student IDs in public.valid_student_ids...');
+  console.log('1. Ensuring Valid Student IDs in public.valid_student_ids...');
   const studentIds = [];
   for (let i = 1; i <= 20; i++) {
     studentIds.push({
@@ -48,15 +48,26 @@ async function runSeed() {
       used: i === 1, // 1st is used by seed student
     });
   }
+  for (let i = 1; i <= 50; i++) {
+    const numStr = String(i).padStart(3, '0');
+    studentIds.push({
+      student_id: `STU-2026-${numStr}`,
+      used: false,
+    });
+    studentIds.push({
+      student_id: `STU-2025-${numStr}`,
+      used: false,
+    });
+  }
 
   const { error: idError } = await supabase
     .from('valid_student_ids')
-    .upsert(studentIds, { onConflict: 'student_id' });
+    .upsert(studentIds, { onConflict: 'student_id', ignoreDuplicates: true });
 
   if (idError) {
     console.error('Error inserting student IDs:', idError.message);
   } else {
-    console.log('✅ 20 Valid Student IDs confirmed.');
+    console.log(`✅ ${studentIds.length} Valid Student IDs confirmed (including STU-2026 series).`);
   }
 
   const seedAccounts = [
