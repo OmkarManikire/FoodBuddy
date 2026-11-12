@@ -39,3 +39,4 @@ for (const t of candidateTables) {
     console.log(`✅ ${t.padEnd(25)}: EXISTS, count=${count}, sample keys: ${Array.isArray(cols) ? cols.join(', ') : cols}`);
   }
 }
+

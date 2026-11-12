@@ -116,3 +116,4 @@ console.log(`\nFound ${issues.length} potential issues:`);
 for (const issue of issues) {
   console.log(' - ' + issue);
 }
+

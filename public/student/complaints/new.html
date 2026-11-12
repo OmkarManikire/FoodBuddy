@@ -216,19 +216,19 @@
                 </div>
 
                 <!-- Meal Session & Location Grid -->
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 14px;">
-                  <div class="form-group">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 16px; margin-top: 14px;">
+                  <div class="form-group" style="min-width: 0;">
                     <label for="mealSession">Meal Session <span style="color: #DC2626;">*</span></label>
-                    <select id="mealSession" class="input-field" style="height: 44px; font-size: 14px;">
+                    <select id="mealSession" class="input-field" style="height: 44px; font-size: 14px; width: 100%;">
                       <option value="lunch" selected>Lunch — Today (12:30 PM - 02:30 PM)</option>
                       <option value="breakfast">Breakfast — Today (07:30 AM - 09:30 AM)</option>
                       <option value="snacks">Snacks / High Tea (05:00 PM - 06:15 PM)</option>
                       <option value="dinner">Dinner — (07:45 PM - 09:45 PM)</option>
                     </select>
                   </div>
-                  <div class="form-group">
+                  <div class="form-group" style="min-width: 0;">
                     <label for="stationLocation">Counter / Station Location <span style="color: #DC2626;">*</span></label>
-                    <select id="stationLocation" class="input-field" style="height: 44px; font-size: 14px;">
+                    <select id="stationLocation" class="input-field" style="height: 44px; font-size: 14px; width: 100%;">
                       <option value="Counter 2 — Main Curry & Gravy Station" selected>Counter 2 — Main Curry & Gravy Station</option>
                       <option value="Counter 1 — Roti & Rice Dispensary">Counter 1 — Roti & Rice Dispensary</option>
                       <option value="Counter 3 — Salad & Curd Bar">Counter 3 — Salad & Curd Bar</option>

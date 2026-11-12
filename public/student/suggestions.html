@@ -73,22 +73,26 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 6px 12px;
+      padding: 7px 14px;
       border-radius: 999px;
-      background: var(--bg-surface-secondary);
-      border: 1px solid var(--border-color);
+      background: #F1F5F9;
+      border: 1px solid #CBD5E1;
       font-size: 13px;
       font-weight: 500;
       color: var(--text-main);
       transition: all 0.15s ease;
+      user-select: none;
     }
     .wishlist-chip:hover {
       background: #E2E8F0;
+      border-color: #94A3B8;
     }
     .wishlist-chip.selected {
       background: #059669;
       color: #ffffff;
-      border-color: #059669;
+      border-color: #047857;
+      font-weight: 600;
+      box-shadow: 0 1px 2px rgba(5, 150, 105, 0.2);
     }
   </style>
 </head>
@@ -129,12 +133,12 @@
 
         <!-- 2 Column Layout (Submit Form & My Suggestions Ledger) -->
         <div style="display: grid; grid-template-columns: 1fr; gap: 24px;">
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; align-items: start;">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 24px; align-items: start;">
             
             <!-- Form Column -->
-            <div style="display: flex; flex-direction: column; gap: 20px;">
+            <div style="display: flex; flex-direction: column; gap: 20px; min-width: 0;">
               <!-- Quick Suggestion Box -->
-              <div class="form-section-card">
+              <div class="form-section-card" style="min-width: 0;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                   <div style="display: flex; align-items: center; gap: 10px;">
                     <span style="width: 32px; height: 32px; border-radius: 8px; background: #D1FAE5; color: #065F46; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px;">01</span>
@@ -147,10 +151,10 @@
                 </div>
 
                 <form id="suggestionForm" onsubmit="event.preventDefault(); submitSuggestion();">
-                  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px;">
-                    <div>
-                      <label style="font-size: 12px; font-weight: 700; color: var(--text-main); display: block; margin-bottom: 4px;">Category <span style="color:red;">*</span></label>
-                      <select id="sugCategory" class="input-field" style="height: 42px; font-size: 14px;" required>
+                  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 16px;">
+                    <div style="min-width: 0;">
+                      <label style="font-size: 13px; font-weight: 600; color: var(--text-main); display: block; margin-bottom: 6px;">Category <span style="color: #DC2626;">*</span></label>
+                      <select id="sugCategory" class="input-field" style="height: 44px; width: 100%;" required>
                         <option value="Rice & Grains">Rice & Grains (Pulav, Biryani, Jeera Rice)</option>
                         <option value="Roti & Breads">Roti & Breads (Phulkas, Parathas, Missi Roti)</option>
                         <option value="Vegetables & Dal">Vegetables & Dal (Gravy, Sabzi, Tadka)</option>
@@ -161,15 +165,15 @@
                       </select>
                     </div>
 
-                    <div>
-                      <label style="font-size: 12px; font-weight: 700; color: var(--text-main); display: block; margin-bottom: 4px;">Suggestion Title <span style="color:red;">*</span></label>
-                      <input type="text" id="sugTitle" class="input-field" placeholder="e.g., Introduce Missi Roti on Sundays" style="height: 42px; font-size: 14px;" required/>
+                    <div style="min-width: 0;">
+                      <label style="font-size: 13px; font-weight: 600; color: var(--text-main); display: block; margin-bottom: 6px;">Suggestion Title <span style="color: #DC2626;">*</span></label>
+                      <input type="text" id="sugTitle" class="input-field" placeholder="e.g., Introduce Missi Roti on Sundays" style="height: 44px; width: 100%;" required/>
                     </div>
                   </div>
 
                   <!-- Quick preference helpers -->
-                  <div style="margin-top: 14px;">
-                    <label style="font-size: 12px; font-weight: 700; color: var(--text-main); display: block; margin-bottom: 6px;">
+                  <div style="margin-top: 16px;">
+                    <label style="font-size: 13px; font-weight: 600; color: var(--text-main); display: block; margin-bottom: 8px;">
                       Select Dish Wishlist Items (Tap to append)
                     </label>
                     <div style="display: flex; flex-wrap: wrap; gap: 8px;">
@@ -183,35 +187,35 @@
                   </div>
 
                   <!-- Detailed Suggestion Box -->
-                  <div style="margin-top: 14px;">
-                    <label style="font-size: 12px; font-weight: 700; color: var(--text-main); display: block; margin-bottom: 4px;">
-                      Detailed Suggestion / Recipe Idea <span style="color:red;">*</span>
+                  <div style="margin-top: 16px;">
+                    <label style="font-size: 13px; font-weight: 600; color: var(--text-main); display: block; margin-bottom: 6px;">
+                      Detailed Suggestion / Recipe Idea <span style="color: #DC2626;">*</span>
                     </label>
-                    <textarea id="sugDetails" class="input-field" rows="4" placeholder="Explain your recommendation, portion suggestion, or proposed schedule rotation..." style="font-size: 14px; resize: vertical;" required></textarea>
+                    <textarea id="sugDetails" class="input-field" rows="4" placeholder="Explain your recommendation, portion suggestion, or proposed schedule rotation..." style="width: 100%; min-height: 110px; font-size: 14px; resize: vertical;" required></textarea>
                   </div>
 
                   <!-- Sliders for Spice & Oil Preferences -->
-                  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-top: 14px;">
-                    <div class="range-slider-wrap">
-                      <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 12px; font-weight: 700; color: var(--text-main);">Desired Oil Level</span>
-                        <span id="oilValLabel" style="font-size: 12px; font-weight: 700; color: var(--color-primary);">Balanced</span>
+                  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 16px; margin-top: 16px;">
+                    <div class="range-slider-wrap" style="min-width: 0;">
+                      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span style="font-size: 13px; font-weight: 600; color: var(--text-main);">Desired Oil Level</span>
+                        <span id="oilValLabel" style="font-size: 12px; font-weight: 700; color: var(--role-student, #059669); background: #ECFDF5; padding: 2px 8px; border-radius: 6px;">Balanced</span>
                       </div>
-                      <input type="range" id="oilRange" min="1" max="3" value="2" oninput="updateOilLabel(this.value)" style="accent-color: #059669; cursor: pointer;"/>
-                      <div class="slider-labels">
+                      <input type="range" id="oilRange" min="1" max="3" value="2" oninput="updateOilLabel(this.value)" style="width: 100%; accent-color: #059669; cursor: pointer;"/>
+                      <div class="slider-labels" style="margin-top: 6px;">
                         <span>Minimal Oil</span>
                         <span>Balanced</span>
                         <span>Rich Dhaba</span>
                       </div>
                     </div>
 
-                    <div class="range-slider-wrap">
-                      <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 12px; font-weight: 700; color: var(--text-main);">Desired Spice Level</span>
-                        <span id="spiceValLabel" style="font-size: 12px; font-weight: 700; color: #D97706;">Medium</span>
+                    <div class="range-slider-wrap" style="min-width: 0;">
+                      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span style="font-size: 13px; font-weight: 600; color: var(--text-main);">Desired Spice Level</span>
+                        <span id="spiceValLabel" style="font-size: 12px; font-weight: 700; color: #D97706; background: #FEF3C7; padding: 2px 8px; border-radius: 6px;">Medium</span>
                       </div>
-                      <input type="range" id="spiceRange" min="1" max="3" value="2" oninput="updateSpiceLabel(this.value)" style="accent-color: #D97706; cursor: pointer;"/>
-                      <div class="slider-labels">
+                      <input type="range" id="spiceRange" min="1" max="3" value="2" oninput="updateSpiceLabel(this.value)" style="width: 100%; accent-color: #D97706; cursor: pointer;"/>
+                      <div class="slider-labels" style="margin-top: 6px;">
                         <span>Mild</span>
                         <span>Medium</span>
                         <span>Extra Spicy</span>
@@ -219,8 +223,8 @@
                     </div>
                   </div>
 
-                  <div style="display: flex; justify-content: flex-end; margin-top: 18px;">
-                    <button type="submit" id="submitSugBtn" class="btn btn-primary" style="display: flex; align-items: center; gap: 6px; padding: 10px 24px;">
+                  <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
+                    <button type="submit" id="submitSugBtn" class="btn btn-primary" style="display: flex; align-items: center; gap: 8px; padding: 12px 28px; font-weight: 600; font-size: 14px; border-radius: 10px;">
                       <span class="material-symbols-outlined" style="font-size: 18px;">send</span>
                       <span>Submit to Dining Committee</span>
                     </button>
