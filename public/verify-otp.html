@@ -433,7 +433,6 @@
     });
 
     function displayActiveOtp(otp) {
-      if (!isLocalDev) return; // Strictly restricted to local development
       if (!otp) return;
       const card = document.getElementById('otp-code-card');
       const disp = document.getElementById('displayed-otp-code');
@@ -446,7 +445,6 @@
     }
 
     document.getElementById('btn-card-fill-otp')?.addEventListener('click', () => {
-      if (!isLocalDev) return;
       const disp = document.getElementById('displayed-otp-code');
       const code = disp ? disp.textContent.trim() : '';
       if (code && code !== '------') {
@@ -456,28 +454,25 @@
     });
 
     function setupDemoBanner(otp) {
-      if (!isLocalDev) return;
       renderDemoBanner(`[Access Passcode] OTP: ${otp}`, () => {
         fillOtp(otp);
         showToast(`Autofilled OTP code ${otp}!`, 'info');
       }, `Auto-fill Code (${otp})`);
     }
 
-    if (isLocalDev) {
-      if (pending?.devOtp) {
-        displayActiveOtp(pending.devOtp);
-      } else {
-        // Proactively request code so user has it immediately on screen in local development
-        resendLoginOtp(roleParam).then((res) => {
-          if (res?.success && res?.devOtp) {
-            displayActiveOtp(res.devOtp);
-          } else {
-            renderDemoBanner('Food Buddy OTP Verification Stage. Click resend to generate a code.');
-          }
-        }).catch(() => {
+    if (pending?.devOtp) {
+      displayActiveOtp(pending.devOtp);
+    } else {
+      // Proactively request code so user has it immediately on screen during presentation demo
+      resendLoginOtp(roleParam).then((res) => {
+        if (res?.success && res?.devOtp) {
+          displayActiveOtp(res.devOtp);
+        } else {
           renderDemoBanner('Food Buddy OTP Verification Stage. Click resend to generate a code.');
-        });
-      }
+        }
+      }).catch(() => {
+        renderDemoBanner('Food Buddy OTP Verification Stage. Click resend to generate a code.');
+      });
     }
   </script>
 </body>
