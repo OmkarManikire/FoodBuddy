@@ -652,3 +652,4 @@ def build_pdf(filename):
 if __name__ == '__main__':
     target_path = sys.argv[1] if len(sys.argv) > 1 else "FoodBuddy_Complete_Viva_Guide.pdf"
     build_pdf(target_path)
+
